@@ -3,8 +3,8 @@
 
 ## Requirements
 
-* eZ Publish 5.3+ / eZ Publish Community Project 2014.05+
-
+* eZ Publish 5.4+ / eZ Publish Community Project 2014.07+
+* PHP 5.4+
 
 ## Installation steps
 
@@ -71,7 +71,7 @@ CREATE TABLE `novaseo_meta` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
-### Edit configuration
+### Edit configuration (SiteAccess Aware)
 
 
 #### FieldType 
@@ -79,11 +79,13 @@ CREATE TABLE `novaseo_meta` (
 You can add your Metas in your configuration
 
 ```yml
-parameters:
-    novaseo.default.metas:
-      - { key: 'title', label: 'Title' }
-      - { key: 'description', label: 'Description' }
-      - { key: 'keyword', label: 'Keywords' }
+novae_zseo:
+    system:
+        default:
+            fieldtype_metas:
+                - { key: 'title', label: 'Title' }
+                - { key: 'description', label: 'Description' }
+                - { key: 'keyword', label: 'Keywords' }
 
 ```
 
@@ -92,11 +94,11 @@ parameters:
 You can manage your Disallow in the configuration
 
 ```yml
-parameters:
-    novaseo.default.disallow:
-        - "/plop"
-        - "/plop2"
-        - "/plop3"
+novae_zseo:
+    system:
+        default:
+            robots_disallow:
+                - "/notindex"
 
 ```
 
@@ -105,8 +107,10 @@ parameters:
 You can manage the Google Verification file in the configuration
 
 ```yml
-parameters:
-    novaseo.default.google_verification: 1234567890
+novae_zseo:
+    system:
+        default:
+            google_verification: 1234567890
 ```
 
 

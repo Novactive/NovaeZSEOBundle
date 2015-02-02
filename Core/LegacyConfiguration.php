@@ -57,7 +57,7 @@ class LegacyConfiguration implements EventSubscriberInterface
      */
     public function onBuildKernel( PreBuildKernelEvent $event )
     {
-        $settings['novaseo.ini/Settings/Metas'] = $this->configResolver->getParameter( 'metas', 'novaseo' );
+        $settings['novaseo.ini/Settings/Metas'] = $this->configResolver->getParameter( 'fieldtype_metas', 'novae_zseo' );
         $event->getParameters()->set(
             "injected-settings",
             $settings + (array)$event->getParameters()->get( "injected-settings" )

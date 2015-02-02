@@ -1,21 +1,8 @@
 parameters:
-    novaseo.default.metas:
-        - { key: 'title', label: 'Title' }
-        - { key: 'description', label: 'Description' }
-        - { key: 'keyword', label: 'Keywords' }
-        - { key: 'og:image', label: 'Facebook Image' }
-        - { key: 'og:image2', label: 'Facebook Image2' }
-
-    novaseo.default.disallow:
-        - "/plop"
-        - "/plop2"
-        - "/plop3"
-
-    novaseo.default.google_verification: 1234567890
-
+    novactive.novaseobundle.legacy.configuration.class: Novactive\Bundle\eZSEOBundle\Core\LegacyConfiguration
 services:
     novactive.novaseobundle.legacy.configuration:
-        class: Novactive\Bundle\eZSEOBundle\Core\LegacyConfiguration
+        class: %novactive.novaseobundle.legacy.configuration.class%
         arguments:
             - @ezpublish.config.resolver.core
         tags:

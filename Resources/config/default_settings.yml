@@ -1,0 +1,6 @@
+parameters:
+    novae_zseo.default.robots_disallow: ~
+    novae_zseo.default.google_verification: ~
+    novae_zseo.default.fieldtype_metas:
+        - { key: 'description', label: 'Description' }
+        - { key: 'keyword', label: 'Keywords' }
