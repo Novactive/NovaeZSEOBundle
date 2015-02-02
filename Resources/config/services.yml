@@ -1,10 +1,17 @@
 parameters:
     novaseo.default.metas:
-      - { key: 'title', label: 'Title' }
-      - { key: 'description', label: 'Description' }
-      - { key: 'keyword', label: 'Keywords' }
-      - { key: 'og:image', label: 'Facebook Image' }
-      - { key: 'og:image2', label: 'Facebook Image2' }
+        - { key: 'title', label: 'Title' }
+        - { key: 'description', label: 'Description' }
+        - { key: 'keyword', label: 'Keywords' }
+        - { key: 'og:image', label: 'Facebook Image' }
+        - { key: 'og:image2', label: 'Facebook Image2' }
+
+    novaseo.default.disallow:
+        - "/plop"
+        - "/plop2"
+        - "/plop3"
+
+    novaseo.default.google_verification: 1234567890
 
 services:
     novactive.novaseobundle.legacy.configuration:

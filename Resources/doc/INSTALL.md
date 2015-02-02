@@ -13,6 +13,8 @@
 Add the following to your composer.json and run `php composer.phar update novactive/ezseobundle` to refresh dependencies:
 
 ```json
+#composer.json
+
 "require": {
     "novactive/ezseobundle": "dev-master",
 }
@@ -33,6 +35,19 @@ public function registerBundles()
    );
    ...
 }
+```
+
+### Add routes
+
+Make sure you add this route to your routing:
+
+```yml
+# ezpublish/config/routing.yml
+
+_novaseoRoutes:
+    resource: "@NovaeZSEOBundle/Controller/"
+    type:     annotation
+    prefix:   /
 ```
 
 ### Install the Legacy extension
@@ -58,7 +73,10 @@ CREATE TABLE `novaseo_meta` (
 
 ### Edit configuration
 
-You can add you Metas in your configuration
+
+#### FieldType 
+
+You can add your Metas in your configuration
 
 ```yml
 parameters:
@@ -67,4 +85,42 @@ parameters:
       - { key: 'description', label: 'Description' }
       - { key: 'keyword', label: 'Keywords' }
 
+```
+
+#### Robots.txt
+
+You can manage your Disallow in the configuration
+
+```yml
+parameters:
+    novaseo.default.disallow:
+        - "/plop"
+        - "/plop2"
+        - "/plop3"
+
+```
+
+#### Google Site Verification
+
+You can manage the Google Verification file in the configuration
+
+```yml
+parameters:
+    novaseo.default.google_verification: 1234567890
+```
+
+
+### Remove the Robots.txt (native RewriteRules )
+
+Add a `#` at the beginning of the line
+#### Nginx
+
+```
+#rewrite "^/robots\.txt" "/robots.txt" break;
+```
+
+#### Apache
+
+```
+#RewriteRule ^/robots\.txt - [L]
 ```
