@@ -1,0 +1,28 @@
+parameters:
+    novactive.novaseobundle.fieldType.novaseometas.class: Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Type
+    novactive.novaseobundle.fieldType.novaseometas.externalStorage.class: Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage
+    novactive.novaseobundle.fieldType.novaseometas.storage_gateway.class: Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\LegacyStorage
+    novactive.novaseobundle.fieldType.novaseometas.converter.class: Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Converter
+
+services:
+    novactive.novaseobundle.fieldType.novaseometas:
+        parent: ezpublish.fieldType
+        class: %novactive.novaseobundle.fieldType.novaseometas.class%
+        tags:
+            - {name: ezpublish.fieldType, alias: novaseometas}
+
+    novactive.novaseobundle.fieldType.novaseometas.externalStorage:
+        class: %novactive.novaseobundle.fieldType.novaseometas.externalStorage.class%
+        tags:
+            - {name: ezpublish.fieldType.externalStorageHandler, alias: novaseometas}
+
+    novactive.novaseobundle.fieldType.novaseometas.storage_gateway:
+        class: %novactive.novaseobundle.fieldType.novaseometas.storage_gateway.class%
+        tags:
+            - {name: ezpublish.fieldType.externalStorageHandler.gateway, alias: novaseometas, identifier: LegacyStorage}
+
+
+    novactive.novaseobundle.fieldType.novaseometas.converter:
+        class: %novactive.novaseobundle.fieldType.novaseometas.converter.class%
+        tags:
+            - {name: ezpublish.storageEngine.legacy.converter, alias: novaseometas}

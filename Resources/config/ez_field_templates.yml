@@ -1,0 +1,4 @@
+system:
+    global:
+        field_templates:
+            - {template: NovaeZSEOBundle:fields:novaseometas.html.twig, priority: 0}

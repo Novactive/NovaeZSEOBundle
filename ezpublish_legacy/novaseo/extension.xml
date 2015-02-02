@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<software>
+    <metadata>
+        <name>Novactive SEO Bundle</name>
+        <version>1.0.0</version>
+        <copyright>Novactive</copyright>
+        <license>MIT</license>
+        <info_url>https://github.com/Novactive/NovaeZSEOBundle</info_url>
+    </metadata>
+</software>

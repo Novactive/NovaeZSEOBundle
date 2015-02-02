@@ -1,0 +1,7 @@
+{% extends "EzPublishCoreBundle::content_fields.html.twig" %}
+
+{% block novaseometas_field %}{% spaceless %}
+    {% for meta in field.value.metas %}
+        <meta name="{{ meta.name }}" content="{{ meta.content }}"/>
+    {% endfor %}
+{% endspaceless %}{% endblock %}

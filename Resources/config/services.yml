@@ -1,0 +1,15 @@
+parameters:
+    novaseo.default.metas:
+      - { key: 'title', label: 'Title' }
+      - { key: 'description', label: 'Description' }
+      - { key: 'keyword', label: 'Keywords' }
+      - { key: 'og:image', label: 'Facebook Image' }
+      - { key: 'og:image2', label: 'Facebook Image2' }
+
+services:
+    novactive.novaseobundle.legacy.configuration:
+        class: Novactive\Bundle\eZSEOBundle\Core\LegacyConfiguration
+        arguments:
+            - @ezpublish.config.resolver.core
+        tags:
+            - { name: kernel.event_subscriber }

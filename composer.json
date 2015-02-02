@@ -1,0 +1,26 @@
+{
+    "name": "novactive/ezseobundle",
+    "description": "Novactive eZ SEO Bundle is an eZ Publish 5 bundle for SEO simplications ( metas, sitemaps, robots.txt, etc.)",
+    "keywords": [ "seo, ezpublish, novactive, metas"],
+    "homepage": "https://github.com/Novactive/NovaeZSEOBundle",
+    "authors": [
+        {
+            "name": "Novactive",
+            "homepage": "http://www.novactive.us",
+            "email": "novaseobundle@novactive.com"
+        }
+    ],
+    "license": [
+        "MIT"
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "ezsystems/ezpublish-kernel": "*",
+        "ezsystems/ezpublish-legacy": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Novactive\\Bundle\\eZSEOBundle": ""
+        }
+    }
+}
