@@ -20,7 +20,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Novactive\\Bundle\\eZSEOBundle": ""
+            "Novactive\\Bundle\\eZSEOBundle\\": ""
         }
     }
 }
