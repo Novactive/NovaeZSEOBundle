@@ -29,15 +29,16 @@ class AddNovaSEOMetasFieldTypeCommand extends ContainerAwareCommand
     {
         $this
             ->setName( 'novae_zseo:addnovaseometasfieldtype' )
-            ->addOption('identifier', null, InputOption::VALUE_REQUIRED,  'a content type identifier' )
-            ->addOption('identifiers', null, InputOption::VALUE_REQUIRED,  'some content types identifier, separated by a comma' )
-            ->addOption('group_identifier', null, InputOption::VALUE_REQUIRED,  'a content type group identifier' )
+            ->addOption( 'identifier', null, InputOption::VALUE_REQUIRED, 'a content type identifier' )
+            ->addOption( 'identifiers', null, InputOption::VALUE_REQUIRED, 'some content types identifier, separated by a comma' )
+            ->addOption( 'group_identifier', null, InputOption::VALUE_REQUIRED, 'a content type group identifier' )
             ->setDescription(
                 'Add the novaseometas FieldType to Content Types'
             )->setHelp(
                 <<<EOT
-The command <info>%command.name%</info> add the FieldType 'novaseometas' to the content types in arguments or to the content types contained in the content type group.
-The identifier will be : <info>metas</info>, the Name : <info>Metas</info> and the Category: <info>SEO</info>
+The command <info>%command.name%</info> add the FieldType 'novaseometas'.
+You can select the Content Type via the <info>identier</info>, <info>identifiers</info>, <info>group_identier</info> option.
+The identifier will be : <comment>metas</comment>, the Name : <comment>Metas</comment> and the Category: <comment>SEO</comment>
 EOT
             );
     }
@@ -54,7 +55,6 @@ EOT
         $repository         = $this->getContainer()->get( "ezpublish.api.repository" );
         $contentTypeService = $repository->getContentTypeService();
         $repository->setCurrentUser( $repository->getUserService()->loadUser( 14 ) );
-
 
         $contentTypeGroupIdentifier = $input->getOption( 'group_identifier' ) ? $input->getOption( 'group_identifier' ) : false;
         $contentTypeIdentifiers = $input->getOption( 'identifiers' ) ? explode( ",", $input->getOption( 'identifiers' ) ) : false;
@@ -102,10 +102,8 @@ EOT
                 $output->writeln( "Nothing done." );
                 return;
             }
-
-
         }
-        catch( \eZ\Publish\API\Repository\Exceptions\NotFoundException $e )
+        catch ( \eZ\Publish\API\Repository\Exceptions\NotFoundException $e )
         {
             $output->writeln( "<error>{$e->getMessage()}</error>" );
             return;
