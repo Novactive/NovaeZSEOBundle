@@ -10,12 +10,14 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Command;
 
+use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Date;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use eZ\Publish\API\Repository\Values\ContentType\ContentType;
+use DateTime;
 
 /**
  * Class AddNovaSEOMetasFieldTypeCommand
@@ -87,10 +89,10 @@ EOT
             }
 
             $output->writeln( "<info>Selected Content Type:</info>" );
-            foreach ( $contentTypes as $type )
+            foreach ( $contentTypes as $contentType )
             {
-                /** @var ContentType $type */
-                $output->writeln( "\t- {$type->getName( $type->mainLanguageCode )}" );
+                /** @var ContentType $contentType */
+                $output->writeln( "\t- {$contentType->getName( $contentType->mainLanguageCode )}" );
             }
             $helper   = $this->getHelper( 'question' );
             $question = new ConfirmationQuestion(
@@ -101,6 +103,35 @@ EOT
             {
                 $output->writeln( "Nothing done." );
                 return;
+            }
+
+            foreach ( $contentTypes as $contentType )
+            {
+                /** @var ContentType $contentType */
+                $contentTypeDraft = $contentTypeService->createContentTypeDraft( $contentType );
+
+                $typeUpdate = $contentTypeService->newContentTypeUpdateStruct();
+                $typeUpdate->modificationDate = new DateTime();
+
+                $knowLanguage = array_keys( $contentType->getDescriptions() );
+                // just in case the mainLanguageCode is used for fallback, we need it
+                if ( !in_array( $contentType->mainLanguageCode, $knowLanguage ) )
+                {
+                    $knowLanguage[] = $contentType->mainLanguageCode;
+                }
+
+                $fieldCreateStruct = $contentTypeService->newFieldDefinitionCreateStruct( 'metas', 'novaseometas' );
+                $fieldCreateStruct->names = array_fill_keys( $knowLanguage, 'Metas' );
+                $fieldCreateStruct->descriptions = array_fill_keys( $knowLanguage, 'The Metas' );
+                $fieldCreateStruct->fieldGroup = 'novaseo';
+                $fieldCreateStruct->position = 100;
+                $fieldCreateStruct->isTranslatable = true;
+                $fieldCreateStruct->isRequired = false;
+                $fieldCreateStruct->isSearchable = false;
+                $fieldCreateStruct->isInfoCollector = false;
+                $contentTypeService->updateContentTypeDraft( $contentTypeDraft, $typeUpdate );
+                $contentTypeService->addFieldDefinition( $contentTypeDraft, $fieldCreateStruct );
+                $contentTypeService->publishContentTypeDraft( $contentTypeDraft );
             }
         }
         catch ( \eZ\Publish\API\Repository\Exceptions\NotFoundException $e )
