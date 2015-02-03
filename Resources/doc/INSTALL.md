@@ -71,10 +71,26 @@ CREATE TABLE `novaseo_meta` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
-### Edit configuration (SiteAccess Aware)
+### Remove the Robots.txt (native RewriteRules )
 
+Add a `#` at the beginning of the line
+#### Nginx
 
-#### FieldType 
+```
+#rewrite "^/robots\.txt" "/robots.txt" break;
+```
+
+#### Apache
+
+```
+#RewriteRule ^/robots\.txt - [L]
+```
+
+## Usage
+
+### novaseometas FieldType
+
+#### Edit configuration (SiteAccess Aware)
 
 You can add your Metas in your configuration
 
@@ -89,20 +105,29 @@ novae_zseo:
 
 ```
 
-#### Robots.txt
+#### Add the FieldType to your Content Type quickly
 
-You can manage your Disallow in the configuration
+A command is provided to simply add the FieldType, you can always do it by the Administration Inferface
 
-```yml
-novae_zseo:
-    system:
-        default:
-            robots_disallow:
-                - "/notindex"
+```bash
+$ php ezpublish/console novae_zseo:addnovaseometasfieldtype -h
+Usage:
+ novae_zseo:addnovaseometasfieldtype [--identifier="..."] [--identifiers="..."] [--group_identifier="..."]
 
+Options:
+ --identifier          a content type identifier
+ --identifiers         some content types identifier, separated by a comma
+ --group_identifier    a content type group identifier
+ ...
+ --siteaccess          SiteAccess to use for operations. If not provided, default siteaccess will be used
+ 
+Help:
+ The command novae_zseo:addnovaseometasfieldtype add the FieldType 'novaseometas'.
+ You can select the Content Type via the identier, identifiers, group_identier option.
+ The identifier will be : metas, the Name : Metas and the Category: SEO
 ```
 
-#### Google Site Verification
+### Google Site Verification file
 
 You can manage the Google Verification file in the configuration
 
@@ -111,20 +136,4 @@ novae_zseo:
     system:
         default:
             google_verification: 1234567890
-```
-
-
-### Remove the Robots.txt (native RewriteRules )
-
-Add a `#` at the beginning of the line
-#### Nginx
-
-```
-#rewrite "^/robots\.txt" "/robots.txt" break;
-```
-
-#### Apache
-
-```
-#RewriteRule ^/robots\.txt - [L]
 ```
