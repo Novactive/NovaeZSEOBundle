@@ -39,7 +39,7 @@ class AddNovaSEOMetasFieldTypeCommand extends ContainerAwareCommand
             )->setHelp(
                 <<<EOT
 The command <info>%command.name%</info> add the FieldType 'novaseometas'.
-You can select the Content Type via the <info>identier</info>, <info>identifiers</info>, <info>group_identier</info> option.
+You can select the Content Type via the <info>identifier</info>, <info>identifiers</info>, <info>group_identifier</info> option.
 The identifier will be : <comment>metas</comment>, the Name : <comment>Metas</comment> and the Category: <comment>SEO</comment>
 EOT
             );

@@ -123,7 +123,7 @@ Options:
  
 Help:
  The command novae_zseo:addnovaseometasfieldtype add the FieldType 'novaseometas'.
- You can select the Content Type via the identier, identifiers, group_identier option.
+ You can select the Content Type via the identier, identifiers, group_identifier option.
  The identifier will be : metas, the Name : Metas and the Category: SEO
 ```
 
