@@ -1,0 +1,40 @@
+.novaseao-metas {
+    border-left: 3px solid #F4D8B1;
+}
+
+.novaseao-metas .handcrafted {
+    text-align: right;
+}
+
+.novaseao-metas .handcrafted img, .novaseao-metas p.handcrafted span {
+    display: block;
+    float:right;
+}
+.novaseao-metas p.handcrafted span {
+    text-align: right;
+    padding-top: 18px;
+    padding-right: 10px;
+}
+
+.novaseao-metas p.handcrafted .icon {
+    color: #F19A22;
+    font-weight: bold;
+}
+
+.novaseao-metas ul {
+    margin-bottom: 0;
+    margin-left: 15px;
+}
+.novaseao-metas ul li {
+    list-style: none;
+}
+.novaseao-metas ul li label {
+    float: left;
+    width: 10%;
+}
+
+.novaseao-metas ul li input {
+    width: 88%;
+    border: 1px solid #F4D8B1;
+    padding: 5px;
+}

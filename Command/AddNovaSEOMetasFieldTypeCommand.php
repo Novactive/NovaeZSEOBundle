@@ -122,7 +122,7 @@ EOT
 
                 $fieldCreateStruct = $contentTypeService->newFieldDefinitionCreateStruct( 'metas', 'novaseometas' );
                 $fieldCreateStruct->names = array_fill_keys( $knowLanguage, 'Metas' );
-                $fieldCreateStruct->descriptions = array_fill_keys( $knowLanguage, 'The Metas' );
+                $fieldCreateStruct->descriptions = array_fill_keys( $knowLanguage, 'Metas for Search Engine Optimizations' );
                 $fieldCreateStruct->fieldGroup = 'novaseo';
                 $fieldCreateStruct->position = 100;
                 $fieldCreateStruct->isTranslatable = true;
