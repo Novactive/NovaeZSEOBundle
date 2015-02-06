@@ -20,6 +20,8 @@ class NovaSeoMetasType extends eZDataType
 
     const TABLE = "novaseo_meta";
 
+    const STORAGE_FIELD = "data_text1";
+
     /**
      * Constructor
      */
@@ -229,6 +231,71 @@ class NovaSeoMetasType extends eZDataType
             );
         }
         unset( $version ); //CodeSniffer tricks..
+    }
+
+    /**
+     * Validates class attribute HTTP input
+     *
+     * @param eZHTTPTool $http
+     * @param string $base
+     * @param eZContentClassAttribute $attribute
+     * @return bool
+     */
+    function validateClassAttributeHTTPInput( $http, $base, $attribute )
+    {
+        if ( $http->hasPostVariable( "ContentClass_novaseometas_keyvalue_{$attribute->attribute( 'id' )}" ) )
+        {
+            $metasKv = $http->postVariable( "ContentClass_novaseometas_keyvalue_{$attribute->attribute( 'id' )}" );
+            //@todo: Maybe check some errors here
+            unset( $metasKv );
+            //$contentObjectAttribute->setValidationError( $mess );
+            //$contentObjectAttribute->setHasValidationError();
+            //return eZInputValidator::STATE_INVALID;
+        }
+        return eZInputValidator::STATE_ACCEPTED;
+    }
+
+
+    /**
+     * Fetches class attribute HTTP input and stores it
+     *
+     * @param eZHTTPTool $http
+     * @param string $base
+     * @param eZContentClassAttribute $attribute
+     * @return bool
+     */
+    function fetchClassAttributeHTTPInput( $http, $base, $attribute )
+    {
+        if ( $http->hasPostVariable( "ContentClass_novaseometas_keyvalue_{$attribute->attribute( 'id' )}" ) )
+        {
+            $metasKv = $http->postVariable( "ContentClass_novaseometas_keyvalue_{$attribute->attribute( 'id' )}" );
+            $attribute->setContent( $metasKv );
+
+        }
+        return true;
+    }
+
+    /**
+     * Just before store the content , we convert
+     *
+     * @param eZContentClassAttribute $classAttribute
+     * @param $version
+     */
+    function preStoreClassAttribute( $classAttribute, $version )
+    {
+        $classAttribute->setAttribute( 'data_text5', json_encode( $classAttribute->attribute( 'content' ) ) );
+    }
+
+    /**
+     * Get the content
+     *
+     * @param eZContentClassAttribute $contentClassAttribute
+     *
+     * @return array
+     */
+    function classAttributeContent( $contentClassAttribute )
+    {
+        return json_decode( $contentClassAttribute->attribute( 'data_text5' ), true );
     }
 
     /**
