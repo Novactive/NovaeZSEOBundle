@@ -116,24 +116,26 @@ class NovaSeoMetasType extends eZDataType
      */
     function storeObjectAttribute( $contentObjectAttribute )
     {
-        $metas = $contentObjectAttribute->content();
-        $db    = eZDB::instance();
-        $db->begin();
-        $this->deleteStoredObjectAttribute( $contentObjectAttribute );
-        /** @var FieldValue $metas */
-        foreach ( $metas->metas as $meta )
+        if ( $contentObjectAttribute->attribute( 'id' ) )
         {
-            $db->query(
-                "INSERT INTO " . self::TABLE . " SET
+            $metas = $contentObjectAttribute->content();
+            $db    = eZDB::instance();
+            $db->begin();
+            $this->deleteStoredObjectAttribute( $contentObjectAttribute );
+            /** @var FieldValue $metas */
+            foreach( $metas->metas as $meta )
+            {
+                $db->query(
+                    "INSERT INTO " . self::TABLE . " SET
                     objectattribute_id = {$contentObjectAttribute->attribute( 'id' )},
                     objectattribute_version= {$contentObjectAttribute->attribute( 'version' )},
                     meta_name = \"" . $db->escapeString( $meta->getName() ) . "\",
                     meta_content = \"" . $db->escapeString( $meta->getContent() ) . "\"
             "
-            );
+                );
+            }
+            $db->commit();
         }
-        $db->commit();
-
         return true;
     }
 
@@ -154,6 +156,8 @@ class NovaSeoMetasType extends eZDataType
             {
                 $contentObjectAttribute->setContent( $metas );
                 $this->storeObjectAttribute( $contentObjectAttribute );
+
+                return;
             }
         }
     }
@@ -178,6 +182,20 @@ class NovaSeoMetasType extends eZDataType
                         "
             );
             $metas      = [];
+            if ( !$metasArray )
+            {
+                $novaseoIni = eZINI::instance( "novaseo.ini" );
+                $metasConf  = $novaseoIni->variable( "Settings", "Metas" );
+                foreach( $metasConf as $key => $conf )
+                {
+                    $meta = new Meta();
+                    $meta->setName( $key );
+                    $meta->setContent( $conf['default_pattern'] );
+                    $metas[] = $meta;
+                }
+                return new FieldValue( $metas );
+            }
+
             foreach ( $metasArray as $row )
             {
                 $meta = new Meta();
@@ -186,7 +204,6 @@ class NovaSeoMetasType extends eZDataType
                     ->setContent( $row['meta_content'] );
                 $metas[] = $meta;
             }
-
             return new FieldValue( $metas );
         }
         return new FieldValue( [] );

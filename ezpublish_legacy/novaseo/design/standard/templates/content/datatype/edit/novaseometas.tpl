@@ -4,7 +4,6 @@
 {/if}
 
 {def $metas = ezini('Settings', 'Metas', 'novaseo.ini')}
-
 <div class="block novaseao-metas">
     <div class="">
         <ul>
