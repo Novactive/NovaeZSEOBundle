@@ -54,18 +54,11 @@ class NovaSeoMetasType extends eZDataType
                     'contentclass_attribute_identifier'
                 )}_keyvalue_{$contentObjectAttribute->attribute( 'id' )}"
             );
-            foreach ( $metasKv as $metaKey => $metaValue )
-            {
-                if ( empty( $metaValue ) )
-                {
-                    $contentObjectAttribute->setValidationError(
-                        ezpI18n::tr( 'extension/novaseo/text', 'You must fill all the metas ' . $metaKey )
-                    );
-                    $contentObjectAttribute->setHasValidationError();
-
-                    return eZInputValidator::STATE_INVALID;
-                }
-            }
+            //@todo: Maybe check some errors here
+            unset( $metasKv );
+            //$contentObjectAttribute->setValidationError( $mess );
+            //$contentObjectAttribute->setHasValidationError();
+            //return eZInputValidator::STATE_INVALID;
         }
 
         return eZInputValidator::STATE_ACCEPTED;

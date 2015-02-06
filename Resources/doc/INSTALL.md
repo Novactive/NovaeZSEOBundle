@@ -98,6 +98,7 @@ You can add your Metas in your configuration
 novae_zseo:
     system:
         default:
+            fieldtype_meta_identifier: "metas"
             fieldtype_metas:
                 - { key: 'title', label: 'Title' }
                 - { key: 'description', label: 'Description' }

@@ -127,4 +127,14 @@ class Meta
                 break;
         }
     }
+
+    /**
+     * Check if it's empty
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return $this->getContent() == '';
+    }
 }

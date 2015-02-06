@@ -40,7 +40,9 @@ class AddNovaSEOMetasFieldTypeCommand extends ContainerAwareCommand
                 <<<EOT
 The command <info>%command.name%</info> add the FieldType 'novaseometas'.
 You can select the Content Type via the <info>identifier</info>, <info>identifiers</info>, <info>group_identifier</info> option.
-The identifier will be : <comment>metas</comment>, the Name : <comment>Metas</comment> and the Category: <comment>SEO</comment>
+    - Identifier will be: <comment>%novae_zseo.default.fieldtype_metas_identifier%</comment>
+    - Name will be: <comment>Metas</comment>
+    - Category will be: <comment>SEO</comment>
 EOT
             );
     }
@@ -58,6 +60,7 @@ EOT
         $contentTypeService = $repository->getContentTypeService();
         $repository->setCurrentUser( $repository->getUserService()->loadUser( 14 ) );
 
+        $configResolver = $this->getContainer()->get( "ezpublish.config.resolver" );
         $contentTypeGroupIdentifier = $input->getOption( 'group_identifier' ) ? $input->getOption( 'group_identifier' ) : false;
         $contentTypeIdentifiers = $input->getOption( 'identifiers' ) ? explode( ",", $input->getOption( 'identifiers' ) ) : false;
         $contentTypeIdentifier = $input->getOption( 'identifier' ) ? $input->getOption( 'identifier' ) : false;
@@ -119,8 +122,10 @@ EOT
                 {
                     $knowLanguage[] = $contentType->mainLanguageCode;
                 }
-
-                $fieldCreateStruct = $contentTypeService->newFieldDefinitionCreateStruct( 'metas', 'novaseometas' );
+                $fieldCreateStruct = $contentTypeService->newFieldDefinitionCreateStruct(
+                    $configResolver->getParameter( 'fieldtype_metas_identifier', 'novae_zseo' ),
+                    'novaseometas'
+                );
                 $fieldCreateStruct->names = array_fill_keys( $knowLanguage, 'Metas' );
                 $fieldCreateStruct->descriptions = array_fill_keys( $knowLanguage, 'Metas for Search Engine Optimizations' );
                 $fieldCreateStruct->fieldGroup = 'novaseo';

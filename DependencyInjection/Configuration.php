@@ -30,12 +30,13 @@ class Configuration extends SiteAccessConfiguration
         $systemNode  = $this->generateScopeBaseNode( $rootNode );
         $systemNode
             ->scalarNode( 'google_verification' )->defaultValue( '~' )->end()
+            ->scalarNode( 'fieldtype_metas_identifier' )->defaultValue( 'metas' )->end()
             ->arrayNode( 'fieldtype_metas' )
                 ->isRequired()
                 ->prototype( 'array' )
                     ->children()
-                        ->scalarNode( 'key' )->isRequired()->end()
                         ->scalarNode( 'label' )->isRequired()->end()
+                        ->scalarNode( 'default_pattern' )->end()
                     ->end()
                 ->end()
             ->end()

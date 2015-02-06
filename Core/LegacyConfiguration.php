@@ -22,7 +22,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class LegacyConfiguration implements EventSubscriberInterface
 {
     /**
-     * ConfigResolver useful to get the config
+     * ConfigResolver useful to get the config aware of siteaccess
      *
      * @var ConfigResolverInterface
      */

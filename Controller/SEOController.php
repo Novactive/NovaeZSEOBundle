@@ -11,6 +11,7 @@
 namespace Novactive\Bundle\eZSEOBundle\Controller;
 
 use eZ\Bundle\EzPublishCoreBundle\Controller;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,7 +39,7 @@ class SEOController extends Controller
         {
             $robots[] = "Disallow: /";
         }
-        $rules = $this->getConfigResolver()->getParameter( 'robots_disallow', 'novae_zseo' );
+        $rules = $this->getConfigResolver( 'robots_disallow', 'novae_zseo' );
         if ( is_array( $rules ) )
         {
             foreach ( $rules as $rule )
@@ -62,7 +63,7 @@ class SEOController extends Controller
      */
     public function googleVerifAction( $key )
     {
-        if ( $this->getConfigResolver()->getParameter( 'google_verification', 'novae_zseo' ) != $key )
+        if ( $this->getConfigResolver( 'google_verification', 'novae_zseo' ) != $key )
         {
             throw new NotFoundHttpException( "Google Verification Key not found" );
         }

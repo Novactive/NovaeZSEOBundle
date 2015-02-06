@@ -4,17 +4,18 @@
 {/if}
 
 {def $metas = ezini('Settings', 'Metas', 'novaseo.ini')}
+
 <div class="block novaseao-metas">
     <div class="">
         <ul>
-            {foreach $metas as $meta }
+            {foreach $metas as $key => $meta }
                 <li>
                     <label for="{$attribute_base}_data_novaseometas_{$attribute.contentclass_attribute_identifier}_keyvalue_{$attribute.id}">{$meta.label|wash}</label>
                     <input
                             type="text"
                             id="{$attribute_base}_data_novaseometas_{$attribute.contentclass_attribute_identifier}_keyvalue_{$attribute.id}"
-                            name="{$attribute_base}_data_novaseometas_{$attribute.contentclass_attribute_identifier}_keyvalue_{$attribute.id}[{$meta.key|wash}]"
-                            value="{if and(is_set($attribute.content.metas),is_set($attribute.content.metas[$meta.key]))}{$attribute.content.metas[$meta.key].content|wash}{/if}"
+                            name="{$attribute_base}_data_novaseometas_{$attribute.contentclass_attribute_identifier}_keyvalue_{$attribute.id}[{$key|wash}]"
+                            value="{if and(is_set($attribute.content.metas),is_set($attribute.content.metas[$key]))}{$attribute.content.metas[$key].content|wash}{/if}"
                             />
                 </li>
             {/foreach}

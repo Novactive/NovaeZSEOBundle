@@ -3,9 +3,9 @@
 <div class="block novaseao-metas">
     <div class="">
         <ul>
-            {foreach $metas as $meta }
+            {foreach $metas as $key => $meta }
                 <li>
-                    <label>{$meta.label|wash}:</label> {if and(is_set($attribute.content.metas),is_set($attribute.content.metas[$meta.key]))}{$attribute.content.metas[$meta.key].content|wash}{/if}
+                    <label>{$meta.label|wash}:</label>&nbsp;{if and(is_set($attribute.content.metas),is_set($attribute.content.metas[$key]))}{$attribute.content.metas[$key].content|wash}{/if}
                 </li>
             {/foreach}
         </ul>

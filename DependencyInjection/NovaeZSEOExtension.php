@@ -55,9 +55,26 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
             $config,
             function ( $scopeSettings, $currentScope, ContextualizerInterface $contextualizer )
             {
-                $contextualizer->setContextualParameter( 'fieldtype_metas', $currentScope, $scopeSettings['fieldtype_metas'] );
-                $contextualizer->setContextualParameter( 'google_verification', $currentScope, $scopeSettings['google_verification'] );
-                $contextualizer->setContextualParameter( 'robots_disallow', $currentScope, $scopeSettings['robots_disallow'] );
+                $contextualizer->setContextualParameter(
+                    'fieldtype_metas_identifier',
+                    $currentScope,
+                    $scopeSettings['fieldtype_metas_identifier']
+                );
+                $contextualizer->setContextualParameter(
+                    'fieldtype_metas',
+                    $currentScope,
+                    $scopeSettings['fieldtype_metas']
+                );
+                $contextualizer->setContextualParameter(
+                    'google_verification',
+                    $currentScope,
+                    $scopeSettings['google_verification']
+                );
+                $contextualizer->setContextualParameter(
+                    'robots_disallow',
+                    $currentScope,
+                    $scopeSettings['robots_disallow']
+                );
             }
         );
     }
