@@ -9,14 +9,20 @@ Implemented features
 * `Robots.txt file` abstraction
 * `Google Verification file` abstraction
 
-License and installation instructions
--------------------------------------
 
-[License](LICENSE)
+![Nova eZ SEO Field Type](Resources/doc/NovaeZSeoFieldType.png "Nova eZ SEO Field Type")
 
-[Installation](Resources/doc/INSTALL.md)
+
+Usage and installation instructions
+-----------------------------------
 
 [Usage](Resources/doc/USAGE.md)
 
+[Installation](Resources/doc/INSTALL.md)
+
+Change and License
+------------------
+
 [Changelog](Resources/doc/CHANGELOG.md)
 
+[License](LICENSE)
