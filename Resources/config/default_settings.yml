@@ -1,17 +1,14 @@
 parameters:
-    novae_zseo:
-        system:
-            default:
-                google_verification: ~
-                robots_disallow: ~
-                fieldtype_metas_identifier: "metas"
-                fieldtype_metas:
-                    title:
-                        label: 'Title'
-                        default_pattern: "<title|name>"
-                    description:
-                        label: 'Description'
-                        default_pattern: "<description|short_descrition|title|name>"
-                    keyword:
-                        label: 'Keywords'
-                        default_pattern: ~
+    novae_zseo.default.robots_disallow: ~
+    novae_zseo.default.google_verification: ~
+    fieldtype_metas_identifier: "metas"
+    novae_zseo.default.fieldtype_metas:
+        title:
+            label: 'Title'
+            default_pattern: "<title|name>"
+        description:
+            label: 'Description'
+            default_pattern: "<description|short_descrition|title|name>"
+        keyword:
+            label: 'Keywords'
+            default_pattern: ~
