@@ -58,8 +58,8 @@ class MetaNameSchema extends NameSchemaService
     /**
      * Resolve a Meta Value
      *
-     * @param Meta    $meta
-     * @param Content $content
+     * @param Meta        $meta
+     * @param Content     $content
      * @param ContentType $contentType
      *
      * @return boolean
@@ -133,7 +133,9 @@ class MetaNameSchema extends NameSchemaService
                 {
                     if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode]->destinationContentId )
                     {
-                        $relatedContent = $this->repository->getContentService()->loadContent(  $fieldMap[$fieldDefinitionIdentifier][$languageCode]->destinationContentId );
+                        $relatedContent = $this->repository->getContentService()->loadContent(
+                            $fieldMap[$fieldDefinitionIdentifier][$languageCode]->destinationContentId
+                        );
                         // check only Image here
                         // @todo: we can do better
                         if ( $fieldImageValue = $relatedContent->getFieldValue( 'image' ) )

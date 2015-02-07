@@ -123,7 +123,7 @@ class NovaSeoMetasType extends eZDataType
             $db->begin();
             $this->deleteStoredObjectAttribute( $contentObjectAttribute );
             /** @var FieldValue $metas */
-            foreach( $metas->metas as $meta )
+            foreach ( $metas->metas as $meta )
             {
                 $db->query(
                     "INSERT INTO " . self::TABLE . " SET
@@ -182,20 +182,6 @@ class NovaSeoMetasType extends eZDataType
                         "
             );
             $metas      = [];
-//            if ( !$metasArray )
-//            {
-//                $novaseoIni = eZINI::instance( "novaseo.ini" );
-//                $metasConf  = $novaseoIni->variable( "Settings", "Metas" );
-//                foreach( $metasConf as $key => $conf )
-//                {
-//                    $meta = new Meta();
-//                    $meta->setName( $key );
-//                    $meta->setContent( $conf['default_pattern'] );
-//                    $metas[] = $meta;
-//                }
-//                return new FieldValue( $metas );
-//            }
-
             foreach ( $metasArray as $row )
             {
                 $meta = new Meta();
@@ -253,9 +239,10 @@ class NovaSeoMetasType extends eZDataType
     /**
      * Validates class attribute HTTP input
      *
-     * @param eZHTTPTool $http
-     * @param string $base
+     * @param eZHTTPTool              $http
+     * @param string                  $base
      * @param eZContentClassAttribute $attribute
+     *
      * @return bool
      */
     function validateClassAttributeHTTPInput( $http, $base, $attribute )
@@ -276,9 +263,10 @@ class NovaSeoMetasType extends eZDataType
     /**
      * Fetches class attribute HTTP input and stores it
      *
-     * @param eZHTTPTool $http
-     * @param string $base
+     * @param eZHTTPTool              $http
+     * @param string                  $base
      * @param eZContentClassAttribute $attribute
+     *
      * @return bool
      */
     function fetchClassAttributeHTTPInput( $http, $base, $attribute )
@@ -287,7 +275,6 @@ class NovaSeoMetasType extends eZDataType
         {
             $metasKv = $http->postVariable( "ContentClass_novaseometas_keyvalue_{$attribute->attribute( 'id' )}" );
             $attribute->setContent( $metasKv );
-
         }
         return true;
     }
@@ -296,7 +283,7 @@ class NovaSeoMetasType extends eZDataType
      * Just before store the content , we convert
      *
      * @param eZContentClassAttribute $classAttribute
-     * @param $version
+     * @param mixed                   $version
      */
     function preStoreClassAttribute( $classAttribute, $version )
     {
