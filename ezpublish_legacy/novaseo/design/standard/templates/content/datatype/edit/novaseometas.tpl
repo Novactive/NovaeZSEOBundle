@@ -4,7 +4,7 @@
 {/if}
 
 {def $metas = ezini('Settings', 'Metas', 'novaseo.ini')}
-<div class="block novaseao-metas">
+<div class="block novaseao-metas novaseao-metas-content-edit">
     <div class="">
         <ul>
             {foreach $metas as $key => $meta }

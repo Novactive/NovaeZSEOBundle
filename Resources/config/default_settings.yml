@@ -8,7 +8,25 @@ parameters:
             default_pattern: "<title|name>"
         description:
             label: 'Description'
-            default_pattern: "<description|short_descrition|title|name>"
+            default_pattern: "<short_descrition|description|title|name>"
         keyword:
             label: 'Keywords'
             default_pattern: ~
+        'og:title':
+            label: 'Facebook Title'
+            default_pattern: "<title|name>"
+        'og:description':
+            label: 'Facebook Descrition'
+            default_pattern: "<short_descrition|description|title|name>"
+        'og:image':
+            label: 'Facebook Image'
+            default_pattern: "<image|picture>"
+        'twitter:title':
+            label: 'Twitter Title'
+            default_pattern: "<title|name>"
+        'twitter:description':
+            label: 'Twitter Descrition'
+            default_pattern: "<short_descrition|description|title|name>"
+        'twitter:image':
+            label: 'Twitter Image'
+            default_pattern: "<image|picture>"

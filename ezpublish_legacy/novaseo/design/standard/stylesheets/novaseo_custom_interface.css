@@ -29,22 +29,18 @@
     list-style: none;
 }
 
-.novaseao-metas-view ul li label {
+.novaseao-metas ul li label {
     float: left;
-    width: 10%;
-    padding-top:5px;
+    width: 12%;
+    padding-top:7px;
 }
 
 .novaseao-metas ul li {
     margin-bottom: 15px;
 }
 
-.novaseao-metas-view ul li label {
-    padding:0;
-}
-
 .novaseao-metas ul li input {
-    width: 88%;
+    width: 85%;
     border: 1px solid #F4D8B1;
     padding: 5px;
 }
@@ -58,9 +54,21 @@
 }
 
 .novaseao-metas ul li .default_values label {
-    margin-left: 11%;
+    margin-left: 13%;
     padding: 0;
     width: 100px;
     font-weight: normal;
     font-size: 1em;
+}
+
+
+
+.novaseao-metas-content-view, .novaseao-metas-class-view ul li {
+    margin: 0;
+    clear: both;
+}
+.novaseao-metas-content-view ul li label, .novaseao-metas-class-view ul li label {
+    width: 20%;
+    padding-top: 0;
+    font-weight:normal;
 }
