@@ -14,6 +14,7 @@ use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldDefinition;
 use eZ\Publish\Core\Persistence\Legacy\Content\StorageFieldValue;
 use eZ\Publish\SPI\Persistence\Content\FieldValue;
 use eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition;
+use eZ\Publish\Core\FieldType\FieldSettings;
 
 /**
  * Class Converter
@@ -48,6 +49,7 @@ class Converter implements LegacyConverter
      */
     public function toStorageFieldDefinition( FieldDefinition $fieldDef, StorageFieldDefinition $storageDef )
     {
+        //@todo: Test and create
     }
 
     /**
@@ -58,6 +60,11 @@ class Converter implements LegacyConverter
      */
     public function toFieldDefinition( StorageFieldDefinition $storageDef, FieldDefinition $fieldDef )
     {
+        $fieldDef->fieldTypeConstraints->fieldSettings = new FieldSettings(
+            array(
+                "configuration" => json_decode( $storageDef->dataText5, true )
+            )
+        );
     }
 
     /**

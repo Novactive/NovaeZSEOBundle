@@ -28,13 +28,39 @@
 .novaseao-metas ul li {
     list-style: none;
 }
-.novaseao-metas ul li label {
+
+.novaseao-metas-view ul li label {
     float: left;
     width: 10%;
+    padding-top:5px;
+}
+
+.novaseao-metas ul li {
+    margin-bottom: 15px;
+}
+
+.novaseao-metas-view ul li label {
+    padding:0;
 }
 
 .novaseao-metas ul li input {
     width: 88%;
     border: 1px solid #F4D8B1;
     padding: 5px;
+}
+
+.novaseao-metas ul li .default_values {
+    margin: 0;
+}
+
+.novaseao-metas ul li .default_values li {
+    margin-bottom: 5px;
+}
+
+.novaseao-metas ul li .default_values label {
+    margin-left: 11%;
+    padding: 0;
+    width: 100px;
+    font-weight: normal;
+    font-size: 1em;
 }

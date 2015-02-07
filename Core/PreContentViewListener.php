@@ -101,15 +101,29 @@ class PreContentViewListener
         {
             $metaConfig = $this->configResolver->getParameter( 'fieldtype_metas', 'novae_zseo' );
             $metasFieldValue = $field->value;
+            $contentType = null;
             foreach ( $metasFieldValue->metas as $meta )
             {
                 /** @var Meta $meta */
                 if ( $meta->isEmpty() )
                 {
                     $meta->setContent( $metaConfig[$meta->getName()]['default_pattern'] );
+
+                    // check the Content Type Default Value
+                    $contentType     = $this->eZRepository->getContentTypeService()->loadContentType(
+                        $content->contentInfo->contentTypeId
+                    );
+                    $fieldDefinition = $contentType->getFieldDefinition( $field->fieldDefIdentifier );
+                    $configuration   = $fieldDefinition->getFieldSettings()['configuration'];
+                    // but if we need something is the configuration we take it
+
+                    if ( $configuration[$meta->getName()] )
+                    {
+                        $meta->setContent( $configuration[$meta->getName()] );
+                    }
                 }
 
-                if ( !$this->metaNameSchema->resolveMeta( $meta, $content ) )
+                if ( !$this->metaNameSchema->resolveMeta( $meta, $content, $contentType ) )
                 {
                     $needFallback = true;
                 }

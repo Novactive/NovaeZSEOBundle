@@ -5,7 +5,7 @@
     <div class="">
         <ul>
             {foreach $metas as $key => $meta }
-                <li>
+                <li class="meta">
                     <label for="ContentClass_novaseometas_keyvalue_{$class_attribute.id}">{$meta.label|wash}</label>
                     <input
                             type="text"
@@ -13,6 +13,12 @@
                             name="ContentClass_novaseometas_keyvalue_{$class_attribute.id}[{$key|wash}]"
                             value="{if is_set($class_attribute.content[$key])}{$class_attribute.content[$key]|wash}{/if}"
                             />
+                    <div class="break"></div>
+                    <ul class="default_values">
+                        {if is_set($meta['default_pattern'])}
+                            <li><label>Settings: </label>&nbsp;{$metas[$key].default_pattern|wash}</li>
+                        {/if}
+                    </ul>
                 </li>
             {/foreach}
         </ul>

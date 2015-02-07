@@ -182,19 +182,19 @@ class NovaSeoMetasType extends eZDataType
                         "
             );
             $metas      = [];
-            if ( !$metasArray )
-            {
-                $novaseoIni = eZINI::instance( "novaseo.ini" );
-                $metasConf  = $novaseoIni->variable( "Settings", "Metas" );
-                foreach( $metasConf as $key => $conf )
-                {
-                    $meta = new Meta();
-                    $meta->setName( $key );
-                    $meta->setContent( $conf['default_pattern'] );
-                    $metas[] = $meta;
-                }
-                return new FieldValue( $metas );
-            }
+//            if ( !$metasArray )
+//            {
+//                $novaseoIni = eZINI::instance( "novaseo.ini" );
+//                $metasConf  = $novaseoIni->variable( "Settings", "Metas" );
+//                foreach( $metasConf as $key => $conf )
+//                {
+//                    $meta = new Meta();
+//                    $meta->setName( $key );
+//                    $meta->setContent( $conf['default_pattern'] );
+//                    $metas[] = $meta;
+//                }
+//                return new FieldValue( $metas );
+//            }
 
             foreach ( $metasArray as $row )
             {

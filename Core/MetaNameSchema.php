@@ -60,14 +60,19 @@ class MetaNameSchema extends NameSchemaService
      *
      * @param Meta    $meta
      * @param Content $content
+     * @param ContentType $contentType
      *
      * @return boolean
      */
-    public function resolveMeta( Meta $meta, Content $content )
+    public function resolveMeta( Meta $meta, Content $content, ContentType $contentType = null )
     {
-        $contentType        = $this->repository->getContentTypeService()->loadContentType(
-            $content->contentInfo->contentTypeId
-        );
+        if ( $contentType === null )
+        {
+            $contentType = $this->repository->getContentTypeService()->loadContentType(
+                $content->contentInfo->contentTypeId
+            );
+        }
+
         $resolveMultilingue = $this->resolve(
             $meta->getContent(),
             $contentType,
