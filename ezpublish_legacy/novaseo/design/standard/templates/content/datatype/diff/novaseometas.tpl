@@ -7,7 +7,7 @@
                 <ul>
                     {foreach $metas as $key => $meta }
                         <li>
-                            <label>{$meta.label|wash}:</label>&nbsp;<{$sequenceVar}>{if and(is_set($attr.content.metas),is_set($attr.content.metas[$key]))}{$attr.content.metas[$key].content|wash}{/if}</{$sequenceVar}>
+                            <label><i class="fa fa-{$meta.icon}"></i>{$meta.label|wash}:</label>&nbsp;<{$sequenceVar}>{if and(is_set($attr.content.metas),is_set($attr.content.metas[$key]))}{$attr.content.metas[$key].content|wash}{/if}</{$sequenceVar}>
                         </li>
                     {/foreach}
                 </ul>

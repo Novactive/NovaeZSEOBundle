@@ -9,7 +9,7 @@
         <ul>
             {foreach $metas as $key => $meta }
                 <li class="meta">
-                    <label for="{$attribute_base}_data_novaseometas_{$attribute.contentclass_attribute_identifier}_keyvalue_{$attribute.id}">{$meta.label|wash}</label>
+                    <label for="{$attribute_base}_data_novaseometas_{$attribute.contentclass_attribute_identifier}_keyvalue_{$attribute.id}"><i class="fa fa-{$meta.icon}"></i> {$meta.label|wash}</label>
                     <input
                             type="text"
                             id="{$attribute_base}_data_novaseometas_{$attribute.contentclass_attribute_identifier}_keyvalue_{$attribute.id}"

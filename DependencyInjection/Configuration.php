@@ -37,6 +37,7 @@ class Configuration extends SiteAccessConfiguration
                     ->children()
                         ->scalarNode( 'label' )->isRequired()->end()
                         ->scalarNode( 'default_pattern' )->end()
+                        ->scalarNode( 'icon' )->end()
                     ->end()
                 ->end()
             ->end()

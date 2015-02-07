@@ -6,27 +6,36 @@ parameters:
         title:
             label: 'Title'
             default_pattern: "<title|name>"
+            icon: 'book'
         description:
             label: 'Description'
             default_pattern: "<short_descrition|description|title|name>"
+            icon: 'book'
         keyword:
             label: 'Keywords'
             default_pattern: ~
+            icon: 'tags'
         'og:title':
-            label: 'Facebook Title'
+            label: 'Title'
             default_pattern: "<title|name>"
+            icon: 'facebook-official'
         'og:description':
-            label: 'Facebook Descrition'
+            label: 'Descrition'
             default_pattern: "<short_descrition|description|title|name>"
+            icon: 'facebook-official'
         'og:image':
-            label: 'Facebook Image'
+            label: 'Image'
             default_pattern: "<image|picture>"
+            icon: 'facebook-official'
         'twitter:title':
-            label: 'Twitter Title'
+            label: 'Title'
             default_pattern: "<title|name>"
+            icon: 'twitter-square'
         'twitter:description':
-            label: 'Twitter Descrition'
+            label: 'Descrition'
             default_pattern: "<short_descrition|description|title|name>"
+            icon: 'twitter-square'
         'twitter:image':
-            label: 'Twitter Image'
+            label: 'Image'
             default_pattern: "<image|picture>"
+            icon: 'twitter-square'

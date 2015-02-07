@@ -2,6 +2,14 @@
     border-left: 3px solid #F4D8B1;
 }
 
+
+.novaseao-metas .fa-facebook-official {
+    color:#3C5A98;
+}
+.novaseao-metas .fa-twitter-square {
+    color:#5EA9DD;
+}
+
 .novaseao-metas .handcrafted {
     text-align: right;
 }
@@ -16,7 +24,7 @@
     padding-right: 10px;
 }
 
-.novaseao-metas p.handcrafted .icon {
+.novaseao-metas p.handcrafted .fa {
     color: #F19A22;
     font-weight: bold;
 }
@@ -60,8 +68,6 @@
     font-weight: normal;
     font-size: 1em;
 }
-
-
 
 .novaseao-metas-content-view, .novaseao-metas-class-view ul li {
     margin: 0;

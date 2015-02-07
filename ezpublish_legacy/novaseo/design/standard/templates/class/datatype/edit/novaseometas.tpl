@@ -6,7 +6,7 @@
         <ul>
             {foreach $metas as $key => $meta }
                 <li class="meta">
-                    <label for="ContentClass_novaseometas_keyvalue_{$class_attribute.id}">{$meta.label|wash}</label>
+                    <label for="ContentClass_novaseometas_keyvalue_{$class_attribute.id}"><i class="fa fa-{$meta.icon}"></i> {$meta.label|wash}</label>
                     <input
                             type="text"
                             id="ContentClass_novaseometas_keyvalue_{$class_attribute.id}"

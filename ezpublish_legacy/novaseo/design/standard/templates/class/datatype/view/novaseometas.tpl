@@ -5,7 +5,7 @@
         <ul>
             {foreach $metas as $key => $meta }
                 <li>
-                    <label>{$meta.label|wash}:</label>&nbsp;{if is_set($class_attribute.content[$key])}{$class_attribute.content[$key]|wash}{/if}
+                    <label><i class="fa fa-{$meta.icon}"></i> {$meta.label|wash}:</label>&nbsp;{if is_set($class_attribute.content[$key])}{$class_attribute.content[$key]|wash}{/if}
                 </li>
             {/foreach}
         </ul>
