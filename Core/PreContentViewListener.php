@@ -76,11 +76,10 @@ class PreContentViewListener
                 $this->configResolver->getParameter( "content.tree_root.location_id" )
             );
             $rootContent = $this->eZRepository->getContentService()->loadContentByContentInfo( $rootNode->contentInfo );
-            $rootMetas = $this->getMetas( $rootContent );
-
-            foreach ( $contentMetas as $key => $meta )
+            $rootMetas = $this->getMetas( $rootContent, $fallback, true );
+            foreach ( $contentMetas as $key => $metaContent )
             {
-                $meta->setContent( $meta->isEmpty() ? $rootMetas[$key]->getContent() : $meta->getContent() );
+                $metaContent->setContent( $metaContent->isEmpty() ? $rootMetas[$key]->getContent() : $metaContent->getContent() );
             }
         }
         $contentView->addParameters( [ 'seoMetas' => $contentMetas ] );

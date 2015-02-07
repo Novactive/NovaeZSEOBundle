@@ -85,10 +85,9 @@ class MetaNameSchema extends NameSchemaService
         )
         {
             $meta->setContent( $resolveMultilingue[$this->languages[0]] );
-
             return true;
         }
-
+        $meta->setContent( "" );
         return false;
     }
 
@@ -114,7 +113,7 @@ class MetaNameSchema extends NameSchemaService
                 $fieldType       = $this->repository->getFieldTypeService()->getFieldType(
                     $fieldDefinition->fieldTypeIdentifier
                 );
-
+                // eZ XML Text
                 if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof
                      \eZ\Publish\Core\FieldType\XmlText\Value
                 )
@@ -124,16 +123,46 @@ class MetaNameSchema extends NameSchemaService
                             $this->_html5Converter->convert( $fieldMap[$fieldDefinitionIdentifier][$languageCode]->xml )
                         )
                     );
+                    continue;
                 }
-                else
+
+                //eZ Object Relation
+                if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof
+                     \eZ\Publish\Core\FieldType\Relation\Value
+                )
                 {
-                    $fieldTitles[$fieldDefinitionIdentifier] = $fieldType->getName(
-                        $fieldMap[$fieldDefinitionIdentifier][$languageCode]
-                    );
+                    if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode]->destinationContentId )
+                    {
+                        $relatedContent = $this->repository->getContentService()->loadContent(  $fieldMap[$fieldDefinitionIdentifier][$languageCode]->destinationContentId );
+                        // check only Image here
+                        // @todo: we can do better
+                        if ( $fieldImageValue = $relatedContent->getFieldValue( 'image' ) )
+                        {
+                            $fieldTitles[$fieldDefinitionIdentifier] = $fieldImageValue->uri;
+                            continue;
+                        }
+                    }
+                    $fieldTitles[$fieldDefinitionIdentifier] = '';
+                    continue;
                 }
+
+                // eZ Image
+                if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof
+                     \eZ\Publish\Core\FieldType\Image\Value
+                )
+                {
+                    if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode]->uri )
+                    {
+                        $fieldTitles[$fieldDefinitionIdentifier] = $fieldMap[$fieldDefinitionIdentifier][$languageCode]->uri;
+                        continue;
+                    }
+                }
+
+                $fieldTitles[$fieldDefinitionIdentifier] = $fieldType->getName(
+                    $fieldMap[$fieldDefinitionIdentifier][$languageCode]
+                );
             }
         }
-
         return $fieldTitles;
     }
 }
