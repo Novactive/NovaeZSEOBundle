@@ -197,10 +197,10 @@ class MetaNameSchema extends NameSchemaService
     /**
      * Get the Variation of the Image ( medium )
      *
-     * @param $value
-     * @param $identifier
-     * @param $languageCode
-     * @param $variationName
+     * @param mixed  $value
+     * @param string $identifier
+     * @param string $languageCode
+     * @param string $variationName
      *
      * @return string
      */
