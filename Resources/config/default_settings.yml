@@ -1,6 +1,11 @@
 parameters:
     novae_zseo.default.robots_disallow: ~
     novae_zseo.default.google_verification: ~
+    novae_zseo.default.default_metas:
+        author: "eZ Community Bundle Nova eZ SEO Bundle"
+        copyright: ~
+        generator: "eZ Platform"
+        MSSmartTagsPreventParsing: "TRUE"
     novae_zseo.default.fieldtype_metas_identifier: "metas"
     novae_zseo.default.fieldtype_metas:
         title:

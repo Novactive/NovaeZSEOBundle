@@ -1,3 +1,16 @@
-{% if content is defined and  not ez_is_field_empty( content, fieldtype_metas_identifier ) %}
-    {{ ez_render_field( content, fieldtype_metas_identifier ) }}
+
+{% for name, content in novae_zseo.default_metas %}
+    {% if content is not empty %}
+        <meta name="{{ name }}" content="{{ content }}"/>
+    {% endif %}
+{% endfor %}
+
+{% if content is defined and  not ez_is_field_empty( content, novae_zseo.fieldtype_metas_identifier ) %}
+    {{ ez_render_field( content, novae_zseo.fieldtype_metas_identifier ) }}
 {% endif %}
+
+{% if content is defined and content.contentInfo.mainLocationId %}
+    <link rel="canonical" href="{{ path( 'ez_urlalias', {'locationId': content.contentInfo.mainLocationId} ) }}" />
+{% endif %}
+
+

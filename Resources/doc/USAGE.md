@@ -2,13 +2,29 @@
 
 ## Usage
 
-### FieldType Usage
+### Integration
 
 ```twig
 {% include "NovaeZSEOBundle::seometas_head.html.twig" %}
 ```
 
 > As the FiedType handles the <title>, you need to remove it for your code
+
+### Default Metas Configuration (SiteAccess Aware)
+
+```yml
+novae_zseo:
+    system:
+        default:
+            default_metas:
+                author: "eZ Community Bundle Nova eZ SEO Bundle"
+                copyright: ~
+                generator: "eZ Platform"
+                MSSmartTagsPreventParsing: "TRUE"
+```
+
+> You can add your own Metas here
+
 
 ### FieldType Configuration
 

@@ -167,11 +167,10 @@ class NovaeZSEOExtension extends \Twig_Extension
      */
     public function getGlobals()
     {
-        return [
-            'fieldtype_metas_identifier' => $this->configResolver->getParameter(
-                "fieldtype_metas_identifier",
-                "novae_zseo"
-            )
-        ];
+        $identifier = $this->configResolver->getParameter( "fieldtype_metas_identifier", "novae_zseo" );
+        $metas      = $this->configResolver->getParameter( "default_metas", "novae_zseo" );
+        $novae_zseo = [ "fieldtype_metas_identifier" => $identifier, "default_metas" => $metas ];
+
+        return [ 'novae_zseo' => $novae_zseo ];
     }
 }
