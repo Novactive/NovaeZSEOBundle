@@ -92,14 +92,7 @@ class MetaNameSchema extends NameSchemaService
     }
 
     /**
-     * Override the getFields to avoid the getName truncate in the FieldType
-     *
-     * @param array       $schemaIdentifiers
-     * @param ContentType $contentType
-     * @param array       $fieldMap
-     * @param string      $languageCode
-     *
-     * @return array
+     * {@inheritdoc}
      */
     protected function getFieldTitles( array $schemaIdentifiers, ContentType $contentType, array $fieldMap, $languageCode )
     {

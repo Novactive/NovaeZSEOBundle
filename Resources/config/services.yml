@@ -1,7 +1,7 @@
 parameters:
     novactive.novaseobundle.legacy.configuration.class: Novactive\Bundle\eZSEOBundle\Core\LegacyConfiguration
-    novactive.novaseobundle.pre_content_view_listener.class: Novactive\Bundle\eZSEOBundle\Core\PreContentViewListener
     novactive.novaseobundle.meta_name_schema.class: Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema
+    novactive.novaseobundle.twig_extension.class: Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension
 services:
     novactive.novaseobundle.legacy.configuration:
         class: %novactive.novaseobundle.legacy.configuration.class%
@@ -10,15 +10,16 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    novactive.novaseobundle.pre_content_view_listener:
-        class: %novactive.novaseobundle.pre_content_view_listener.class%
-        arguments: [@ezpublish.api.repository, @novactive.novaseobundle.meta_name_schema,@ezpublish.config.resolver]
-        tags:
-            - {name: kernel.event_listener, event: ezpublish.pre_content_view, method: onPreContentView}
-
     novactive.novaseobundle.meta_name_schema:
         class: %novactive.novaseobundle.meta_name_schema.class%
         arguments: [@ezpublish.api.repository, { 'limit': 400 }]
         calls:
             - [setLanguages, ["$languages$"]]
             - [setHtml5Converter, ["@ezpublish.fieldtype.ezxmltext.converter.html5"]]
+
+    novactive.novaseobundle.twig_extension:
+        class: %novactive.novaseobundle.twig_extension.class%
+        arguments: [@ezpublish.api.repository, @novactive.novaseobundle.meta_name_schema,@ezpublish.config.resolver]
+        public: false
+        tags:
+            - { name: twig.extension }

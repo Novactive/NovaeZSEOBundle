@@ -1,7 +1,7 @@
 parameters:
     novae_zseo.default.robots_disallow: ~
     novae_zseo.default.google_verification: ~
-    fieldtype_metas_identifier: "metas"
+    novae_zseo.default.fieldtype_metas_identifier: "metas"
     novae_zseo.default.fieldtype_metas:
         title:
             label: 'Title'
@@ -9,7 +9,7 @@ parameters:
             icon: 'book'
         description:
             label: 'Description'
-            default_pattern: "<short_descrition|description|title|name>"
+            default_pattern: ~
             icon: 'book'
         keyword:
             label: 'Keywords'
