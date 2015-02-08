@@ -2,7 +2,15 @@
 
 ## Usage
 
-### novaseometas FieldType
+### FieldType Usage
+
+```twig
+{% include "NovaeZSEOBundle::seometas_head.html.twig" %}
+```
+
+> As the FiedType handles the <title>, you need to remove it for your code
+
+### FieldType Configuration
 
 #### Edit configuration (SiteAccess Aware)
 
@@ -41,7 +49,7 @@ Starting from the configuration to the Admin Interface with the Contributor:
 
 Wait, you read 5 !
 
-There is an abstract level based on a feature similar to the Object/Url Name Pattern.
+There is a transversal abstract level based on a feature similar to the Object/Url Name Pattern.
  
 At each level mentioned above, you can set a "defaut_pattern" value.
 
@@ -50,7 +58,9 @@ Depending where you have set this pattern, the system will fallback to the other
 
 That's really powerful, and you can do almost what you want to.
 
-If it's not enought, you can also add a sixth level with Twig manipulation!
+If it's not enough, you can also add a sixth level with Twig manipulation!
+
+> Note you can use a image and and object_relation to an image ( needed for facebook image url for example )
 
 #### Add the FieldType to your Content Type quickly
 
