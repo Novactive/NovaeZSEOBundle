@@ -10,17 +10,19 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core;
 
+use eZ\Publish\API\Repository\Values\Content\Field;
+use eZ\Publish\Core\Repository\Values\Content\VersionInfo;
 use eZ\Publish\Core\Repository\NameSchemaService;
 use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\API\Repository\Values\ContentType\ContentType;
 use eZ\Publish\Core\FieldType\XmlText\Converter\Html5 as Html5Converter;
+use eZ\Publish\SPI\Variation\VariationHandler;
 
 /**
  * Class MetaNameSchema
  */
 class MetaNameSchema extends NameSchemaService
 {
-
     /**
      * Prioritized languages
      *
@@ -34,6 +36,13 @@ class MetaNameSchema extends NameSchemaService
      * @var Html5Converter
      */
     protected $_html5Converter;
+
+    /**
+     * Alias Generator
+     *
+     * @var VariationHandler
+     */
+    protected $_imageVariationService;
 
     /**
      * Set prioritized languages
@@ -53,6 +62,16 @@ class MetaNameSchema extends NameSchemaService
     public function setHtml5Converter( Html5Converter $converter )
     {
         $this->_html5Converter = $converter;
+    }
+
+    /**
+     * Set the Image Variation Service
+     *
+     * @param VariationHandler $handler
+     */
+    public function setImageVariationService( VariationHandler $handler )
+    {
+        $this->_imageVariationService = $handler;
     }
 
     /**
@@ -129,12 +148,19 @@ class MetaNameSchema extends NameSchemaService
                         $relatedContent = $this->repository->getContentService()->loadContent(
                             $fieldMap[$fieldDefinitionIdentifier][$languageCode]->destinationContentId
                         );
-                        // check only Image here
-                        // @todo: we can do better
+                        // @todo: we can probably be better here and handle more than just "image"
                         if ( $fieldImageValue = $relatedContent->getFieldValue( 'image' ) )
                         {
-                            $fieldTitles[$fieldDefinitionIdentifier] = $fieldImageValue->uri;
-                            continue;
+                            if ( $fieldImageValue->uri )
+                            {
+                                $fieldTitles[$fieldDefinitionIdentifier] = $this->getVariation(
+                                    $fieldImageValue,
+                                    "image",
+                                    $languageCode,
+                                    "medium"
+                                );
+                                continue;
+                            }
                         }
                     }
                     $fieldTitles[$fieldDefinitionIdentifier] = '';
@@ -148,9 +174,16 @@ class MetaNameSchema extends NameSchemaService
                 {
                     if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode]->uri )
                     {
-                        $fieldTitles[$fieldDefinitionIdentifier] = $fieldMap[$fieldDefinitionIdentifier][$languageCode]->uri;
+                        $fieldTitles[$fieldDefinitionIdentifier] = $this->getVariation(
+                            $fieldMap[$fieldDefinitionIdentifier][$languageCode],
+                            $fieldDefinitionIdentifier,
+                            $languageCode,
+                            "medium"
+                        );
                         continue;
                     }
+                    $fieldTitles[$fieldDefinitionIdentifier] = '';
+                    continue;
                 }
 
                 $fieldTitles[$fieldDefinitionIdentifier] = $fieldType->getName(
@@ -159,5 +192,30 @@ class MetaNameSchema extends NameSchemaService
             }
         }
         return $fieldTitles;
+    }
+
+    /**
+     * Get the Variation of the Image ( medium )
+     *
+     * @param $value
+     * @param $identifier
+     * @param $languageCode
+     * @param $variationName
+     *
+     * @return string
+     */
+    protected function getVariation( $value, $identifier, $languageCode, $variationName )
+    {
+        // @todo: I don't know how to do differently here...
+        $field     = new Field(
+            [
+                'value'              => $value,
+                'fieldDefIdentifier' => $identifier,
+                'languageCode'       => $languageCode
+            ]
+        );
+        $variation = $this->_imageVariationService->getVariation( $field, new VersionInfo(), $variationName );
+
+        return $variation->uri;
     }
 }

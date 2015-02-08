@@ -10,16 +10,18 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    novactive.novaseobundle.meta_name_schema:
-        class: %novactive.novaseobundle.meta_name_schema.class%
-        arguments: [@ezpublish.api.repository, { 'limit': 400 }]
-        calls:
-            - [setLanguages, ["$languages$"]]
-            - [setHtml5Converter, ["@ezpublish.fieldtype.ezxmltext.converter.html5"]]
-
     novactive.novaseobundle.twig_extension:
         class: %novactive.novaseobundle.twig_extension.class%
         arguments: [@ezpublish.api.repository, @novactive.novaseobundle.meta_name_schema,@ezpublish.config.resolver]
         public: false
         tags:
             - { name: twig.extension }
+
+    novactive.novaseobundle.meta_name_schema:
+        class: %novactive.novaseobundle.meta_name_schema.class%
+        arguments: [@ezpublish.api.repository]
+        calls:
+            - [setLanguages, ["$languages$"]]
+            - [setHtml5Converter, ["@ezpublish.fieldtype.ezxmltext.converter.html5"]]
+            - [setImageVariationService, ["@ezpublish.fieldtype.ezimage.variation_service", @ezpublish.fieldtype.ezimage]]
+
