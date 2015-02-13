@@ -1,4 +1,5 @@
-# Novactive eZ SEO Bundle changelog
+# Changelog
+
 
 ## 0.1
 
