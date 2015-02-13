@@ -7,7 +7,7 @@ Presentation and documentation available here : [http://novactive.github.io/Nova
 
 ## Features
 
-[Usage](Resources/doc/FEATURES.md)
+[Implemented](Resources/doc/FEATURES.md)
 
 ## Usage and installation instructions
 

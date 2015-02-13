@@ -12,4 +12,4 @@
 
 ## Field Type edition
 
-![Nova eZ SEO Field Type](NovaeZSeoFieldType.png "Nova eZ SEO Field Type")
+![Nova eZ SEO Field Type](https://raw.githubusercontent.com/Novactive/NovaeZSEOBundle/master/Resources/doc/NovaeZSeoFieldType.png "Nova eZ SEO Field Type")
