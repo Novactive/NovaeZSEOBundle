@@ -6,6 +6,23 @@ parameters:
         copyright: ~
         generator: "eZ Platform"
         MSSmartTagsPreventParsing: "TRUE"
+    novae_zseo.default.default_links:
+        Index:
+            href: { location_id: 2 }
+            title: 'Home'
+        Top:
+            href: { route : ~ }
+            title: 'Home'
+        Search:
+            href: { legacy_uri: '/content/advancedsearch' }
+            title: 'Search'
+        'Shortcut icon':
+            href: { asset: '/design/standard/images/favicon.ico' }
+            type: 'image/x-icon'
+        Alternate:
+            href: { legacy_uri: '/rss/feed/my_feed' }
+            title: 'RSS'
+            type: 'application/rss+xml'
     novae_zseo.default.fieldtype_metas_identifier: "metas"
     novae_zseo.default.fieldtype_metas:
         title:
@@ -16,10 +33,14 @@ parameters:
             label: 'Description'
             default_pattern: ~
             icon: 'book'
-        keyword:
+        keywords:
             label: 'Keywords'
             default_pattern: ~
             icon: 'tags'
+        'canonical':
+            label: 'External Canonical URL'
+            default_pattern: ~
+            icon: 'link'
         'og:title':
             label: 'Title'
             default_pattern: "<title|name>"

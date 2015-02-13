@@ -1,16 +1,36 @@
 # Novactive eZ SEO Bundle Install
 
-## Usage
+## Description
 
-### Integration
+The main idea of the integration is to avoid you to manage the <meta> and <link> tag.
+If there is a content when the view is rendered the template will take care of the html tags according to the configuration and to the content.
+
+If there is no content and if the content doesn't have the NovaSEO Field Type, the default <meta>, <title> and <link> will be set.
+But you will have to manage yourself. ( we can't do that for you, but we'd simplified the process.
+
+> Note that all the configuration is SiteAccessAware then you can have different one depending on the SiteAccess
+
+## Integration
 
 ```twig
-{% include "NovaeZSEOBundle::seometas_head.html.twig" %}
+# in your pagelayout
+{% block seo_metas %}
+    {% include "NovaeZSEOBundle::seometas_head.html.twig" %}
+{% endblock %}
+    
+# in a template which extends the pagelayout
+{% block seo_metas %}
+    <title>.....</title>
+    <meta name="..." />
+    {{ parent() }}
+{% endblock %}
 ```
 
-> As the FiedType handles the <title>, you need to remove it for your code
+> As this template handles a lot of <meta> and <link> and the <title> tag you have to be careful in your code to avoid duplicate tags.
 
-### Default Metas Configuration (SiteAccess Aware)
+## Configuration
+
+### <meta> Configuration
 
 ```yml
 novae_zseo:
@@ -23,12 +43,37 @@ novae_zseo:
                 MSSmartTagsPreventParsing: "TRUE"
 ```
 
-> You can add your own Metas here
+> You can add your own <meta> here
+
+### <link> Configuration
+
+```yml
+novae_zseo:
+    system:
+        default:
+            default_links:
+                Index:
+                    href: { location_id: 2 }
+                    title: 'Home'
+                Top:
+                    href: { route : 'yourproject_home' }
+                    title: 'Home'
+                Search:
+                    href: { legacy_uri: '/content/advancedsearch' }
+                    title: 'Search'
+                'Shortcut icon':
+                    href: { asset: '/design/standard/images/favicon.ico' }
+                    type: 'image/x-icon'
+                Alternate:
+                    href: { legacy_uri: '/rss/feed/my_feed' }
+                    title: 'RSS'
+                    type: 'application/rss+xml'
+```
+
+> You can add your own <link> here
 
 
 ### FieldType Configuration
-
-#### Edit configuration (SiteAccess Aware)
 
 You can add your Metas in your configuration
 
@@ -50,9 +95,12 @@ novae_zseo:
 
 ```
 
-This configuration defines 3 metas by default, _title_, _description_ and _keyword_
+This configuration defines 3 metas, _title_, _description_ and _keyword_
 
 > You can add what you want to here.
+
+
+## How it works
 
 There are 5 levels of fallback which allow you to set the good value for the metas.
 
@@ -65,9 +113,9 @@ Starting from the configuration to the Admin Interface with the Contributor:
 
 Wait, you read 5 !
 
-There is a transversal abstract level based on a feature similar to the Object/Url Name Pattern.
+There is a transverse abstract level based on a feature similar to the Object/Url Name Pattern.
  
-At each level mentioned above, you can set a "defaut_pattern" value.
+At each level mentioned above, you can set a "default_pattern" value.
 
 This pattern allows you to define a fallback on optional Field, "<title|name>" means it will try to take the title Field, if it finds nothing it will try the name.
 Depending where you have set this pattern, the system will fallback to the other level
@@ -78,7 +126,7 @@ If it's not enough, you can also add a sixth level with Twig manipulation!
 
 > Note you can use a image and and object_relation to an image ( needed for facebook image url for example )
 
-#### Add the FieldType to your Content Type quickly
+## Add the FieldType to your Content Type quickly
 
 A command is provided to simply add the FieldType, you can always do it by the Administration Inferface
 
@@ -102,7 +150,7 @@ Help:
      - Category will be: SEO
 ```
 
-### Google Site Verification file
+## Google Site Verification file
 
 You can manage the Google Verification file in the configuration
 
@@ -116,7 +164,7 @@ novae_zseo:
 > Simpler way, nothing to put on your server, no need to add a new RewriteRules
 
 
-### Robots.txt file
+## Robots.txt file
 
 You can manage the Robots.txt file
 

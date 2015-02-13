@@ -75,6 +75,16 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
                     $currentScope,
                     $scopeSettings['robots_disallow']
                 );
+                $contextualizer->setContextualParameter(
+                    'default_metas',
+                    $currentScope,
+                    $scopeSettings['default_metas']
+                );
+                $contextualizer->setContextualParameter(
+                    'default_links',
+                    $currentScope,
+                    $scopeSettings['default_links']
+                );
             }
         );
     }
