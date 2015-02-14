@@ -13,3 +13,15 @@
         <link rel="{{ rel }}"{% if attrs.type is defined %} type="{{ attrs.type }}"{% endif %}{% if attrs.title is defined %} title="{{ attrs.title }}"{% endif %}{% if href.location_id is defined %} href="{{ path( 'ez_urlalias', {'locationId': href.location_id } ) }}"{% endif %}{% if href.route is defined %} href="{{ path( href.route ) }}"{% endif %}{% if href.legacy_uri is defined %} href="{{ path( 'ez_legacy', {'module_uri': href.legacy_uri } ) }}"{% endif %}{% if href.asset is defined %} href="{{ asset( href.asset ) }}"{% endif %} />
     {% endif %}
 {% endfor %}
+
+{% for lang in ezpublish.availableLanguages %}
+    {% if location is defined %}
+        <link rel="alternate" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( location, {"siteaccess": ezpublish.translationSiteAccess( lang ) } ) }}" />
+    {% else %}
+        {% set route = ez_route( params={"language": lang} ) %}
+        {# we can't do the diff with 404 #}
+        {% if route.route != "ez_legacy" %}
+            <link rel="alternate" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( route ) }}" />
+        {% endif %}
+    {% endif %}
+{% endfor %}

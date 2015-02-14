@@ -12,7 +12,7 @@ services:
 
     novactive.novaseobundle.twig_extension:
         class: %novactive.novaseobundle.twig_extension.class%
-        arguments: [@ezpublish.api.repository, @novactive.novaseobundle.meta_name_schema,@ezpublish.config.resolver]
+        arguments: [@ezpublish.api.repository, @novactive.novaseobundle.meta_name_schema,@ezpublish.config.resolver, @ezpublish.locale.converter]
         public: false
         tags:
             - { name: twig.extension }

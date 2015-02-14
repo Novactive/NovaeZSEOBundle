@@ -19,6 +19,8 @@ use Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 use eZ\Publish\API\Repository\Values\Content\ContentInfo;
 use eZ\Publish\API\Repository\Values\Content\Field;
+use eZ\Publish\Core\MVC\Symfony\Locale\LocaleConverter;
+
 /**
  * Class NovaeZSEOExtension
  */
@@ -46,17 +48,30 @@ class NovaeZSEOExtension extends \Twig_Extension
     protected $eZRepository;
 
     /**
+     * Locale Converter
+     *
+     * @var LocaleConverter
+     */
+    protected $localeConverter;
+
+    /**
      * Constructor
      *
      * @param Repository              $repository
      * @param MetaNameSchema          $nameSchema
      * @param ConfigResolverInterface $configResolver
+     * @param LocaleConverter         $localeConverter
      */
-    public function __construct( Repository $repository, MetaNameSchema $nameSchema, ConfigResolverInterface $configResolver )
-    {
+    public function __construct(
+        Repository $repository,
+        MetaNameSchema $nameSchema,
+        ConfigResolverInterface $configResolver,
+        LocaleConverter $localeConverter
+    ) {
         $this->metaNameSchema  = $nameSchema;
-        $this->eZRepository = $repository;
-        $this->configResolver = $configResolver;
+        $this->eZRepository    = $repository;
+        $this->configResolver  = $configResolver;
+        $this->localeConverter = $localeConverter;
     }
 
     /**
@@ -66,7 +81,20 @@ class NovaeZSEOExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFilter( 'compute_novaseometas', [ $this, 'computeMetas' ] ),
+            new \Twig_SimpleFilter( 'getposixlocale_novaseometas', [ $this, 'getPosixLocale' ] )
         ];
+    }
+
+    /**
+     * Get PosixLocale
+     *
+     * @param $eZLocale
+     *
+     * @return null|string
+     */
+    public function getPosixLocale( $eZLocale )
+    {
+        return $this->localeConverter->convertToPOSIX( $eZLocale );
     }
 
     /**
@@ -99,7 +127,10 @@ class NovaeZSEOExtension extends \Twig_Extension
             $rootMetas = $this->innerComputeMetas( $rootContent, $metasIdentifier, $rootContentType, $fallback );
             foreach ( $contentMetas as $key => $metaContent )
             {
-                $metaContent->setContent( $metaContent->isEmpty() ? $rootMetas[$key]->getContent() : $metaContent->getContent() );
+                if ( array_key_exists( $key, $rootMetas ) )
+                {
+                    $metaContent->setContent( $metaContent->isEmpty() ? $rootMetas[$key]->getContent() : $metaContent->getContent() );
+                }
             }
         }
         return '';
