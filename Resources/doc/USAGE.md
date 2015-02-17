@@ -21,7 +21,7 @@ But you will have to manage yourself. ( we can't do that for you, but we'd simpl
     {% include "NovaeZSEOBundle::seometas_head.html.twig" %}
 {% endblock %}
     
-# in a template which extends the pagelayout
+# in a template which extends the pagelayout (not required, useful when you want to do something special)
 {% block seo_metas %}
     <title>.....</title>
     <meta name="..." />
@@ -163,6 +163,13 @@ Help:
      - Name will be: Metas
      - Category will be: SEO
 ```
+
+
+
+## sitemap.xml
+
+Your sitemap is automatically generated, it takes
+
 
 
 

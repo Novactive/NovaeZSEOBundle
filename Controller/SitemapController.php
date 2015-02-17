@@ -33,7 +33,6 @@ class SitemapController extends Controller
      * @Route("/sitemap.xml")
      * @Method("GET")
      *
-     * @throws NotFoundHttpException
      * @return Response
      */
     public function sitemapAction()

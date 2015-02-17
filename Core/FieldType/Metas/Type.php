@@ -167,7 +167,7 @@ class Type extends FieldType
             /** @var Meta $meta */
             $hash[] = array(
                 "meta_name"  => $meta->getName(),
-                "meta_value" => $meta->getContent(),
+                "meta_content" => $meta->getContent(),
             );
         }
 

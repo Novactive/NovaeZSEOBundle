@@ -32,6 +32,18 @@ class Meta
     protected $content;
 
     /**
+     * Constructor
+     *
+     * @param string $name
+     * @param string $content
+     */
+    public function __construct( $name = null, $content = null )
+    {
+        $this->name    = ( $name !== null ) ? $name : null;
+        $this->content = ( $content !== null ) ? $content : null;
+    }
+
+    /**
      * Get the Name
      *
      * @return string

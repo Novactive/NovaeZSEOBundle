@@ -67,7 +67,8 @@ class NovaeZSEOExtension extends \Twig_Extension
         MetaNameSchema $nameSchema,
         ConfigResolverInterface $configResolver,
         LocaleConverter $localeConverter
-    ) {
+    )
+    {
         $this->metaNameSchema  = $nameSchema;
         $this->eZRepository    = $repository;
         $this->configResolver  = $configResolver;
@@ -88,7 +89,7 @@ class NovaeZSEOExtension extends \Twig_Extension
     /**
      * Get PosixLocale
      *
-     * @param $eZLocale
+     * @param string $eZLocale
      *
      * @return null|string
      */

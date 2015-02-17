@@ -15,7 +15,7 @@
 Add the following to your composer.json and run `php composer.phar update novactive/ezseobundle` to refresh dependencies:
 
 ```json
-#composer.json
+# composer.json
 
 "require": {
     "novactive/ezseobundle": "dev-master",
@@ -28,6 +28,8 @@ Add the following to your composer.json and run `php composer.phar update novact
 Activate the bundle in `ezpublish\EzPublishKernel.php` file.
 
 ```php
+// ezpublish\EzPublishKernel.php
+
 public function registerBundles()
 {
    ...
