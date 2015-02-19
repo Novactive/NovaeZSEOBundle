@@ -9,7 +9,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
     <link rel="stylesheet" href="css/reveal.css">
-    <link rel="stylesheet" href="css/theme/night.css" id="theme">
+    <link rel="stylesheet" href="css/style.css" id="theme">
+    <link rel="stylesheet" href="fonts/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="lib/css/zenburn.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <!--[if lt IE 9]>
@@ -21,44 +22,67 @@
 <pre style="display:none;"><code></code></pre>
 <div class="reveal">
     <div class="slides">
-        <section>
-            <h1>Nova SEO Bundle<br />eZ&nbsp;Platform 5.x</h1>
+        <span class="raster"></span>
+        <section data-background="images/background/home1.png">
+            <img class="logo-img" alt="novactive." src="images/logo_novactive-minded-us-blanc-stripped-200x@2x.png"/>
+            <h1>Nova SEO Bundle eZ Platform 5.x</h1>
             <h3>Optimized SEO management for eZ</h3>
-            <p><small>Designed by <a href="http://www.novactive.us" target="_blank">Novactive</a> in California</small></p>
+            <p class="small">Designed by <a href="http://www.novactive.us" target="_blank">Novactive</a> in California</p>
         </section>
-        <section>
+        <section data-transition="zoom" data-background="images/background/home2.jpg">
             <h2>What is it ?</h2>
             <p>Novactive eZ SEO Bundle is an eZ Publish 5 bundle for SEO management simplifications.</p>
         </section>
-        <section data-markdown="http://www.novactive.us/github/Novactive/NovaeZSEOBundle/master/Resources/doc/FEATURES.md"
+        <section data-background="images/background/home3.png"
+                 data-markdown="http://www.novactive.us/github/Novactive/NovaeZSEOBundle/master/Resources/doc/FEATURES.md"
                  data-separator="^\n\n\n"
                  data-separator-vertical="^\n\n"
                  data-charset="utf-8">
         </section>
-        <section data-markdown="http://www.novactive.us/github/Novactive/NovaeZSEOBundle/master/Resources/doc/INSTALL.md"
+        <section data-background="images/background/home4.jpg"
+                 data-markdown="http://www.novactive.us/github/Novactive/NovaeZSEOBundle/master/Resources/doc/INSTALL.md"
                  data-separator="^\n\n\n"
                  data-separator-vertical="^\n\n"
                  data-charset="utf-8">
         </section>
-        <section data-markdown="http://www.novactive.us/github/Novactive/NovaeZSEOBundle/master/Resources/doc/USAGE.md"
+        <section data-background="images/background/home5.jpg"
+                 data-markdown="http://www.novactive.us/github/Novactive/NovaeZSEOBundle/master/Resources/doc/USAGE.md"
                  data-separator="^\n\n\n"
                  data-separator-vertical="^\n\n"
                  data-charset="utf-8">
         </section>
 
-        <section data-markdown="http://www.novactive.us/github/Novactive/NovaeZSEOBundle/master/Resources/doc/CHANGELOG.md"
+        <section data-background="images/background/home6.jpg"
+                 data-markdown="http://www.novactive.us/github/Novactive/NovaeZSEOBundle/master/Resources/doc/CHANGELOG.md"
                  data-separator="^\n\n\n"
                  data-separator-vertical="^\n\n"
                  data-charset="utf-8">
         </section>
-        <section>
+        <section data-transition="zoom" data-background="images/background/home15.png">
             <h2>Support</h2>
-            <p>MIT LICENSED</p>
-            <p><a href="mailto:novaseobundle@novactive.com">novaseobundle@novactive.com</a></p>
-            <p>Copyright 2015 Novactive</p>
+            <p class="description">MIT LICENSED</p>
+            <p class="description">
+                <a href="mailto:novaseobundle@novactive.com">novaseobundle@novactive.com</a>
+            </p>
+            <p class="description">Copyright 2015 Novactive</p>
         </section>
     </div>
 </div>
+<footer id="novactive-footer">
+    <span class="logo">novactive.</span>
+    <span><i class="fa fa-home"></i> 645 Harrison St #200 San Francisco, CA 94107, United States</span>
+    <span><i class="fa fa-phone"></i> 415 481 5427 </span>
+    <span><i class="fa fa-hand-o-up"></i><a href="http://www.novactive.us">www.novactive.us</a></span>
+    <span><i class="fa fa-paper-plane"></i><a href="mailto:contact-us@novactive.com">contact-us [at] novactive [dot]
+        com</a></span>
+</footer>
+<div id="novactive-coin"><img class="novactive-coin" width="75" alt="n." src="images/n.png"/></div>
+<div id="novactive-coin-header">
+    <div class="header-icon">
+        <a href="#"><i class="fa fa-2x fa-share-alt"></i></a><a href="#"><i class="fa fa-2x fa-globe"></i></a>
+    </div>
+</div>
+
 <script src="lib/js/head.min.js"></script>
 <script src="js/reveal.js"></script>
 <script>
@@ -69,7 +93,7 @@
         progress: true,
         history: true,
         center: true,
-        transition: 'convex', // none/fade/slide/convex/concave/zoom
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
         // Optional reveal.js plugins
         dependencies: [
             {
