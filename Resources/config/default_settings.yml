@@ -10,9 +10,9 @@ parameters:
         Index:
             href: { location_id: 2 }
             title: 'Home'
-        Top:
-            href: { route : ~ }
-            title: 'Home'
+#        Top:
+#            href: { route : 'route_name' }
+#            title: 'Home'
         Search:
             href: { legacy_uri: '/content/advancedsearch' }
             title: 'Search'
