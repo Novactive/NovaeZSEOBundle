@@ -65,19 +65,18 @@ ul li {
     margin-top: 25px;
 }
 
-ul li:first-child,
 
 section p img {
-    width:50%;
+width:50%;
 }
 
+ul li:first-child,
 section img
 {
     margin-top: 35px; 
 }
 
-ul li strong,
-.mot-clef
+ul li strong, p strong, .mot-clef
 {
     color: #F7921E;
     font-weight: 400;
@@ -198,6 +197,11 @@ a
 .logo-img
 {
     width: 260px;
+}
+#socialbuttons {
+    display: block;
+    float: right;
+    padding-top: 5px;
 }
 
 #novactive-footer {

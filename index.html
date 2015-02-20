@@ -51,7 +51,6 @@
                  data-separator-vertical="^\n\n"
                  data-charset="utf-8">
         </section>
-
         <section data-background="images/background/home6.jpg"
                  data-markdown="http://www.novactive.us/github/Novactive/NovaeZSEOBundle/master/Resources/doc/CHANGELOG.md"
                  data-separator="^\n\n\n"
@@ -73,13 +72,19 @@
     <span><i class="fa fa-home"></i> 645 Harrison St #200 San Francisco, CA 94107, United States</span>
     <span><i class="fa fa-phone"></i> 415 481 5427 </span>
     <span><i class="fa fa-hand-o-up"></i><a href="http://www.novactive.us">www.novactive.us</a></span>
-    <span><i class="fa fa-paper-plane"></i><a href="mailto:contact-us@novactive.com">contact-us [at] novactive [dot]
-        com</a></span>
+    <span><i class="fa fa-paper-plane"></i><a href="mailto:contact-us@novactive.com">contact-us [at] novactive [dot] com</a></span>
+    <div id="socialbuttons">
+        <div class="fb-like" data-href="http://novactive.github.io/NovaeZSEOBundle" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
+        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://git.io/AsEM" data-text="#novactive SEO Bundle for eZ">Tweet</a>
+        <div class="g-plusone" data-size="medium" data-annotation="inline" data-width="300" data-href="http://novactive.github.io/NovaeZSEOBundle"></div>
+    </div>
 </footer>
 <div id="novactive-coin"><img class="novactive-coin" width="75" alt="n." src="images/n.png"/></div>
 <div id="novactive-coin-header">
     <div class="header-icon">
-        <a href="#"><i class="fa fa-2x fa-share-alt"></i></a><a href="#"><i class="fa fa-2x fa-globe"></i></a>
+        <a href="#"><i class="fa fa-2x fa-home"></i></a>
+        <a href="https://github.com/Novactive/NovaeZSEOBundle" target="_blank"><i class="fa fa-2x fa-github"></i></a>
+        <a data-icon="octicon-cloud-download" href="https://github.com/Novactive/NovaeZSEOBundle/archive/master.zip" class="github-button">Download</a>
     </div>
 </div>
 
@@ -130,5 +135,17 @@
     ga('create', 'UA-53115309-2', 'auto');
     ga('send', 'pageview');
 </script>
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<!-- Place this tag right after the last button or just before your close body tag. -->
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>
