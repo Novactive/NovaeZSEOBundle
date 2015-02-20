@@ -46,6 +46,19 @@ class Configuration extends SiteAccessConfiguration
                     ->prototype( 'scalar' )
                 ->end()
             ->end()
+            ->arrayNode( 'sitemap_excludes' )
+                ->children()
+                    ->arrayNode('locations')
+                        ->prototype( "variable" )->end()
+                    ->end()
+                    ->arrayNode('subtrees')
+                        ->prototype( "variable" )->end()
+                    ->end()
+                    ->arrayNode('contentTypeIdentifiers')
+                        ->prototype( "variable" )->end()
+                    ->end()
+                ->end()
+            ->end()
             ->arrayNode( 'default_links' )
                 ->prototype( 'array' )
                     ->children()
@@ -64,7 +77,7 @@ class Configuration extends SiteAccessConfiguration
             ->end()
             ->arrayNode( 'robots_disallow' )
                 ->prototype( 'scalar' )
-                ->end()
+            ->end()
             ->end();
         return $treeBuilder;
     }

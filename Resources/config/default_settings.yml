@@ -1,6 +1,10 @@
 parameters:
-    novae_zseo.default.robots_disallow: ~
+    novae_zseo.default.robots_disallow: []
     novae_zseo.default.google_verification: ~
+    novae_zseo.default.sitemap_excludes:
+        locations: []
+        subtrees: []
+        contentTypeIdentifiers: ['plopix']
     novae_zseo.default.default_metas:
         author: "eZ Community Bundle Nova eZ SEO Bundle"
         copyright: ~

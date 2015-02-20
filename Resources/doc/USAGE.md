@@ -1,13 +1,12 @@
-# Usage
+# <i class="fa fa-3x fa-rocket"></i><br /> Usage
 
 
 ## Description
 
-The main idea of the integration is to avoid you to manage the &lt;meta&gt; and &lt;link&gt; tag.
+The main idea is to avoid you to manage the **&lt;meta&gt;** and **&lt;link&gt;** tag.
+If there is a content when the view is rendered then the template will take care of the html tags according to the configuration and to the content.
 
-If there is a content when the view is rendered the template will take care of the html tags according to the configuration and to the content.
-
-If there is no content and if the content doesn't have the NovaSEO Field Type, the default &lt;meta&gt;, &lt;title&gt; and &lt;link&gt; will be set.
+If there is no content and if the content doesn't have the NovaSEO Field Type, the default **&lt;meta&gt;**, **&lt;title&gt;** and **&lt;link&gt;** will be set.
 But you will have to manage yourself. ( we can't do that for you, but we'd simplified the process.
 
 > All the configuration is SiteAccessAware then you can have different one depending on the SiteAccess
@@ -32,7 +31,7 @@ But you will have to manage yourself. ( we can't do that for you, but we'd simpl
 > As this template handles a lot of &lt;meta&gt; and &lt;link&gt; and the &lt;title&gt; tag you have to be careful in your code to avoid duplicate tags.
 
 
-## Configuration
+## <i class="fa fa-3x fa-wrench"></i><br /> Configuration
 
 
 ### &lt;meta&gt; Configuration
@@ -106,15 +105,63 @@ This configuration defines 3 metas, _title_, _description_ and _keyword_
 > You can add what you want to here.
 
 
+## <i class="fa fa-3x fa-file"></i><br /> sitemap.xml
 
-## How it works
+Your sitemap is automatically generated on the fly.
+
+```yml
+novae_zseo:
+    system:
+        default:
+            sitemap_excludes:
+                locations: [2]
+                subtrees: [45,89,343]
+                contentTypeIdentifiers: ['footer','something']
+```
+
+> It could be a performance issue, we plan to add a better way to do that soon on this extension
+
+
+## Google Site Verification file
+
+You can manage the Google Verification file in the configuration
+
+```yml
+novae_zseo:
+    system:
+        default:
+            google_verification: 1234567890
+```
+
+> Simpler way, nothing to put on your server, no need to add a new RewriteRules
+
+
+## Robots.txt file
+
+You can manage the Robots.txt file
+
+```yml
+novae_zseo:
+    system:
+        default:
+            google_verification: 1234567890
+            robots_disallow:
+                - "/admin"
+                - "/specials"
+```
+
+> Nothing to put on your server, no need to add a new RewriteRules, and there is also a security, the Disallow / is automatically set when you're not in "prod" mode.
+
+
+
+## How the Field Type works
 
 There are 5 levels of fallback which allow you to set the good value for the metas.
 
-- in configuration (Yaml only)
-- in the Field Type Definition (Administration Interface, on the Content Type)
-- in the Content  (Administration Interface, on the Content)
-- Plus: same 3 previous rules but on the Root Content
+- 1: in configuration (Yaml only)
+- 2: in the Field Type Definition (Administration Interface, on the Content Type)
+- 3: in the Content  (Administration Interface, on the Content)
+- 4: Plus: same 3 previous rules but on the Root Content
 
 
 Wait, you read 5 !
@@ -122,7 +169,7 @@ Wait, you read 5 !
 There is a transverse abstract level based on a feature similar to the Object/Url Name Pattern.
 
 
-### Object Pattern like feature
+### <i class="fa fa-3x fa-magic"></i><br /> Object Pattern like feature
 
 At each level mentioned above, you can set a **default_pattern** value.
 
@@ -163,43 +210,3 @@ Help:
      - Name will be: Metas
      - Category will be: SEO
 ```
-
-
-
-## sitemap.xml
-
-Your sitemap is automatically generated, it takes
-
-
-
-
-## Google Site Verification file
-
-You can manage the Google Verification file in the configuration
-
-```yml
-novae_zseo:
-    system:
-        default:
-            google_verification: 1234567890
-```
-
-> Simpler way, nothing to put on your server, no need to add a new RewriteRules
-
-
-
-## Robots.txt file
-
-You can manage the Robots.txt file
-
-```yml
-novae_zseo:
-    system:
-        default:
-            google_verification: 1234567890
-            robots_disallow:
-                - "/admin"
-                - "/specials"
-```
-
-> Nothing to put on your server, no need to add a new RewriteRules, and there is also a security, the Disallow / is automatically set when you're not in "prod" mode.

@@ -1,4 +1,4 @@
-# Install
+# <i class="fa fa-3x fa-cogs"></i><br /> Install
 
 
 ## Requirements
@@ -7,7 +7,7 @@
 * PHP 5.4+
 
 
-## Installation steps
+## <i class="fa fa-3x fa-spinner"></i><br /> Installation steps
 
 
 ### Use Composer

@@ -39,7 +39,7 @@ class SEOController extends Controller
         {
             $robots[] = "Disallow: /";
         }
-        $rules = $this->getConfigResolver( 'robots_disallow', 'novae_zseo' );
+        $rules = $this->getConfigResolver()->getParameter( 'robots_disallow', 'novae_zseo' );
         if ( is_array( $rules ) )
         {
             foreach ( $rules as $rule )
@@ -63,7 +63,7 @@ class SEOController extends Controller
      */
     public function googleVerifAction( $key )
     {
-        if ( $this->getConfigResolver( 'google_verification', 'novae_zseo' ) != $key )
+        if ( $this->getConfigResolver()->getParameter( 'google_verification', 'novae_zseo' ) != $key )
         {
             throw new NotFoundHttpException( "Google Verification Key not found" );
         }

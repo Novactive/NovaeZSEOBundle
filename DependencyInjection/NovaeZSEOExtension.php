@@ -43,7 +43,7 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
     public function load( array $configs, ContainerBuilder $container )
     {
         $configuration = new Configuration();
-        $config = $this->processConfiguration( $configuration, $configs );
+        $config        = $this->processConfiguration( $configuration, $configs );
 
         $loader = new Loader\YamlFileLoader( $container, new FileLocator( __DIR__ . '/../Resources/config' ) );
         $loader->load( 'services.yml' );
@@ -51,41 +51,13 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
         $loader->load( 'default_settings.yml' );
 
         $processor = new ConfigurationProcessor( $container, 'novae_zseo' );
-        $processor->mapConfig(
-            $config,
-            function ( $scopeSettings, $currentScope, ContextualizerInterface $contextualizer )
-            {
-                $contextualizer->setContextualParameter(
-                    'fieldtype_metas_identifier',
-                    $currentScope,
-                    $scopeSettings['fieldtype_metas_identifier']
-                );
-                $contextualizer->setContextualParameter(
-                    'fieldtype_metas',
-                    $currentScope,
-                    $scopeSettings['fieldtype_metas']
-                );
-                $contextualizer->setContextualParameter(
-                    'google_verification',
-                    $currentScope,
-                    $scopeSettings['google_verification']
-                );
-                $contextualizer->setContextualParameter(
-                    'robots_disallow',
-                    $currentScope,
-                    $scopeSettings['robots_disallow']
-                );
-                $contextualizer->setContextualParameter(
-                    'default_metas',
-                    $currentScope,
-                    $scopeSettings['default_metas']
-                );
-                $contextualizer->setContextualParameter(
-                    'default_links',
-                    $currentScope,
-                    $scopeSettings['default_links']
-                );
-            }
-        );
+        $processor->mapSetting( 'fieldtype_metas_identifier', $config );
+        $processor->mapSetting( 'fieldtype_metas', $config );
+        $processor->mapSetting( 'google_verification', $config );
+        $processor->mapConfigArray( 'fieldtype_metas', $config, ContextualizerInterface::MERGE_FROM_SECOND_LEVEL );
+        $processor->mapConfigArray( 'default_metas', $config );
+        $processor->mapConfigArray( 'default_links', $config );
+        $processor->mapConfigArray( 'sitemap_excludes', $config, ContextualizerInterface::MERGE_FROM_SECOND_LEVEL );
+        $processor->mapConfigArray( 'robots_disallow', $config );
     }
 }
