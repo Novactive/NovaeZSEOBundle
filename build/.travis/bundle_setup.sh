@@ -29,9 +29,9 @@ _novaseoRoutes:
 
 # Install the legacy extension
 php ezpublish/console ezpublish:legacybundles:install_extensions
-cd ezpublish_legacy
+cd ${TRAVIS_BUILD_DIR}/ezpublish_legacy
 php bin/php/ezpgenerateautoloads.php -e
-cd ..
+cd ${TRAVIS_BUILD_DIR}
 
 # Create bundle table
 mysql -u root behattestdb < ${TRAVIS_BUILD_DIR}/${NOVABUNDLE_PATH}/Resources/sql/shema.sql
