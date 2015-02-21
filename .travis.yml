@@ -1,0 +1,39 @@
+language: php
+
+php:
+  - 5.4
+
+env:
+    # test demo with content
+  - INSTALL="demoContentNonUniqueDB" PROFILE="demo" TEST="content"
+
+branches:
+  only:
+    - feature-continuous-integration
+
+before_install:
+  - export BRANCH_BUILD_DIR=$TRAVIS_BUILD_DIR
+  - export TRAVIS_BUILD_DIR="$HOME/build/ezpublish-community"
+  - export NOVABUNDLE_PATH="vendor/novactive/ezseobundle/Novactive/Bundle/eZSEOBundle"
+  - cd "$HOME/build"
+  - git clone --depth 1 --single-branch --branch master https://github.com/ezsystems/ezpublish-community.git
+  - cd ezpublish-community
+  - ./bin/.travis/prepare_system.sh
+  - ./bin/.travis/prepare_sahi.sh
+
+before_script:
+  - ./bin/.travis/prepare_ezpublish.sh
+  - mv "$BRANCH_BUILD_DIR" "$NOVABUNDLE_PATH"
+  # Prepare contents : add attribute, include template in pagelayout, remove useless rewrite rule, load bundle, install dependencies
+  - ./"$NOVABUNDLE_PATH"/build/.travis/bundle_setup.sh
+  - php ezpublish/console assetic:dump --env=behat --no-debug
+
+script:
+  - ./bin/phpcs --standard=vendor/novactive/phpcs-novastandards/src/NovaEZ vendor/novactive/ezseobundle
+  - ./bin/phpmd vendor/novactive/ezseobundle xml cleancode,codesize,controversial,design,naming,unusedcode
+  - ./bin/phpcpd vendor/novactive/ezseobundle
+  - ./bin/behat -c "$NOVABUNDLE_PATH"/behat.yml.dist -vv --profile travis
+
+# reduce depth (history) of git checkout
+git:
+  depth: 30
