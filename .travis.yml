@@ -23,7 +23,9 @@ before_install:
 
 before_script:
   - ./bin/.travis/prepare_ezpublish.sh
+  - mkdir -p "$NOVABUNDLE_PATH"
   - mv "$BRANCH_BUILD_DIR" "$NOVABUNDLE_PATH"
+  - composer dump-autoload
   # Prepare contents : add attribute, include template in pagelayout, remove useless rewrite rule, load bundle, install dependencies
   - ./"$NOVABUNDLE_PATH"/build/.travis/bundle_setup.sh
   - php ezpublish/console assetic:dump --env=behat --no-debug
