@@ -23,11 +23,6 @@ before_install:
 
 before_script:
   - ./bin/.travis/prepare_ezpublish.sh
-  - mkdir -p "$NOVABUNDLE_PATH"
-  - rm -rf "$NOVABUNDLE_PATH"
-  - mv "$BRANCH_BUILD_DIR" "$NOVABUNDLE_PATH"
-  - composer dump-autoload
-  # Prepare contents : add attribute, include template in pagelayout, remove useless rewrite rule, load bundle, install dependencies
   - ./"$NOVABUNDLE_PATH"/build/.travis/bundle_setup.sh
   - php ezpublish/console assetic:dump --env=behat --no-debug
 
@@ -35,7 +30,7 @@ script:
   - ./bin/phpcs --standard=vendor/novactive/phpcs-novastandards/src/NovaEZ vendor/novactive/ezseobundle
   - ./bin/phpmd vendor/novactive/ezseobundle xml cleancode,codesize,controversial,design,naming,unusedcode
   - ./bin/phpcpd vendor/novactive/ezseobundle
-  - ./bin/behat -c "$NOVABUNDLE_PATH"/behat.yml.dist -vv --profile travis
+#  - ./bin/behat -c "$NOVABUNDLE_PATH"/behat.yml.dist -vv --profile travis
 
 # reduce depth (history) of git checkout
 git:

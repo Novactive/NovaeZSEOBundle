@@ -13,13 +13,23 @@
 # This script helps you setup your CI environment to run tests
 #################################################################
 
-# Install composer dependencies for the bundle
-composer require novactive/phpcs-novastandards 
 
-# Enable bundle
+echo "> Install bundle sources"
+mkdir -p "$NOVABUNDLE_PATH"
+rm -rf "$NOVABUNDLE_PATH"
+mv "$BRANCH_BUILD_DIR" "$NOVABUNDLE_PATH"
+
+
+echo "> Install bundle dependencies"
+composer require novactive/phpcs-novastandards 
+composer dump-autoload
+
+
+echo "> Enable bundle"
 sed -i.bak 's#new EzPublishLegacyBundle(),#new EzPublishLegacyBundle(),\n            new Novactive\Bundle\eZSEOBundle\NovaeZSEOBundle(),#g' ${TRAVIS_BUILD_DIR}/ezpublish/EzPublishKernel.php
 
-# Enable custom route
+
+echo "> Add bundle route"
 echo '
 _novaseoRoutes:
     resource: "@NovaeZSEOBundle/Controller/"
@@ -27,14 +37,18 @@ _novaseoRoutes:
             prefix:   /
 ' >> ${TRAVIS_BUILD_DIR}/ezpublish/config/routing.yml
 
-# Install the legacy extension
+
+echo "> Install bundle legacy extension"
 php ezpublish/console ezpublish:legacy:install_extensions
 cd ${TRAVIS_BUILD_DIR}/ezpublish_legacy
 php bin/php/ezpgenerateautoloads.php -e
 cd ${TRAVIS_BUILD_DIR}
 
-# Create bundle table
+
+echo "> Create bundle table"
 mysql -u root behattestdb < ${TRAVIS_BUILD_DIR}/${NOVABUNDLE_PATH}/Resources/sql/shema.sql
 
-# Remove robots.txt rewrite rule
-sudo sed -i.bak 's|RewriteRule \^\/robots|#RewriteRule \^\/robots|' /etc/apache2/sites-available/behat
+
+echo "> Update apache config"
+sudo sed -i 's|RewriteRule \^\/robots|#RewriteRule \^\/robots|' /etc/apache2/sites-enabled/behat
+sudo service apache2 restart
