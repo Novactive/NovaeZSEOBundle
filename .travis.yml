@@ -18,6 +18,8 @@ before_install:
   - cd "$HOME/build"
   - git clone --depth 1 --single-branch --branch master https://github.com/ezsystems/ezpublish-community.git
   - cd ezpublish-community
+  - git fetch origin :refs/tags/v2014.11.1
+  - git checkout tags/v2014.11.1
   - ./bin/.travis/prepare_system.sh
   - ./bin/.travis/prepare_sahi.sh
 
