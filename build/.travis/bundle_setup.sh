@@ -13,21 +13,12 @@
 # This script helps you setup your CI environment to run tests
 #################################################################
 
-
-echo "> Install bundle sources"
-mkdir -p "$NOVABUNDLE_PATH"
-rm -rf "$NOVABUNDLE_PATH"
-mv "$BRANCH_BUILD_DIR" "$NOVABUNDLE_PATH"
-
-
 echo "> Install bundle dependencies"
 composer require novactive/phpcs-novastandards 
 composer dump-autoload
 
-
 echo "> Enable bundle"
 sed -i.bak 's#new EzPublishLegacyBundle(),#new EzPublishLegacyBundle(),\n            new Novactive\Bundle\eZSEOBundle\NovaeZSEOBundle(),#g' ${TRAVIS_BUILD_DIR}/ezpublish/EzPublishKernel.php
-
 
 echo "> Add bundle route"
 echo '
@@ -37,18 +28,15 @@ _novaseoRoutes:
             prefix:   /
 ' >> ${TRAVIS_BUILD_DIR}/ezpublish/config/routing.yml
 
-
 echo "> Install bundle legacy extension"
 php ezpublish/console ezpublish:legacy:install_extensions
 cd ${TRAVIS_BUILD_DIR}/ezpublish_legacy
 php bin/php/ezpgenerateautoloads.php -e
 cd ${TRAVIS_BUILD_DIR}
 
-
 echo "> Create bundle table"
 mysql -u root behattestdb < ${TRAVIS_BUILD_DIR}/${NOVABUNDLE_PATH}/Resources/sql/shema.sql
 
-
-echo "> Update apache config"
-sudo sed -i 's|RewriteRule \^\/robots|#RewriteRule \^\/robots|' /etc/apache2/sites-enabled/behat
-sudo service apache2 restart
+#echo "> Update apache config"
+#sudo sed -i 's|RewriteRule \^\/robots|#RewriteRule \^\/robots|' /etc/apache2/sites-enabled/behat
+#sudo service apache2 restart
