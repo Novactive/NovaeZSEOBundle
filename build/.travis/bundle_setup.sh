@@ -28,7 +28,7 @@ _novaseoRoutes:
 ' >> ${TRAVIS_BUILD_DIR}/ezpublish/config/routing.yml
 
 # Install the legacy extension
-php ezpublish/console ezpublish:legacybundles:install_extensions
+php ezpublish/console ezpublish:legacy:install_extensions
 cd ${TRAVIS_BUILD_DIR}/ezpublish_legacy
 php bin/php/ezpgenerateautoloads.php -e
 cd ${TRAVIS_BUILD_DIR}
@@ -37,4 +37,4 @@ cd ${TRAVIS_BUILD_DIR}
 mysql -u root behattestdb < ${TRAVIS_BUILD_DIR}/${NOVABUNDLE_PATH}/Resources/sql/shema.sql
 
 # Remove robots.txt rewrite rule
-sed -i.bak 's|RewriteRule \^\/robots|#RewriteRule \^\/robots|' /etc/apache2/sites-available/behat
+sudo sed -i.bak 's|RewriteRule \^\/robots|#RewriteRule \^\/robots|' /etc/apache2/sites-available/behat
