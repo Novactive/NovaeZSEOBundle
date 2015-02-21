@@ -14,7 +14,7 @@
 #################################################################
 
 # Install composer dependencies for the bundle
-composer require-dev novactive/phpcs-novastandards 
+composer require novactive/phpcs-novastandards 
 
 # Enable bundle
 sed -i.bak 's#new EzPublishLegacyBundle(),#new EzPublishLegacyBundle(),\n            new Novactive\Bundle\eZSEOBundle\NovaeZSEOBundle(),#g' ${TRAVIS_BUILD_DIR}/ezpublish/EzPublishKernel.php
