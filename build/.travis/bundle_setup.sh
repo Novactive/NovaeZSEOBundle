@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #################################################################
-# Novactive eZ Bundle setup script
+# Novactive eZ Bundle setup script for continuous integration
 #
 # @package   NovaBundle
 # @author    Guillaume Maïssa <g.maissa@novactive.com>
