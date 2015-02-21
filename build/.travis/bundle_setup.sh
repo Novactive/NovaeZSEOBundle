@@ -31,7 +31,7 @@ _novaseoRoutes:
 ' >> ${TRAVIS_BUILD_DIR}/ezpublish/config/routing.yml
 
 echo "> Install bundle legacy extension"
-php ezpublish/console ezpublish:legacy:install_extensions
+php ezpublish/console ezpublish:legacybundles:install_extensions
 cd ${TRAVIS_BUILD_DIR}/ezpublish_legacy
 php bin/php/ezpgenerateautoloads.php -e
 cd ${TRAVIS_BUILD_DIR}
