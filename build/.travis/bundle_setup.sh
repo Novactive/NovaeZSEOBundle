@@ -37,6 +37,6 @@ cd ${TRAVIS_BUILD_DIR}
 echo "> Create bundle table"
 mysql -u root behattestdb < ${TRAVIS_BUILD_DIR}/${NOVABUNDLE_PATH}/Resources/sql/shema.sql
 
-#echo "> Update apache config"
-#sudo sed -i 's|RewriteRule \^\/robots|#RewriteRule \^\/robots|' /etc/apache2/sites-enabled/behat
-#sudo service apache2 restart
+echo "> Update apache config"
+sudo sed -i 's|RewriteRule \^\/robots|#RewriteRule \^\/robots|' /etc/apache2/sites-enabled/behat
+sudo service apache2 restart
