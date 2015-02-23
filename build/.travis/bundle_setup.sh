@@ -1,13 +1,13 @@
 #!/bin/bash
 
-#################################################################
+###########################################################################################
 # Novactive eZ Bundle setup script for continuous integration
 #
-# @package   NovaBundle
-# @author    Guillaume Maïssa <g.maissa@novactive.com>
+# @package   Novactive\Bundle\eZSEOBundle
+# @author    Novactive <novaseobundle@novactive.com>
 # @copyright 2015 Novactive
-# @license   Proprietary
-#################################################################
+# @license   https://github.com/Novactive/NovaeZSEOBundle/blob/master/LICENSE MIT Licence
+###########################################################################################
 
 #################################################################
 # This script helps you setup your CI environment to run tests
