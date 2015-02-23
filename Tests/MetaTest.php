@@ -23,7 +23,8 @@ class MetaTest extends NovaeZSEOBundleTestCase
      *
      * @return array
      */
-    public function metasSampleProvider() {
+    public function metasSampleProvider()
+    {
         return [
             [ 'title', 'There is the title' ],
             [ 'description', 'There is the description' ],
@@ -34,12 +35,12 @@ class MetaTest extends NovaeZSEOBundleTestCase
     /**
      * Test the Meta Method
      *
-     * @param $name
-     * @param $content
+     * @param string $name
+     * @param string $content
      *
      * @dataProvider metasSampleProvider
      */
-    public function testMetaObject( $name, $content)
+    public function testMetaObject( $name, $content )
     {
         $meta = new Meta( $name, $content );
 
@@ -51,7 +52,7 @@ class MetaTest extends NovaeZSEOBundleTestCase
 
         $this->assertTrue( $meta->hasAttribute( 'name' ) );
         $this->assertTrue( $meta->hasAttribute( 'content' ) );
-        
-        $this->assertTrue( ($content == '')?$meta->isEmpty():!$meta->isEmpty() );
+
+        $this->assertTrue( ( $content == '' ) ? $meta->isEmpty() : !$meta->isEmpty() );
     }
 }
