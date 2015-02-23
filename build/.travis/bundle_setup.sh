@@ -14,10 +14,7 @@
 #################################################################
 
 echo "> Install bundle dependencies"
-composer require novactive/phpcs-novastandards:~1.3
-composer require phpmd/phpmd:~2.1
-composer require sebastian/phpcpd:~2.0
-composer dump-autoload
+composer require novactive/phpcs-novastandards:~1.3 phpmd/phpmd:~2.1 sebastian/phpcpd:~2.0
 
 echo "> Enable bundle"
 sed -i.bak 's#new EzPublishLegacyBundle(),#new EzPublishLegacyBundle(),\n            new Novactive\Bundle\eZSEOBundle\NovaeZSEOBundle(),#g' ${TRAVIS_BUILD_DIR}/ezpublish/EzPublishKernel.php
