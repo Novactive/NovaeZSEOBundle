@@ -48,7 +48,7 @@ class SEOController extends Controller
             }
         }
         $response->setContent( implode( "\n", $robots ) );
-
+        $response->headers->set( "Content-Type", "text/plain" );
         return $response;
     }
 

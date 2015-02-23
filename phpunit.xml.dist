@@ -1,0 +1,26 @@
+<!--
+/**
+ * NovaeZSEOBundle Configuration
+ *
+ * @package   Novactive\Bundle\eZSEOBundle
+ * @author    Novactive <novaseobundle@novactive.com>
+ * @copyright 2015 Novactive
+ * @license   https://github.com/Novactive/NovaeZSEOBundle/blob/master/LICENSE MIT Licence
+ */
+-->
+<phpunit colors="false" bootstrap="./Tests/bootstrap.php" stopOnFailure="false">
+    <testsuites>
+        <testsuite name="NovaeZSEOBundle">
+            <directory>./Tests/</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>./</directory>
+            <exclude>
+                <directory>./Tests</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
