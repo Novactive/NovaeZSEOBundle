@@ -202,8 +202,8 @@ class NovaeZSEOExtension extends \Twig_Extension
         $identifier = $this->configResolver->getParameter( "fieldtype_metas_identifier", "novae_zseo" );
         $metas      = $this->configResolver->getParameter( "default_metas", "novae_zseo" );
         $links      = $this->configResolver->getParameter( "default_links", "novae_zseo" );
-        $novae_zseo = [ "fieldtype_metas_identifier" => $identifier, "default_metas" => $metas, 'default_links' => $links ];
+        $novaeZseo = [ "fieldtype_metas_identifier" => $identifier, "default_metas" => $metas, 'default_links' => $links ];
 
-        return [ 'novae_zseo' => $novae_zseo ];
+        return [ 'novae_zseo' => $novaeZseo ];
     }
 }

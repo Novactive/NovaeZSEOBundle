@@ -35,14 +35,14 @@ class MetaNameSchema extends NameSchemaService
      *
      * @var Html5Converter
      */
-    protected $_html5Converter;
+    protected $html5Converter;
 
     /**
      * Alias Generator
      *
      * @var VariationHandler
      */
-    protected $_imageVariationService;
+    protected $imageVariationService;
 
     /**
      * Set prioritized languages
@@ -61,7 +61,7 @@ class MetaNameSchema extends NameSchemaService
      */
     public function setHtml5Converter( Html5Converter $converter )
     {
-        $this->_html5Converter = $converter;
+        $this->html5Converter = $converter;
     }
 
     /**
@@ -71,7 +71,7 @@ class MetaNameSchema extends NameSchemaService
      */
     public function setImageVariationService( VariationHandler $handler )
     {
-        $this->_imageVariationService = $handler;
+        $this->imageVariationService = $handler;
     }
 
     /**
@@ -132,7 +132,7 @@ class MetaNameSchema extends NameSchemaService
                 {
                     $fieldTitles[$fieldDefinitionIdentifier] = trim(
                         strip_tags(
-                            $this->_html5Converter->convert( $fieldMap[$fieldDefinitionIdentifier][$languageCode]->xml )
+                            $this->html5Converter->convert( $fieldMap[$fieldDefinitionIdentifier][$languageCode]->xml )
                         )
                     );
                     continue;
@@ -214,7 +214,7 @@ class MetaNameSchema extends NameSchemaService
                 'languageCode'       => $languageCode
             ]
         );
-        $variation = $this->_imageVariationService->getVariation( $field, new VersionInfo(), $variationName );
+        $variation = $this->imageVariationService->getVariation( $field, new VersionInfo(), $variationName );
 
         return $variation->uri;
     }

@@ -33,7 +33,7 @@ before_script:
 
 script:
   - ./bin/phpcs --standard=vendor/novactive/phpcs-novastandards/src/NovaEZ vendor/novactive/ezseobundle
-  - ./bin/phpmd vendor/novactive/ezseobundle text cleancode,codesize,controversial,design,naming,unusedcode
+  - ./bin/phpmd vendor/novactive/ezseobundle text cleancode,codesize,controversial,design
   - ./bin/phpcpd vendor/novactive/ezseobundle
 #  - ./bin/behat -c "$NOVABUNDLE_PATH"/behat.yml.dist -vv --profile travis
 
