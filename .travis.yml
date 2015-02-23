@@ -35,7 +35,7 @@ script:
   - ./bin/phpcs --standard=vendor/novactive/phpcs-novastandards/src/NovaEZ vendor/novactive/ezseobundle
   #- ./bin/phpmd vendor/novactive/ezseobundle text cleancode,codesize,controversial,design
   - ./bin/phpcpd vendor/novactive/ezseobundle
-  - ./bin/phpunit -c vendor/novactive/ezseobundle
+  - ./bin/phpunit -c "$NOVABUNDLE_PATH"/phpunit.xml.dist
 #  - ./bin/behat -c "$NOVABUNDLE_PATH"/behat.yml.dist -vv --profile travis
 
 # reduce depth (history) of git checkout
