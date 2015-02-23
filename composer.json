@@ -18,6 +18,12 @@
         "ezsystems/ezpublish-kernel": "*",
         "ezsystems/ezpublish-legacy": "*"
     },
+    "require-dev": {
+      "phpunit/phpunit": "4.4.*",
+      "phpmd/phpmd": "2.*",
+      "sebastian/phpcpd": "2.0.*@dev",
+      "novactive/phpcs-novastandards": "~1.3"
+    },
     "autoload": {
         "psr-4": {
             "Novactive\\Bundle\\eZSEOBundle\\": ""

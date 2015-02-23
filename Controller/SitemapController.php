@@ -43,7 +43,7 @@ class SitemapController extends Controller
         $rootLocationId  = $this->getConfigResolver()->getParameter( 'content.tree_root.location_id' );
         $excludes  = $this->getConfigResolver()->getParameter( 'sitemap_excludes', 'novae_zseo' );
 
-        foreach( $excludes['contentTypeIdentifiers'] as &$contentTypeIdentifier )
+        foreach ( $excludes['contentTypeIdentifiers'] as &$contentTypeIdentifier )
         {
             $contentTypeIdentifier = (int)$contentTypeService->loadContentTypeByIdentifier( $contentTypeIdentifier )->id;
         }
@@ -81,7 +81,7 @@ class SitemapController extends Controller
                 $root->appendChild( $urlElt );
             }
 
-            if  ( !in_array( $location->id, $excludes['subtrees'] ) )
+            if ( !in_array( $location->id, $excludes['subtrees'] ) )
             {
                 $childrenList = $locationService->loadLocationChildren( $location );
                 /** @var LocationList $childrenList */

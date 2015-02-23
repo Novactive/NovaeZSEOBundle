@@ -27,7 +27,7 @@ class NovaSeoMetasType extends eZDataType
      */
     function __construct()
     {
-        parent::eZDataType(
+        parent::__construct(
             Type::IDENTIFIER,
             ezpI18n::tr( 'extension/novaseo/text', "Nova SEO Metas", 'Datatype name' )
         );
@@ -259,7 +259,6 @@ class NovaSeoMetasType extends eZDataType
         return eZInputValidator::STATE_ACCEPTED;
     }
 
-
     /**
      * Fetches class attribute HTTP input and stores it
      *
@@ -271,6 +270,7 @@ class NovaSeoMetasType extends eZDataType
      */
     function fetchClassAttributeHTTPInput( $http, $base, $attribute )
     {
+        $base;// Just for phpcs
         if ( $http->hasPostVariable( "ContentClass_novaseometas_keyvalue_{$attribute->attribute( 'id' )}" ) )
         {
             $metasKv = $http->postVariable( "ContentClass_novaseometas_keyvalue_{$attribute->attribute( 'id' )}" );
@@ -288,6 +288,7 @@ class NovaSeoMetasType extends eZDataType
     function preStoreClassAttribute( $classAttribute, $version )
     {
         $classAttribute->setAttribute( 'data_text5', json_encode( $classAttribute->attribute( 'content' ) ) );
+        $version;// Just for phpcs
     }
 
     /**
