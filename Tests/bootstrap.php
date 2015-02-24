@@ -17,6 +17,6 @@ if ( file_exists( __DIR__ . '/../../../../../ezpublish/bootstrap.php.cache' ) )
 
 if ( !$bootstrap )
 {
-    $_SERVER['KERNEL_DIR'] = __DIR__ . '/../../../../../../ezpublish';
-    $boostrap              = include __DIR__ . '/../../../../../../ezpublish/bootstrap.php.cache';
+    $_SERVER['KERNEL_DIR'] = __DIR__ . '/../../../../../../../ezpublish';
+    $boostrap              = include __DIR__ . '/../../../../../../../ezpublish/bootstrap.php.cache';
 }
