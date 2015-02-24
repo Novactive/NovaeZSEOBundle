@@ -15,7 +15,7 @@
 
 echo "> Install bundle dependencies"
 composer require novactive/phpcs-novastandards:~1.3 phpmd/phpmd:~2.1 sebastian/phpcpd:~2.0 phpunit/phpunit:~4.4
-sudo sed -i 's|return array(|return array("Novactive\\Bundle\\eZSEOBundle\\" => array($vendorDir . "/novactive/seobundle"),|' ${TRAVIS_BUILD_DIR}/vendor/composer/autoload_psr4.php
+sudo sed -i "s|return array(|return array('Novactive\\Bundle\\eZSEOBundle\\' => array($vendorDir . '/novactive/seobundle'),|" ${TRAVIS_BUILD_DIR}/vendor/composer/autoload_psr4.php
 
 
 echo "> Enable bundle"
