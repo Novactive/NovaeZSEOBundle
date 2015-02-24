@@ -30,6 +30,7 @@ before_script:
   - mv "$BRANCH_BUILD_DIR" "$NOVABUNDLE_PATH"
   - ./"$NOVABUNDLE_PATH"/build/.travis/bundle_setup.sh
   - php ezpublish/console assetic:dump --env=behat --no-debug
+  - php vendor/sensio/distribution-bundle/Sensio/Bundle/DistributionBundle/Resources/bin/build_bootstrap.php ezpublish/ ezpublish/
 
 script:
   - ./bin/phpcs --standard=vendor/novactive/phpcs-novastandards/src/NovaEZ vendor/novactive/ezseobundle
