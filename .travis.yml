@@ -14,7 +14,7 @@ branches:
 before_install:
   - export BRANCH_BUILD_DIR=$TRAVIS_BUILD_DIR
   - export TRAVIS_BUILD_DIR="$HOME/build/ezpublish-community"
-  - export NOVABUNDLE_PATH="vendor/novactive/ezseobundle/Novactive/Bundle/eZSEOBundle"
+  - export NOVABUNDLE_PATH="vendor/novactive/ezseobundle"
   - cd "$HOME/build"
   - git clone --depth 1 --single-branch --branch master https://github.com/ezsystems/ezpublish-community.git
   - cd ezpublish-community
