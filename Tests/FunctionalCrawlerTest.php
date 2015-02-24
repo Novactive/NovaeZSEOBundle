@@ -16,9 +16,9 @@ namespace Novactive\Bundle\eZSEOBundle\Tests;
 class FunctionalCrawlerTest extends NovaeZSEOBundleTestCase
 {
     /**
-     * Test Default Metas and Links
+     * Test Default Metas
      */
-    public function testDefaultMetaAndLinksIndex()
+    public function testDefaultMetasIndex()
     {
         $client  = static::createClient();
         $crawler = $client->request( 'GET', '/' );
@@ -44,25 +44,38 @@ class FunctionalCrawlerTest extends NovaeZSEOBundleTestCase
             }
             $this->assertTrue( $findValue, "Meta {$metaName} with content {$metaContent} not found." );
         }
+    }
 
+    /**
+     * Test Default Links
+     */
+    public function testDefaultLinksIndex()
+    {
+        $client  = static::createClient();
+        $crawler = $client->request( 'GET', '/' );
+        $this->assertTrue( $crawler->filter( 'html meta' )->count() > 0 );
+        $container      = $client->getContainer();
+        $configResolver = $container->get( "ezpublish.config.resolver" );
         $defaultLinks = $configResolver->getParameter( "default_links", "novae_zseo" );
         foreach ( $defaultLinks as $linkRel => $linkConfig )
         {
             $linkTagsHtml = $crawler->filter( "html link[rel='{$linkRel}']" );
             $this->assertTrue( $linkTagsHtml->count() > 0, "Link {$linkRel} not found" );
             $findValue = false;
+            $title = isset( $linkConfig['title'] ) ? $linkConfig['title'] : false;
+            $type = isset( $linkConfig['type'] ) ? $linkConfig['type'] : false;
             foreach ( $linkTagsHtml as $link )
             {
-                if ( $linkConfig['title'] )
+                if ( $title )
                 {
-                    if ( $link->getAttribute( 'title' ) == $linkConfig['title'] )
+                    if ( $link->getAttribute( 'title' ) == $title )
                     {
                         $findValue = true;
                     }
                 }
-                if ( $linkConfig['type'] )
+                if ( $type )
                 {
-                    if ( $link->getAttribute( 'type' ) == $linkConfig['type'] )
+                    if ( $link->getAttribute( 'type' ) == $type )
                     {
                         $findValue = true;
                     }
@@ -70,7 +83,7 @@ class FunctionalCrawlerTest extends NovaeZSEOBundleTestCase
             }
             $this->assertTrue(
                 $findValue,
-                "Link {$linkRel} not found title:{$linkConfig['title']} or type:{$linkConfig['type']}."
+                "Link {$linkRel} not found title:{$title} or type:{$type}."
             );
         }
     }

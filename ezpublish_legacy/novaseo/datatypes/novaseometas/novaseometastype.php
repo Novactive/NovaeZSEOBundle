@@ -247,6 +247,7 @@ class NovaSeoMetasType extends eZDataType
      */
     function validateClassAttributeHTTPInput( $http, $base, $attribute )
     {
+        $base;// phpmd trick
         if ( $http->hasPostVariable( "ContentClass_novaseometas_keyvalue_{$attribute->attribute( 'id' )}" ) )
         {
             $metasKv = $http->postVariable( "ContentClass_novaseometas_keyvalue_{$attribute->attribute( 'id' )}" );

@@ -8,7 +8,7 @@
  * @license   https://github.com/Novactive/NovaeZSEOBundle/blob/master/LICENSE MIT Licence
  */
 -->
-<phpunit colors="false" bootstrap="./Tests/bootstrap.php" stopOnFailure="false">
+<phpunit colors="false" bootstrap="./Tests/bootstrap.php" stopOnFailure="false" backupGlobals="false">
     <testsuites>
         <testsuite name="NovaeZSEOBundle">
             <directory>./Tests/</directory>

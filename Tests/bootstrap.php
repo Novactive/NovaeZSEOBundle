@@ -7,6 +7,7 @@
  * @copyright 2015 Novactive
  * @license   https://github.com/Novactive/NovaeZSEOBundle/blob/master/LICENSE MIT Licence
  */
+$bootstrap = false;
 
 if ( file_exists( __DIR__ . '/../../../ezpublish/bootstrap.php.cache' ) )
 {
