@@ -9,10 +9,10 @@
  */
 $bootstrap = false;
 
-if ( file_exists( __DIR__ . '/../../../ezpublish/bootstrap.php.cache' ) )
+if ( file_exists( __DIR__ . '/../../../../../ezpublish/bootstrap.php.cache' ) )
 {
-    $_SERVER['KERNEL_DIR'] = __DIR__ . '/../../../ezpublish';
-    $bootstrap             = include __DIR__ . '/../../../ezpublish/bootstrap.php.cache';
+    $_SERVER['KERNEL_DIR'] = __DIR__ . '/../../../../../ezpublish';
+    $bootstrap             = include __DIR__ . '/../../../../../ezpublish/bootstrap.php.cache';
 }
 
 if ( !$bootstrap )
