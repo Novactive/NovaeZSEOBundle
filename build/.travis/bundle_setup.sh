@@ -22,6 +22,8 @@ sudo echo -n ' => array($vendorDir . ' >> ${TRAVIS_BUILD_DIR}/vendor/composer/au
 sudo echo "'/novactive/ezseobundle')," >> ${TRAVIS_BUILD_DIR}/vendor/composer/autoload_psr4.php
 sudo echo ");" >> ${TRAVIS_BUILD_DIR}/vendor/composer/autoload_psr4.php
 
+cat ${TRAVIS_BUILD_DIR}/vendor/composer/autoload_psr4.php
+
 echo "> Enable bundle"
 sed -i.bak 's#new EzPublishLegacyBundle(),#new EzPublishLegacyBundle(),\n            new Novactive\Bundle\eZSEOBundle\NovaeZSEOBundle(),#g' ${TRAVIS_BUILD_DIR}/ezpublish/EzPublishKernel.php
 
