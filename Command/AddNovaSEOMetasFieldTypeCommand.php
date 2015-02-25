@@ -111,7 +111,7 @@ EOT
                 $contentTypeService->publishContentTypeDraft( $contentTypeDraft );
             }
         }
-        catch ( \eZ\Publish\API\Repository\Exceptions\NotFoundException $e )
+        catch ( \Exception $e )
         {
             $output->writeln( "<error>{$e->getMessage()}</error>" );
             return;
@@ -167,8 +167,8 @@ EOT
         }
         $helper   = $this->getHelper( 'question' );
         $question = new ConfirmationQuestion(
-            "\n<question>Are you sure you want to add novaseometas all these Content Type?</question>[no]",
-            false
+            "\n<question>Are you sure you want to add novaseometas all these Content Type?</question>[yes]",
+            true
         );
         if ( !$helper->ask( $input, $output, $question ) )
         {
