@@ -35,6 +35,11 @@ _novaseoRoutes:
             prefix:   /
 ' >> ${TRAVIS_BUILD_DIR}/ezpublish/config/routing.yml
 
+echo "routing"
+cat ${TRAVIS_BUILD_DIR}/ezpublish/config/routing.yml
+echo "routing dev"
+cat ${TRAVIS_BUILD_DIR}/ezpublish/config/routing_dev.yml
+
 echo "> Install bundle legacy extension"
 php ezpublish/console ezpublish:legacybundles:install_extensions
 cd ${TRAVIS_BUILD_DIR}/ezpublish_legacy
