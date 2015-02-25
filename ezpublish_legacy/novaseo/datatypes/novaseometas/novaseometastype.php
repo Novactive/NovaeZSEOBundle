@@ -126,7 +126,7 @@ class NovaSeoMetasType extends eZDataType
             foreach ( $metas->metas as $meta )
             {
                 $db->query(
-                    "INSERT INTO " . self::TABLE . " SET
+                    "INSERT INTO " . $db->escapeString( self::TABLE ) . " SET
                     objectattribute_id = {$contentObjectAttribute->attribute( 'id' )},
                     objectattribute_version= {$contentObjectAttribute->attribute( 'version' )},
                     meta_name = \"" . $db->escapeString( $meta->getName() ) . "\",
@@ -176,7 +176,7 @@ class NovaSeoMetasType extends eZDataType
         {
             $db         = eZDB::instance();
             $metasArray = $db->arrayQuery(
-                "SELECT * FROM " . self::TABLE . " WHERE
+                "SELECT * FROM " .  $db->escapeString( self::TABLE ) . " WHERE
                         objectattribute_id = {$contentObjectAttribute->attribute( 'id' )} AND
                         objectattribute_version= {$contentObjectAttribute->attribute( 'version' )}
                         "
@@ -206,7 +206,7 @@ class NovaSeoMetasType extends eZDataType
     {
         $db         = eZDB::instance();
         $metasArray = $db->arrayQuery(
-            "SELECT * FROM " . self::TABLE . " WHERE
+            "SELECT * FROM " .  $db->escapeString( self::TABLE ) . " WHERE
                     objectattribute_id = {$contentObjectAttribute->attribute( 'id' )},
                     objectattribute_version= {$contentObjectAttribute->attribute( 'version' )}
                     "
@@ -227,7 +227,7 @@ class NovaSeoMetasType extends eZDataType
         {
             $db = eZDB::instance();
             $db->query(
-                "DELETE FROM " . self::TABLE .
+                "DELETE FROM " . $db->escapeString( self::TABLE ) .
                 " WHERE objectattribute_id = {$contentObjectAttribute->attribute( 'id' )} AND
                         objectattribute_version= {$contentObjectAttribute->attribute( 'version' )}
                         "
