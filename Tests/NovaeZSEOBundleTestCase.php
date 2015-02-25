@@ -35,7 +35,7 @@ abstract class NovaeZSEOBundleTestCase extends WebTestCase
     /**
      * Get the Input Stream
      *
-     * @param $input
+     * @param string $input
      *
      * @return resource
      */

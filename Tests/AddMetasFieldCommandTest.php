@@ -28,7 +28,7 @@ class AddMetasFieldCommandTest extends NovaeZSEOBundleTestCase
     public function runProvider()
     {
         return [
-            [ [ ], [ ], 'no' ],
+            [ [], [], 'no' ],
             [ [ "--identifier" => "article" ], [ '/Selected Content Type/', '/Article/' ], "no" ],
             [ [ "--identifier" => "folder" ], [ '/Selected Content Type/', '/Folder/' ], "no" ],
             [ [ "--identifier" => "file" ], [ '/Selected Content Type/', '/File/' ], "no" ],
@@ -40,9 +40,10 @@ class AddMetasFieldCommandTest extends NovaeZSEOBundleTestCase
     /**
      * Test different kind of arguments
      *
-     * @param $arguments
-     * @param $regexps
-     * @param $interactAnswer
+     * @param array $arguments
+     * @param array $regexps
+     * @param array $interactAnswer
+     *
      * @dataProvider runProvider
      */
     public function testRunning( $arguments, $regexps, $interactAnswer )
@@ -52,13 +53,15 @@ class AddMetasFieldCommandTest extends NovaeZSEOBundleTestCase
         $command = $app->find( 'novae_zseo:addnovaseometasfieldtype' );
         $tester  = new CommandTester( $command );
         $input   = [ 'command' => $command->getName() ];
-        if ( count( $arguments ) > 0 ) {
+        if ( count( $arguments ) > 0 )
+        {
             $input = array_merge( $input, $arguments );
         }
         $helper = $command->getHelper( 'question' );
         $helper->setInputStream( $this->getInputStream( $interactAnswer . '\\n' ) );
         $tester->execute( $input );
-        foreach( $regexps as $regexp ) {
+        foreach ( $regexps as $regexp )
+        {
             $this->assertRegExp( $regexp, $tester->getDisplay() );
         }
 
