@@ -148,7 +148,7 @@ class NovaSeoMetasType extends eZDataType
      */
     function initializeObjectAttribute( $contentObjectAttribute, $currentVersion, $originalContentObjectAttribute )
     {
-        if ( $currentVersion != false )
+        if ( $currentVersion !== false )
         {
             $metas = $originalContentObjectAttribute->content();
             /** @var FieldValue $metas */
