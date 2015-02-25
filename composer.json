@@ -15,8 +15,6 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "ezsystems/ezpublish-kernel": "*",
-        "ezsystems/ezpublish-legacy": "*"
     },
     "require-dev": {
       "phpunit/phpunit": "4.4.*",
