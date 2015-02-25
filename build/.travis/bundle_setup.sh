@@ -31,8 +31,8 @@ echo "> Add bundle route"
 echo '
 _novaseoRoutes:
     resource: "@NovaeZSEOBundle/Controller/"
-        type:     annotation
-            prefix:   /
+    type:     annotation
+    prefix:   /
 ' >> ${TRAVIS_BUILD_DIR}/ezpublish/config/routing.yml
 
 echo "routing"
