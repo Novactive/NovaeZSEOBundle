@@ -27,7 +27,7 @@ class NovaSeoMetasType extends eZDataType
      */
     function __construct()
     {
-        parent::eZDataType(
+        parent::__construct(
             Type::IDENTIFIER,
             ezpI18n::tr( 'extension/novaseo/text', "Nova SEO Metas", 'Datatype name' )
         );
@@ -126,7 +126,7 @@ class NovaSeoMetasType extends eZDataType
             foreach ( $metas->metas as $meta )
             {
                 $db->query(
-                    "INSERT INTO " . self::TABLE . " SET
+                    "INSERT INTO " . $db->escapeString( self::TABLE ) . " SET
                     objectattribute_id = {$contentObjectAttribute->attribute( 'id' )},
                     objectattribute_version= {$contentObjectAttribute->attribute( 'version' )},
                     meta_name = \"" . $db->escapeString( $meta->getName() ) . "\",
@@ -148,7 +148,7 @@ class NovaSeoMetasType extends eZDataType
      */
     function initializeObjectAttribute( $contentObjectAttribute, $currentVersion, $originalContentObjectAttribute )
     {
-        if ( $currentVersion != false )
+        if ( $currentVersion !== false )
         {
             $metas = $originalContentObjectAttribute->content();
             /** @var FieldValue $metas */
@@ -176,7 +176,7 @@ class NovaSeoMetasType extends eZDataType
         {
             $db         = eZDB::instance();
             $metasArray = $db->arrayQuery(
-                "SELECT * FROM " . self::TABLE . " WHERE
+                "SELECT * FROM " .  $db->escapeString( self::TABLE ) . " WHERE
                         objectattribute_id = {$contentObjectAttribute->attribute( 'id' )} AND
                         objectattribute_version= {$contentObjectAttribute->attribute( 'version' )}
                         "
@@ -206,7 +206,7 @@ class NovaSeoMetasType extends eZDataType
     {
         $db         = eZDB::instance();
         $metasArray = $db->arrayQuery(
-            "SELECT * FROM " . self::TABLE . " WHERE
+            "SELECT * FROM " .  $db->escapeString( self::TABLE ) . " WHERE
                     objectattribute_id = {$contentObjectAttribute->attribute( 'id' )},
                     objectattribute_version= {$contentObjectAttribute->attribute( 'version' )}
                     "
@@ -227,7 +227,7 @@ class NovaSeoMetasType extends eZDataType
         {
             $db = eZDB::instance();
             $db->query(
-                "DELETE FROM " . self::TABLE .
+                "DELETE FROM " . $db->escapeString( self::TABLE ) .
                 " WHERE objectattribute_id = {$contentObjectAttribute->attribute( 'id' )} AND
                         objectattribute_version= {$contentObjectAttribute->attribute( 'version' )}
                         "
@@ -247,6 +247,7 @@ class NovaSeoMetasType extends eZDataType
      */
     function validateClassAttributeHTTPInput( $http, $base, $attribute )
     {
+        $base;// phpmd trick
         if ( $http->hasPostVariable( "ContentClass_novaseometas_keyvalue_{$attribute->attribute( 'id' )}" ) )
         {
             $metasKv = $http->postVariable( "ContentClass_novaseometas_keyvalue_{$attribute->attribute( 'id' )}" );
@@ -259,7 +260,6 @@ class NovaSeoMetasType extends eZDataType
         return eZInputValidator::STATE_ACCEPTED;
     }
 
-
     /**
      * Fetches class attribute HTTP input and stores it
      *
@@ -271,6 +271,7 @@ class NovaSeoMetasType extends eZDataType
      */
     function fetchClassAttributeHTTPInput( $http, $base, $attribute )
     {
+        $base;// Just for phpcs
         if ( $http->hasPostVariable( "ContentClass_novaseometas_keyvalue_{$attribute->attribute( 'id' )}" ) )
         {
             $metasKv = $http->postVariable( "ContentClass_novaseometas_keyvalue_{$attribute->attribute( 'id' )}" );
@@ -288,6 +289,7 @@ class NovaSeoMetasType extends eZDataType
     function preStoreClassAttribute( $classAttribute, $version )
     {
         $classAttribute->setAttribute( 'data_text5', json_encode( $classAttribute->attribute( 'content' ) ) );
+        $version;// Just for phpcs
     }
 
     /**

@@ -17,6 +17,9 @@ use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\API\Repository\Values\ContentType\ContentType;
 use eZ\Publish\Core\FieldType\XmlText\Converter\Html5 as Html5Converter;
 use eZ\Publish\SPI\Variation\VariationHandler;
+use eZ\Publish\Core\FieldType\XmlText\Value as XmlTextValue;
+use eZ\Publish\Core\FieldType\Relation\Value as RelationValue;
+use eZ\Publish\Core\FieldType\Image\Value as ImageValue;
 
 /**
  * Class MetaNameSchema
@@ -35,14 +38,14 @@ class MetaNameSchema extends NameSchemaService
      *
      * @var Html5Converter
      */
-    protected $_html5Converter;
+    protected $html5Converter;
 
     /**
      * Alias Generator
      *
      * @var VariationHandler
      */
-    protected $_imageVariationService;
+    protected $imageVariationService;
 
     /**
      * Set prioritized languages
@@ -61,7 +64,7 @@ class MetaNameSchema extends NameSchemaService
      */
     public function setHtml5Converter( Html5Converter $converter )
     {
-        $this->_html5Converter = $converter;
+        $this->html5Converter = $converter;
     }
 
     /**
@@ -71,7 +74,7 @@ class MetaNameSchema extends NameSchemaService
      */
     public function setImageVariationService( VariationHandler $handler )
     {
-        $this->_imageVariationService = $handler;
+        $this->imageVariationService = $handler;
     }
 
     /**
@@ -126,63 +129,29 @@ class MetaNameSchema extends NameSchemaService
                     $fieldDefinition->fieldTypeIdentifier
                 );
                 // eZ XML Text
-                if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof
-                     \eZ\Publish\Core\FieldType\XmlText\Value
-                )
+                if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof XmlTextValue )
                 {
-                    $fieldTitles[$fieldDefinitionIdentifier] = trim(
-                        strip_tags(
-                            $this->_html5Converter->convert( $fieldMap[$fieldDefinitionIdentifier][$languageCode]->xml )
-                        )
+                    $fieldTitles[$fieldDefinitionIdentifier] = $this->handleXmlTextValue(
+                        $fieldMap[$fieldDefinitionIdentifier][$languageCode]
                     );
                     continue;
                 }
 
                 //eZ Object Relation
-                if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof
-                     \eZ\Publish\Core\FieldType\Relation\Value
-                )
+                if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof RelationValue )
                 {
-                    if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode]->destinationContentId )
-                    {
-                        $relatedContent = $this->repository->getContentService()->loadContent(
-                            $fieldMap[$fieldDefinitionIdentifier][$languageCode]->destinationContentId
-                        );
-                        // @todo: we can probably be better here and handle more than just "image"
-                        if ( $fieldImageValue = $relatedContent->getFieldValue( 'image' ) )
-                        {
-                            if ( $fieldImageValue->uri )
-                            {
-                                $fieldTitles[$fieldDefinitionIdentifier] = $this->getVariation(
-                                    $fieldImageValue,
-                                    "image",
-                                    $languageCode,
-                                    "medium"
-                                );
-                                continue;
-                            }
-                        }
-                    }
-                    $fieldTitles[$fieldDefinitionIdentifier] = '';
+                    $fieldTitles[$fieldDefinitionIdentifier] = $this->handleRelationValue(
+                        $fieldMap[$fieldDefinitionIdentifier][$languageCode], $languageCode
+                    );
                     continue;
                 }
 
                 // eZ Image
-                if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof
-                     \eZ\Publish\Core\FieldType\Image\Value
-                )
+                if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof ImageValue )
                 {
-                    if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode]->uri )
-                    {
-                        $fieldTitles[$fieldDefinitionIdentifier] = $this->getVariation(
-                            $fieldMap[$fieldDefinitionIdentifier][$languageCode],
-                            $fieldDefinitionIdentifier,
-                            $languageCode,
-                            "medium"
-                        );
-                        continue;
-                    }
-                    $fieldTitles[$fieldDefinitionIdentifier] = '';
+                    $fieldTitles[$fieldDefinitionIdentifier] = $this->handleImageValue(
+                        $fieldMap[$fieldDefinitionIdentifier][$languageCode], $fieldDefinitionIdentifier, $languageCode
+                    );
                     continue;
                 }
 
@@ -214,8 +183,69 @@ class MetaNameSchema extends NameSchemaService
                 'languageCode'       => $languageCode
             ]
         );
-        $variation = $this->_imageVariationService->getVariation( $field, new VersionInfo(), $variationName );
+        $variation = $this->imageVariationService->getVariation( $field, new VersionInfo(), $variationName );
 
         return $variation->uri;
+    }
+
+    /**
+     * Get a Text from a XML
+     *
+     * @param XmlTextValue $value
+     *
+     * @return string
+     */
+    protected function handleXmlTextValue( XmlTextValue $value )
+    {
+        return trim( strip_tags( $this->html5Converter->convert( $value->xml ) ) );
+    }
+
+    /**
+     * Get the Relation in text or URL
+     *
+     * @param RelationValue $value
+     * @param string        $languageCode
+     *
+     * @return string
+     */
+    protected function handleRelationValue( RelationValue $value, $languageCode )
+    {
+        if ( !$value->destinationContentId )
+        {
+            return '';
+        }
+        $relatedContent = $this->repository->getContentService()->loadContent( $value->destinationContentId );
+        // @todo: we can probably be better here and handle more than just "image"
+        if ( $fieldImageValue = $relatedContent->getFieldValue( 'image' ) )
+        {
+            if ( $fieldImageValue->uri )
+            {
+                return $this->getVariation( $fieldImageValue, "image", $languageCode, "medium" );
+            }
+        }
+        return '';
+    }
+
+    /**
+     * Handle a Image attribute
+     *
+     * @param ImageValue $value
+     * @param string     $fieldDefinitionIdentifier
+     * @param string     $languageCode
+     *
+     * @return string
+     */
+    protected function handleImageValue( ImageValue $value, $fieldDefinitionIdentifier, $languageCode )
+    {
+        if ( !$value->uri )
+        {
+            return '';
+        }
+        return $this->getVariation(
+            $value,
+            $fieldDefinitionIdentifier,
+            $languageCode,
+            "medium"
+        );
     }
 }

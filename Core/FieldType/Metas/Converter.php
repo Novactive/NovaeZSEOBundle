@@ -49,7 +49,6 @@ class Converter implements LegacyConverter
      */
     public function toStorageFieldDefinition( FieldDefinition $fieldDef, StorageFieldDefinition $storageDef )
     {
-        //@todo: Test and create
     }
 
     /**

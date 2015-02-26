@@ -10,7 +10,6 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Command;
 
-use eZ\Publish\Core\Persistence\Legacy\Content\FieldValue\Converter\Date;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -18,12 +17,27 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use eZ\Publish\API\Repository\Values\ContentType\ContentType;
 use DateTime;
+use eZ\Publish\API\Repository\Repository;
 
 /**
  * Class AddNovaSEOMetasFieldTypeCommand
  */
 class AddNovaSEOMetasFieldTypeCommand extends ContainerAwareCommand
 {
+    /**
+     * Repository eZ Publish
+     *
+     * @var Repository
+     */
+    protected $eZPublishRepository;
+
+    /**
+     * List of the ContentType we'll manage
+     *
+     * @var ContentType[]
+     */
+    protected $contentTypes;
+
     /**
      * Configure the command
      */
@@ -55,59 +69,17 @@ EOT
      */
     protected function execute( InputInterface $input, OutputInterface $output )
     {
-        /** @var $repository \eZ\Publish\API\Repository\Repository */
-        $repository         = $this->getContainer()->get( "ezpublish.api.repository" );
-        $contentTypeService = $repository->getContentTypeService();
-        $repository->setCurrentUser( $repository->getUserService()->loadUser( 14 ) );
-
+        $input;// phpmd trick
+        $contentTypeService = $this->eZPublishRepository->getContentTypeService();
         $configResolver = $this->getContainer()->get( "ezpublish.config.resolver" );
-        $contentTypeGroupIdentifier = $input->getOption( 'group_identifier' ) ? $input->getOption( 'group_identifier' ) : false;
-        $contentTypeIdentifiers = $input->getOption( 'identifiers' ) ? explode( ",", $input->getOption( 'identifiers' ) ) : false;
-        $contentTypeIdentifier = $input->getOption( 'identifier' ) ? $input->getOption( 'identifier' ) : false;
-
         try
         {
-            $contentTypes = [];
-            if ( $contentTypeGroupIdentifier )
+            $contentTypes = $this->contentTypes;
+            if ( count( $contentTypes ) == 0 )
             {
-                $contentTypeGroup = $contentTypeService->loadContentTypeGroupByIdentifier( $contentTypeGroupIdentifier );
-                $contentTypes     = $contentTypeService->loadContentTypes( $contentTypeGroup );
-            }
-
-            if ( $contentTypeIdentifiers )
-            {
-                if ( !is_array( $contentTypeIdentifiers ) )
-                {
-                    $contentTypeIdentifiers = [ $contentTypeIdentifiers ];
-                }
-
-                foreach ( $contentTypeIdentifiers as $identifier )
-                {
-                    $contentTypes[] = $contentTypeService->loadContentTypeByIdentifier( $identifier );
-                }
-            }
-            if ( $contentTypeIdentifier )
-            {
-                $contentTypes[] = $contentTypeService->loadContentTypeByIdentifier( $contentTypeIdentifier );
-            }
-
-            $output->writeln( "<info>Selected Content Type:</info>" );
-            foreach ( $contentTypes as $contentType )
-            {
-                /** @var ContentType $contentType */
-                $output->writeln( "\t- {$contentType->getName( $contentType->mainLanguageCode )}" );
-            }
-            $helper   = $this->getHelper( 'question' );
-            $question = new ConfirmationQuestion(
-                "\n<question>Are you sure you want to add novaseometas all these Content Type?</question>[no]",
-                false
-            );
-            if ( !$helper->ask( $input, $output, $question ) )
-            {
-                $output->writeln( "Nothing done." );
+                $output->writeln( "Nothing to do." );
                 return;
             }
-
             foreach ( $contentTypes as $contentType )
             {
                 /** @var ContentType $contentType */
@@ -139,7 +111,7 @@ EOT
                 $contentTypeService->publishContentTypeDraft( $contentTypeDraft );
             }
         }
-        catch ( \eZ\Publish\API\Repository\Exceptions\NotFoundException $e )
+        catch ( \Exception $e )
         {
             $output->writeln( "<error>{$e->getMessage()}</error>" );
             return;
@@ -147,4 +119,72 @@ EOT
         $output->writeln( "FieldType added." );
     }
 
+    /**
+     * Get the ContentType depending on the input arguments
+     *
+     * @param InputInterface     $input
+     *
+     * @return ContentType[]
+     */
+    protected function getContentTypes( InputInterface $input )
+    {
+        $contentTypes = [];
+        $contentTypeService = $this->eZPublishRepository->getContentTypeService();
+
+        if ( $contentTypeGroupIdentifier = $input->getOption( 'group_identifier' ) )
+        {
+            $contentTypeGroup = $contentTypeService->loadContentTypeGroupByIdentifier( $contentTypeGroupIdentifier );
+            $contentTypes     = $contentTypeService->loadContentTypes( $contentTypeGroup );
+        }
+        if ( $contentTypeIdentifiers = explode( ",", $input->getOption( 'identifiers' ) ) )
+        {
+            foreach ( $contentTypeIdentifiers as $identifier )
+            {
+                if ( $identifier != "" )
+                {
+                    $contentTypes[] = $contentTypeService->loadContentTypeByIdentifier( $identifier );
+                }
+            }
+        }
+        if ( $contentTypeIdentifier = $input->getOption( 'identifier' ) )
+        {
+            $contentTypes[] = $contentTypeService->loadContentTypeByIdentifier( $contentTypeIdentifier );
+        }
+        return $contentTypes;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function interact( InputInterface $input, OutputInterface $output )
+    {
+        $contentTypes = $this->getContentTypes( $input );
+        $output->writeln( "<info>Selected Content Type:</info>" );
+        foreach ( $contentTypes as $contentType )
+        {
+            /** @var ContentType $contentType */
+            $output->writeln( "\t- {$contentType->getName( $contentType->mainLanguageCode )}" );
+        }
+        $helper   = $this->getHelper( 'question' );
+        $question = new ConfirmationQuestion(
+            "\n<question>Are you sure you want to add novaseometas all these Content Type?</question>[yes]",
+            true
+        );
+        if ( !$helper->ask( $input, $output, $question ) )
+        {
+            return;
+        }
+        $this->contentTypes = $contentTypes;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function initialize( InputInterface $input, OutputInterface $output )
+    {
+        $input;// phpmd trick
+        $output;// phpmd trick
+        $this->eZPublishRepository = $this->getContainer()->get( "ezpublish.api.repository" );
+        $this->eZPublishRepository->setCurrentUser( $this->eZPublishRepository->getUserService()->loadUser( 14 ) );
+    }
 }

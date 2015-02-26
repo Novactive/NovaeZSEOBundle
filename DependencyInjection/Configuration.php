@@ -9,7 +9,6 @@
  */
 namespace Novactive\Bundle\eZSEOBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\SiteAccessAware\Configuration as SiteAccessConfiguration;
 
@@ -48,13 +47,13 @@ class Configuration extends SiteAccessConfiguration
             ->end()
             ->arrayNode( 'sitemap_excludes' )
                 ->children()
-                    ->arrayNode('locations')
+                    ->arrayNode( 'locations' )
                         ->prototype( "variable" )->end()
                     ->end()
-                    ->arrayNode('subtrees')
+                    ->arrayNode( 'subtrees' )
                         ->prototype( "variable" )->end()
                     ->end()
-                    ->arrayNode('contentTypeIdentifiers')
+                    ->arrayNode( 'contentTypeIdentifiers' )
                         ->prototype( "variable" )->end()
                     ->end()
                 ->end()
