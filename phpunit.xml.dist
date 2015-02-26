@@ -13,6 +13,10 @@
         <testsuite name="NovaeZSEOBundle">
             <directory>./Tests/</directory>
         </testsuite>
+        <testsuite name="NovaeZSEOBundleNoCrawler">
+            <directory>./Tests/</directory>
+            <exclude>./Tests/FunctionalCrawlerTest.php</exclude>
+        </testsuite>
     </testsuites>
 
     <filter>
