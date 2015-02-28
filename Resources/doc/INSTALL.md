@@ -50,7 +50,7 @@ Make sure you add this route to your routing:
 ```yml
 # ezpublish/config/routing.yml
 
-_novaseoRoutes:
+_novaezseoRoutes:
     resource: "@NovaeZSEOBundle/Controller/"
     type:     annotation
     prefix:   /
