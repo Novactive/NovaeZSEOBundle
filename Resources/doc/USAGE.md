@@ -135,6 +135,7 @@ novae_zseo:
 
 > Simpler way, nothing to put on your server, no need to add a new RewriteRules
 
+
 ## Google Analytics Integration Marker
 
 You can insert the GA Marker by just adding your id: UA-XXXXXXXX-X
@@ -145,6 +146,7 @@ novae_zseo:
         default:
             google_gatracker: UA-XXXXXXXX-X
 ```
+
 
 ## Robots.txt file
 
