@@ -122,41 +122,51 @@ class MetaNameSchema extends NameSchemaService
 
         foreach ( $schemaIdentifiers as $fieldDefinitionIdentifier )
         {
-            if ( isset( $fieldMap[$fieldDefinitionIdentifier][$languageCode] ) )
+            strpos($fieldDefinitionIdentifier,'~') ? list( $fieldTitle, $limit ) = explode('~',$fieldDefinitionIdentifier) : $fieldTitle = $fieldDefinitionIdentifier;
+            if ( isset( $fieldMap[$fieldTitle][$languageCode] ) )
             {
-                $fieldDefinition = $contentType->getFieldDefinition( $fieldDefinitionIdentifier );
+                $fieldDefinition = $contentType->getFieldDefinition( $fieldTitle );
                 $fieldType       = $this->repository->getFieldTypeService()->getFieldType(
-                    $fieldDefinition->fieldTypeIdentifier
+                                                    $fieldDefinition->fieldTypeIdentifier
                 );
                 // eZ XML Text
-                if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof XmlTextValue )
+                if ( $fieldMap[$fieldTitle][$languageCode] instanceof XmlTextValue )
                 {
-                    $fieldTitles[$fieldDefinitionIdentifier] = $this->handleXmlTextValue(
-                        $fieldMap[$fieldDefinitionIdentifier][$languageCode]
+                    $fieldTitles[$fieldTitle] = $this->handleXmlTextValue(
+                                                     $fieldMap[$fieldTitle][$languageCode]
                     );
+                    if(isset($limit)) {
+                        $fieldTitles[$fieldTitle] = substr($fieldTitles[$fieldTitle], 0, strpos(wordwrap($fieldTitles[$fieldTitle], $limit), "\n"));
+                    }
                     continue;
                 }
 
                 //eZ Object Relation
-                if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof RelationValue )
+                if ( $fieldMap[$fieldTitle][$languageCode] instanceof RelationValue )
                 {
-                    $fieldTitles[$fieldDefinitionIdentifier] = $this->handleRelationValue(
-                        $fieldMap[$fieldDefinitionIdentifier][$languageCode], $languageCode
+                    $fieldTitles[$fieldTitle] = $this->handleRelationValue(
+                                                     $fieldMap[$fieldTitle][$languageCode], $languageCode
                     );
+                    if(isset($limit)) {
+                        $fieldTitles[$fieldTitle] = substr($fieldTitles[$fieldTitle], 0, strpos(wordwrap($fieldTitles[$fieldTitle], $limit), "\n"));
+                    }
                     continue;
                 }
 
                 // eZ Image
-                if ( $fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof ImageValue )
+                if ( $fieldMap[$fieldTitle][$languageCode] instanceof ImageValue )
                 {
-                    $fieldTitles[$fieldDefinitionIdentifier] = $this->handleImageValue(
-                        $fieldMap[$fieldDefinitionIdentifier][$languageCode], $fieldDefinitionIdentifier, $languageCode
+                    $fieldTitles[$fieldTitle] = $this->handleImageValue(
+                                                     $fieldMap[$fieldTitle][$languageCode], $fieldTitle, $languageCode
                     );
+                    if(isset($limit)) {
+                        $fieldTitles[$fieldTitle] = substr($fieldTitles[$fieldTitle], 0, strpos(wordwrap($fieldTitles[$fieldTitle], $limit), "\n"));
+                    }
                     continue;
                 }
 
-                $fieldTitles[$fieldDefinitionIdentifier] = $fieldType->getName(
-                    $fieldMap[$fieldDefinitionIdentifier][$languageCode]
+                $fieldTitles[$fieldTitle] = $fieldType->getName(
+                                                      $fieldMap[$fieldTitle][$languageCode]
                 );
             }
         }
@@ -247,5 +257,43 @@ class MetaNameSchema extends NameSchemaService
             $languageCode,
             "medium"
         );
+    }
+
+    /**
+     * Returns all identifiers from all tokens in the name schema.
+     *
+     * @param string $schemaString
+     *
+     * @return array
+     */
+    protected function getIdentifiers( $schemaString )
+    {
+        $allTokens = '#<(.*)>#U';
+        $identifiers = '#(?!~)\\W#';
+
+        $tmpArray = array();
+
+        preg_match_all( $allTokens, $schemaString, $matches );
+        foreach ( $matches[1] as $match )
+        {
+            $tmpArray[] = preg_split( $identifiers, $match, -1, PREG_SPLIT_NO_EMPTY );
+        }
+        $retArray = array();
+        foreach ( $tmpArray as $matchGroup )
+        {
+            if ( is_array( $matchGroup ) )
+            {
+                foreach ( $matchGroup as $item )
+                {
+                    $retArray[] = $item;
+                }
+            }
+            else
+            {
+                $retArray[] = $matchGroup;
+            }
+        }
+
+        return $retArray;
     }
 }
