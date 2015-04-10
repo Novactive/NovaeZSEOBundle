@@ -207,7 +207,7 @@ class NovaSeoMetasType extends eZDataType
         $db         = eZDB::instance();
         $metasArray = $db->arrayQuery(
             "SELECT * FROM " .  $db->escapeString( self::TABLE ) . " WHERE
-                    objectattribute_id = {$contentObjectAttribute->attribute( 'id' )},
+                    objectattribute_id = {$contentObjectAttribute->attribute( 'id' )} AND 
                     objectattribute_version= {$contentObjectAttribute->attribute( 'version' )}
                     "
         );
