@@ -48,6 +48,13 @@ class MetaNameSchema extends NameSchemaService
     protected $imageVariationService;
 
     /**
+     * Meta content data max length
+     *
+     * @var int
+     */
+    protected $fieldContentMaxLength = 255;
+
+    /**
      * Set prioritized languages
      *
      * @param array $languages
@@ -88,6 +95,12 @@ class MetaNameSchema extends NameSchemaService
      */
     public function resolveMeta( Meta $meta, Content $content, ContentType $contentType = null )
     {
+
+        $this->settings = array(
+            'limit' => $this->fieldContentMaxLength,
+            'sequence' => '...',
+        );
+
         if ( $contentType === null )
         {
             $contentType = $this->repository->getContentTypeService()->loadContentType(
