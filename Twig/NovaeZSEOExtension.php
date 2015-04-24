@@ -162,8 +162,19 @@ class NovaeZSEOExtension extends \Twig_Extension
         if ( $metasFieldValue instanceof MetasFieldValue )
         {
             $metasConfig = $this->configResolver->getParameter( 'fieldtype_metas', 'novae_zseo' );
-            foreach ( $metasFieldValue->metas as $meta )
+            // as the configuration is the last fallback we need to loop on it.
+            foreach ( $metasConfig as $metaName => $metasSettings )
             {
+                if ( $metasFieldValue->nameExists( $metaName ) )
+                {
+                    $meta = $metasFieldValue->metas[$metaName];
+                }
+                else
+                {
+                    $meta = new Meta( $metaName );
+                    $metasFieldValue->metas[$metaName] = $meta;
+                }
+
                 /** @var Meta $meta */
                 if ( $meta->isEmpty() )
                 {

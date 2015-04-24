@@ -64,4 +64,16 @@ class Value extends BaseValue
 
         return $str;
     }
+
+    /**
+     * Does the name exist
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function nameExists( $name )
+    {
+        return array_key_exists( $name, $this->metas );
+    }
 }
