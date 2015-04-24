@@ -93,7 +93,7 @@ novae_zseo:
                     default_pattern: "<title|name>"
                 description:
                     label: 'Description'
-                    default_pattern: "<description|short_descrition|title|name>"
+                    default_pattern: "<description|short_descrition|content~200|title|name>"
                 keyword:
                     label: 'Keywords'
                     default_pattern: ~
