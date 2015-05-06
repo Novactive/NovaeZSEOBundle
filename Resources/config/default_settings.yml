@@ -51,8 +51,8 @@ parameters:
             default_pattern: "<title|name>"
             icon: 'facebook-official'
         'og:description':
-            label: 'Descrition'
-            default_pattern: "<short_descrition|description|title|name>"
+            label: 'Description'
+            default_pattern: "<short_description|description|title|name>"
             icon: 'facebook-official'
         'og:image':
             label: 'Image'
@@ -63,8 +63,8 @@ parameters:
             default_pattern: "<title|name>"
             icon: 'twitter-square'
         'twitter:description':
-            label: 'Descrition'
-            default_pattern: "<short_descrition|description|title|name>"
+            label: 'Description'
+            default_pattern: "<short_description|description|title|name>"
             icon: 'twitter-square'
         'twitter:image':
             label: 'Image'
