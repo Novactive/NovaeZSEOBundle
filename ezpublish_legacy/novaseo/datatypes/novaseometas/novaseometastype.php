@@ -79,26 +79,23 @@ class NovaSeoMetasType extends eZDataType
     function fetchObjectAttributeHTTPInput( $http, $base, $contentObjectAttribute )
     {
         $metas = [];
-        if ( $http->hasPostVariable( 'PublishButton' ) )
+        if ( $http->hasPostVariable(
+            "{$base}_data_novaseometas_{$contentObjectAttribute->attribute(
+                'contentclass_attribute_identifier'
+            )}_keyvalue_{$contentObjectAttribute->attribute( 'id' )}"
+        ) )
         {
-            if ( $http->hasPostVariable(
+            $metasKv = $http->postVariable(
                 "{$base}_data_novaseometas_{$contentObjectAttribute->attribute(
                     'contentclass_attribute_identifier'
                 )}_keyvalue_{$contentObjectAttribute->attribute( 'id' )}"
-            ) )
+            );
+            foreach ( $metasKv as $metaKey => $metaValue )
             {
-                $metasKv = $http->postVariable(
-                    "{$base}_data_novaseometas_{$contentObjectAttribute->attribute(
-                        'contentclass_attribute_identifier'
-                    )}_keyvalue_{$contentObjectAttribute->attribute( 'id' )}"
-                );
-                foreach ( $metasKv as $metaKey => $metaValue )
-                {
-                    $meta = new Meta();
-                    $meta->setName( $metaKey );
-                    $meta->setContent( $metaValue );
-                    $metas[] = $meta;
-                }
+                $meta = new Meta();
+                $meta->setName( $metaKey );
+                $meta->setContent( $metaValue );
+                $metas[] = $meta;
             }
         }
         $contentObjectAttribute->setContent( new FieldValue( $metas ) );
