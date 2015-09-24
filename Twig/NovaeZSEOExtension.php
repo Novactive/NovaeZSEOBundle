@@ -20,7 +20,7 @@ use Novactive\Bundle\eZSEOBundle\Core\Meta;
 use eZ\Publish\API\Repository\Values\Content\ContentInfo;
 use eZ\Publish\API\Repository\Values\Content\Field;
 use eZ\Publish\Core\MVC\Symfony\Locale\LocaleConverter;
-
+use Novactive\Bundle\eZSEOBundle\Core\CustomFallbackInterface;
 /**
  * Class NovaeZSEOExtension
  */
@@ -54,6 +54,14 @@ class NovaeZSEOExtension extends \Twig_Extension
      */
     protected $localeConverter;
 
+
+    /**
+     * CustomFallBack Service
+     *
+     * @var CustomFallbackInterface
+     */
+    protected $customFallBackService;
+
     /**
      * Constructor
      *
@@ -76,13 +84,24 @@ class NovaeZSEOExtension extends \Twig_Extension
     }
 
     /**
+     * Set the CustomFallback Service
+     *
+     * @param CustomFallbackInterface $service
+     */
+    public function setCustomFallbackService( CustomFallbackInterface $service )
+    {
+        $this->customFallBackService = $service;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getFilters()
     {
         return [
             new \Twig_SimpleFilter( 'compute_novaseometas', [ $this, 'computeMetas' ] ),
-            new \Twig_SimpleFilter( 'getposixlocale_novaseometas', [ $this, 'getPosixLocale' ] )
+            new \Twig_SimpleFilter( 'getposixlocale_novaseometas', [ $this, 'getPosixLocale' ] ),
+            new \Twig_SimpleFilter( 'fallback_novaseometas', [ $this, 'getFallbackedMetaContent' ] )
         ];
     }
 
@@ -96,6 +115,16 @@ class NovaeZSEOExtension extends \Twig_Extension
     public function getPosixLocale( $eZLocale )
     {
         return $this->localeConverter->convertToPOSIX( $eZLocale );
+    }
+
+
+    public function getFallbackedMetaContent( ContentInfo $contentInfo, $metaName )
+    {
+        if ( $this->customFallBackService instanceof CustomFallbackInterface )
+        {
+            return $this->customFallBackService->getMetaContent( $metaName, $contentInfo );
+        }
+        return '';
     }
 
     /**

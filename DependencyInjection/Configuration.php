@@ -28,6 +28,7 @@ class Configuration extends SiteAccessConfiguration
         $rootNode    = $treeBuilder->root( 'novae_zseo' );
         $systemNode  = $this->generateScopeBaseNode( $rootNode );
         $systemNode
+            ->scalarNode( 'custom_fallback_service' )->defaultValue( '~' )->end()
             ->scalarNode( 'google_verification' )->defaultValue( '~' )->end()
             ->scalarNode( 'google_gatracker' )->defaultValue( '~' )->end()
             ->scalarNode( 'fieldtype_metas_identifier' )->defaultValue( 'metas' )->end()

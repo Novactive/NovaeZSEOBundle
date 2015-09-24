@@ -10,10 +10,21 @@
 namespace Novactive\Bundle\eZSEOBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Novactive\Bundle\eZSEOBundle\DependencyInjection\Compiler\CustomFallbackPass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Class NovaeZSEOBundle
  */
 class NovaeZSEOBundle extends Bundle
 {
+    /**
+     * @param ContainerBuilder $container
+     */
+    public function build( ContainerBuilder $container )
+    {
+        parent::build( $container );
+
+        $container->addCompilerPass( new CustomFallbackPass() );
+    }
 }

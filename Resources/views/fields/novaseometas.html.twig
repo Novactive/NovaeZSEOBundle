@@ -15,6 +15,16 @@
             {% else %}
                 <meta name="{{ meta.name }}" content="{{ meta.content }}"/>
             {% endif %}
+        {% else %}
+            {% set fallbackedContent = contentInfo|fallback_novaseometas( meta.name ) %}
+            {% if fallbackedContent is not empty %}
+                {% if meta.name == "title" %}
+                    {% set isCanonicalFind = true %}
+                    <title>{{ fallbackedContent }}</title>
+                {% else %}
+                    <meta name="{{ meta.name }}" content="{{ fallbackedContent }}"/>
+                {% endif %}
+            {% endif %}
         {% endif %}
     {% endfor %}
     {% if contentInfo.mainLocationId is defined and isCanonicalFind == false %}
