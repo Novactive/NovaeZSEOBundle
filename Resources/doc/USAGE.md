@@ -216,10 +216,10 @@ This service must be declare and MUST implement the CustomFallbackInterface
 public function getMetaContent( $metaName, ContentInfo $contentInfo );
 ```
 
-Then here, you can inject whatever you want to in this service and managed specific condition in the empty meta.
+Then here, you can inject whatever you want into this service and manage specific values and condition for empty meta.
 Just return the Value of the given metaName. 
 
-> You can also for the meta to be empty (~) to enter in this Service.
+> Tip: You can force the meta to be empty (~) to enter in this Service ;)
 
 No more limits!
 
