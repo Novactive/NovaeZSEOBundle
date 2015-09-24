@@ -197,6 +197,32 @@ If it's not enough, you can also add a sixth level with Twig manipulation!
 
 > You can use a image and and object_relation to an image ( needed for facebook image url for example )
 
+### Do what you want - Even better !
+
+Started at the version 1.1.0, you can define a CustomFallback service
+
+Ex:
+
+```yml
+novae_zseo:
+    system:
+        default:
+            custom_fallback_service: yourname.seo.fallback
+```
+
+This service must be declare and MUST implement the CustomFallbackInterface
+
+```php
+public function getMetaContent( $metaName, ContentInfo $contentInfo );
+```
+
+Then here, you can inject whatever you want to in this service and managed specific condition in the empty meta.
+Just return the Value of the given metaName. 
+
+> You can also for the meta to be empty (~) to enter in this Service.
+
+No more limits!
+
 
 
 ## Add the FieldType to your Content Type
