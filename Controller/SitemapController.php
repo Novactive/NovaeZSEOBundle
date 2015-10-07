@@ -16,92 +16,181 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
 use DOMDocument;
-use eZ\Publish\API\Repository\LocationService;
+use DOMElement;
+use DateTime;
+use eZ\Publish\API\Repository\Values\Content\LocationQuery as Query;
+use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
+use eZ\Publish\API\Repository\Values\Content\Query\SortClause;
+use eZ\Publish\API\Repository\Values\Content\Search\SearchResult;
+use eZ\Publish\API\Repository\Values\Content\Search\SearchHit;
 use eZ\Publish\API\Repository\Values\Content\Location;
-use eZ\Publish\API\Repository\Values\Content\LocationList;
 
 /**
  * Class SitemapController
  */
 class SitemapController extends Controller
 {
+    /**
+     * How many in a Sitemap
+     *
+     * @var int
+     */
+    const PACKET_MAX = 1000;
+
+    /**
+     * Get the common Query
+     *
+     * @return Query
+     */
+    protected function getQuery()
+    {
+        $locationService = $this->get( "ezpublish.api.repository" )->getLocationService();
+        $excludes        = $this->getConfigResolver()->getParameter( 'sitemap_excludes', 'novae_zseo' );
+        $query           = new Query();
+        $criterion[]     = new Criterion\Visibility( Criterion\Visibility::VISIBLE );
+        foreach ( $excludes['contentTypeIdentifiers'] as $contentTypeIdentifier )
+        {
+            $criterion[] = new Criterion\LogicalNot( new Criterion\ContentTypeIdentifier( $contentTypeIdentifier ) );
+        }
+        foreach ( $excludes['subtrees'] as $locationId )
+        {
+            $excludedLocation = $locationService->loadLocation( $locationId );
+            $criterion[]      = new Criterion\LogicalNot( new Criterion\Subtree( $excludedLocation->pathString ) );
+        }
+        foreach ( $excludes['locations'] as $locationId )
+        {
+            $criterion[] = new Criterion\LogicalNot( new Criterion\LocationId( $locationId ) );
+        }
+
+        $query->query = new Criterion\LogicalAnd( $criterion );
+        $query->sortClauses = [ new SortClause\DatePublished( Query::SORT_DESC) ];
+
+        return $query;
+    }
 
     /**
      * Sitemaps.xml route
      *
-     * @Route("/sitemap.xml")
+     * @Route("/sitemap.xml", name="_novaseo_sitemap_index")
      * @Method("GET")
      *
      * @return Response
      */
-    public function sitemapAction()
+    public function indexAction()
     {
-        $locationService = $this->get( "ezpublish.api.repository" )->getLocationService();
-        $routerService   = $this->get( "ezpublish.urlalias_router" );
-        $contentTypeService = $this->get( "ezpublish.api.repository" )->getContentTypeService();
-        $rootLocationId  = $this->getConfigResolver()->getParameter( 'content.tree_root.location_id' );
-        $excludes  = $this->getConfigResolver()->getParameter( 'sitemap_excludes', 'novae_zseo' );
+        $searchService = $this->get( "ezpublish.api.repository" )->getSearchService();
+        $query         = $this->getQuery();
+        $query->limit  = 0;
+        $resultCount   = $searchService->findLocations( $query )->totalCount;
 
-        foreach ( $excludes['contentTypeIdentifiers'] as &$contentTypeIdentifier )
+        // Dom Doc
+        $sitemap               = new DOMDocument( "1.0", "UTF-8" );
+        $sitemap->formatOutput = true;
+
+        // create an index if we are greater than th PACKET_MAX
+        if ( $resultCount > static::PACKET_MAX )
         {
-            $contentTypeIdentifier = (int)$contentTypeService->loadContentTypeByIdentifier( $contentTypeIdentifier )->id;
+            $root = $sitemap->createElement( "sitemapindex" );
+            $root->setAttribute( "xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9" );
+            $sitemap->appendChild( $root );
+
+            $this->fillSitemapIndex( $sitemap, $resultCount, $root );
+
+            return new Response( $sitemap->saveXML(), 200, [ "Content-type" => "text/xml" ] );
         }
 
+        // if we are less or equal than the PACKET_SIZE, redo the search with no limit and list directly the urlmap
+        $query->limit = $resultCount;
+        $results      = $searchService->findLocations( $query );
+        $root         = $sitemap->createElement( "urlset" );
+        $root->setAttribute( "xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9" );
+        $this->fillSitemap( $sitemap, $root, $results );
+        $sitemap->appendChild( $root );
+
+        $response = new Response( $sitemap->saveXML(), 200, [ "Content-type" => "text/xml" ] );
+        $response->setSharedMaxAge( 24 * 3600 );
+
+        return $response;
+    }
+
+    /**
+     * @param integer $page
+     * @Route("/sitemap-{page}.xml", name="_novaseo_sitemap_page", requirements={"page" = "\d+"}, defaults={"page" = 1})
+     *
+     * @return Response
+     */
+    public function pageAction( $page = 1 )
+    {
         $sitemap               = new DOMDocument( "1.0", "UTF-8" );
         $root                  = $sitemap->createElement( "urlset" );
         $sitemap->formatOutput = true;
         $root->setAttribute( "xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9" );
         $sitemap->appendChild( $root );
-        $loadChildrenFunc = function ( $parentLocationId ) use (
-            &$loadChildrenFunc,
-            $routerService,
-            $locationService,
-            $sitemap,
-            $root,
-            $excludes
-        )
-        {
-            /** @var LocationService $locationService */
-            /** @var Location $location */
-            $location = $locationService->loadLocation( $parentLocationId );
+        $query         = $this->getQuery();
+        $query->limit  = static::PACKET_MAX;
+        $query->offset = static::PACKET_MAX * ( $page - 1 );
 
-            if ( ( !in_array( $location->id, $excludes['locations'] ) ) &&
-                 ( !in_array( $location->id, $excludes['subtrees'] ) ) &&
-                 ( !in_array( $location->contentInfo->contentTypeId, $excludes['contentTypeIdentifiers'] ) )
-            )
-            {
-                $url = $routerService->generate( $location, [], true );
-                $modified = date( "c", $location->contentInfo->modificationDate->getTimestamp() );
-                $loc      = $sitemap->createElement( "loc", $url );
-                $lastmod  = $sitemap->createElement( "lastmod", $modified );
-                $urlElt   = $sitemap->createElement( "url" );
-                $urlElt->appendChild( $loc );
-                $urlElt->appendChild( $lastmod );
-                $root->appendChild( $urlElt );
-            }
+        $searchService = $this->get( "ezpublish.api.repository" )->getSearchService();
 
-            if ( !in_array( $location->id, $excludes['subtrees'] ) )
-            {
-                $childrenList = $locationService->loadLocationChildren( $location );
-                /** @var LocationList $childrenList */
-                if ( count( $childrenList->totalCount > 0 ) )
-                {
-                    foreach ( $childrenList->locations as $locationChild )
-                    {
-                        /** @var Location $locationChild */
-                        $loadChildrenFunc( $locationChild->id );
-                    }
-                }
-            }
-        };
+        $results = $searchService->findLocations( $query );
+        $this->fillSitemap( $sitemap, $root, $results );
 
-        $loadChildrenFunc( $rootLocationId );
-
-        $response = new Response();
+        $response = new Response( $sitemap->saveXML(), 200, [ "Content-type" => "text/xml" ] );
         $response->setSharedMaxAge( 24 * 3600 );
-        $response->headers->set( "Content-Type", "text/xml" );
-        $response->setContent( $sitemap->saveXML() );
 
         return $response;
+    }
+
+
+    /**
+     * Fill a sitemap
+     *
+     * @param DOMDocument  $sitemap
+     * @param DOMElement   $root
+     * @param SearchResult $results
+     */
+    protected function fillSitemap( $sitemap, $root, SearchResult $results )
+    {
+        foreach ( $results->searchHits as $searchHit )
+        {
+            /**
+             * @var SearchHit $searchHit
+             * @var Location  $location
+             *
+             */
+            $location = $searchHit->valueObject;
+            $url      = $this->generateUrl( $location, [ ], true );
+            $modified = $location->contentInfo->modificationDate->format( "c" );
+            $loc      = $sitemap->createElement( "loc", $url );
+            $lastmod  = $sitemap->createElement( "lastmod", $modified );
+            $urlElt   = $sitemap->createElement( "url" );
+            $urlElt->appendChild( $loc );
+            $urlElt->appendChild( $lastmod );
+            $root->appendChild( $urlElt );
+        }
+    }
+
+    /**
+     * Fill the sitemap index
+     *
+     * @param DOMDocument $sitemap
+     * @param integer     $numberOfResults
+     * @param DOMElement  $root
+     */
+    protected function fillSitemapIndex( $sitemap, $numberOfResults, $root )
+    {
+        $numberOfPage = (int)ceil( $numberOfResults / static::PACKET_MAX );
+        for ( $sitemapNumber = 1; $sitemapNumber <= $numberOfPage; $sitemapNumber++ )
+        {
+            $sitemapElt       = $sitemap->createElement( "sitemap" );
+            $locUrl           = $this->generateUrl( "_novaseo_sitemap_page", [ "page" => $sitemapNumber ], true );
+            $loc              = $sitemap->createElement( "loc", $locUrl );
+            $date             = new DateTime();
+            $modificationDate = $date->format( 'c' );
+            $mod              = $sitemap->createElement( 'lastmod', $modificationDate );
+            $sitemapElt->appendChild( $loc );
+            $sitemapElt->appendChild( $mod );
+            $root->appendChild( $sitemapElt );
+        }
     }
 }
