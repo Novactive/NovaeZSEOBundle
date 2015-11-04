@@ -188,7 +188,7 @@ This pattern allows you to define a fallback on optional Field, _&lt;title|name&
 Depending where you have set this pattern, the system will fallback to the other level
 
 
-### Do what you want
+### Do what you want to
 
 That's really powerful, and you can do almost what you want to.
 
@@ -196,7 +196,8 @@ If it's not enough, you can also add a sixth level with Twig manipulation!
 
 > You can use a image and and object_relation to an image ( needed for facebook image url for example )
 
-### Do what you want - Even better !
+
+### Even better !
 
 Started at the version 1.1.0, you can define a CustomFallback service
 
