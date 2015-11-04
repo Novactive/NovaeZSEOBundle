@@ -119,7 +119,6 @@ novae_zseo:
                 contentTypeIdentifiers: ['footer','something']
 ```
 
-> It could be a performance issue, we plan to add a better way to do that soon on this extension
 
 
 ## Google Site Verification file
