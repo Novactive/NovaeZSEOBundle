@@ -19,7 +19,7 @@
             {% set fallbackedContent = contentInfo|fallback_novaseometas( meta.name ) %}
             {% if fallbackedContent is not empty %}
                 {% if meta.name == "title" %}
-                    {% set isCanonicalFind = true %}
+                    {% set isTtitleFind = true %}
                     <title>{{ fallbackedContent }}</title>
                 {% else %}
                     <meta name="{{ meta.name }}" content="{{ fallbackedContent }}"/>
