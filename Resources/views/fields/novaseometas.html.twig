@@ -12,6 +12,8 @@
             {% elseif meta.name == "canonical" %}
                 <link rel="canonical" href="{{ meta.content }}" />
                 {% set isCanonicalFind = true %}
+            {% elseif meta.name|trim starts with "og" %}
+                <meta property="{{ meta.name }}" content="{{ meta.content }}"/>
             {% else %}
                 <meta name="{{ meta.name }}" content="{{ meta.content }}"/>
             {% endif %}
