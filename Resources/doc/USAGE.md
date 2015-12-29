@@ -222,3 +222,23 @@ Help:
      - Name will be: Metas
      - Category will be: SEO
 ```
+
+## Convert xrow field type with data to the new novametas format
+
+```bash
+$ php ezpublish/console novae_zseo:convertxrow -h
+
+Usage:
+ novae_zseo:convertxrow [--identifier="..."] [--identifiers="..."] [--group_identifier="..."]
+
+Options:
+ --identifier          a content type identifier
+ --identifiers         some content types identifier, separated by a comma
+ --group_identifier    a content type group identifier
+ ...
+ --siteaccess          SiteAccess to use for operations. If not provided, default siteaccess will be used
+
+Help:
+ The novae_zseo:convertxrow command converts existing xrow field type data to Nova eZ SEO bundle format.
+ You can select the ContentType via the identifier, identifiers or group_identifier option.
+```

@@ -2,6 +2,8 @@ parameters:
     novactive.novaseobundle.legacy.configuration.class: Novactive\Bundle\eZSEOBundle\Core\LegacyConfiguration
     novactive.novaseobundle.meta_name_schema.class: Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema
     novactive.novaseobundle.twig_extension.class: Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension
+    novactive.novaseobundle.xrowconverter.class: Novactive\Bundle\eZSEOBundle\Command\ConvertXRow2NovaCommand
+
 services:
     novactive.novaseobundle.legacy.configuration:
         class: %novactive.novaseobundle.legacy.configuration.class%
@@ -25,3 +27,14 @@ services:
             - [setHtml5Converter, ["@ezpublish.fieldtype.ezxmltext.converter.html5"]]
             - [setImageVariationService, ["@ezpublish.fieldtype.ezimage.variation_service", @ezpublish.fieldtype.ezimage]]
 
+    novactive.novaseobundle.xrowconverter:
+        class: %novactive.novaseobundle.xrowconverter.class%
+        arguments:
+            - @ezpublish.config.resolver
+            - @ezpublish.api.repository
+            - @ezpublish.api.service.user
+            - @ezpublish.api.service.content_type
+            - @ezpublish.api.service.search
+            - @ezpublish.api.service.content
+        tags:
+            - { name: console.command }
