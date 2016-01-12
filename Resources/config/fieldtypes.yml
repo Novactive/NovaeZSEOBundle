@@ -11,6 +11,12 @@ services:
         tags:
             - {name: ezpublish.fieldType, alias: novaseometas}
 
+    # Marking fieldtype as unindexable for ez platform solr bundle to stop errors
+    novactive.fieldType.novaseometas.indexable.unindexed:
+        class: %ezpublish.fieldType.indexable.unindexed.class%
+        tags:
+            - {name: ezpublish.fieldType.indexable, alias: novaseometas}
+
     novactive.novaseobundle.fieldType.novaseometas.externalStorage:
         class: %novactive.novaseobundle.fieldType.novaseometas.externalStorage.class%
         tags:
