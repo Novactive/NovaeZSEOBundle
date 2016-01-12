@@ -218,7 +218,7 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
         // find and convert all related content objects
         $query = new Query();
 
-        $query->filter = new Criterion\ContentTypeIdentifier($contentTypeIdentifiers);
+        $query->query = new Criterion\ContentTypeIdentifier($contentTypeIdentifiers);
         $query->performCount = false;
 
         $searchResults = $this->searchService->findContent($query);
@@ -236,11 +236,13 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
             $values = array();
 
             foreach ($contentArray as $content) {
-                $object = \eZContentObject::fetch($content->id);
-                $attr = $object->attribute('data_map');
+                foreach ($content->versionInfo->languageCodes as $languageCode) {
+                    $object = \eZContentObject::fetch($content->id, $languageCode);
+                    $attr = $object->attribute('data_map');
 
-                if (!empty($attr['metadata'])) {
-                    $values[$content->id] = $attr['metadata']->DataText;
+                    if (!empty($attr['metadata'])) {
+                        $values[$content->id][$languageCode] = $attr['metadata']->DataText;
+                    }
                 }
             }
 
@@ -257,7 +259,7 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
         foreach ($xrowValues as $contentId => $value) {
             $output->writeln(
                 sprintf(
-                    "\t%d/%d:\t<info>%s</info> (content ID: <info>%d</info>)",
+                    "\t%d/%d: <info>%s</info> (content ID: <info>%d</info>)",
                     ++$conversionCounter,
                     $conversionTotal,
                     $contentArray[$contentId]->contentInfo->name,
@@ -265,39 +267,45 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
                 )
             );
 
-            $xmlParser = xml_parser_create();
-            xml_parser_set_option($xmlParser, XML_OPTION_CASE_FOLDING, false);
-
-            // prepare new field structure
             $metasFieldData = array();
-            if (xml_parse_into_struct($xmlParser, $value, $valueArray) > 0) {
-                foreach ($valueArray as $element) {
-                    if (!in_array($element['tag'], self::IGNORED_XROW_KEYS)) {
-                        $metasFieldAttribute = new \Novactive\Bundle\eZSEOBundle\Core\Meta();
+            foreach ($value as $language => $metaData) {
+                $xmlParser = xml_parser_create();
+                xml_parser_set_option($xmlParser, XML_OPTION_CASE_FOLDING, false);
 
-                        $metasFieldAttribute->setName($element['tag']);
-                        // max 256 chars due to database column limitation
-                        $metasFieldAttribute->setContent(empty($element['value']) ? '' : substr($element['value'], 0, 255));
+                // prepare new field structure
+                if (xml_parse_into_struct($xmlParser, $value[$language], $valueArray) > 0) {
+                    foreach ($valueArray as $element) {
+                        if (!in_array($element['tag'], self::IGNORED_XROW_KEYS)) {
+                            $metasFieldAttribute = new \Novactive\Bundle\eZSEOBundle\Core\Meta();
 
-                        $metasFieldData[$element['tag']] = $metasFieldAttribute;
+                            $metasFieldAttribute->setName($element['tag']);
+                            // max 256 chars due to database column limitation
+                            $metasFieldAttribute->setContent(empty($element['value']) ? '' : substr($element['value'], 0, 255));
+
+                            $metasFieldData[$language][$element['tag']] = $metasFieldAttribute;
+                        }
                     }
                 }
+
+                xml_parser_free($xmlParser);
             }
 
-            xml_parser_free($xmlParser);
-
             // publish data with the new field structure
-            if (!empty($metasFieldData)) {
-                try {
-                    $contentDraft = $this->contentService->createContentDraft($contentArray[$contentId]->versionInfo->contentInfo);
+            foreach ($metasFieldData as $language => $metaData) {
+                if (!empty($value)) {
+                    $output->writeln(sprintf("\t\tupdating: <info>%s</info>", $language));
+                    try {
+                        $contentDraft = $this->contentService->createContentDraft($contentArray[$contentId]->contentInfo);
 
-                    $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
-                    $contentUpdateStruct->setField($this->configResolver->getParameter('fieldtype_metas_identifier', 'novae_zseo'), $metasFieldData);
+                        $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
+                        $contentUpdateStruct->initialLanguageCode = $language;
+                        $contentUpdateStruct->setField($this->configResolver->getParameter('fieldtype_metas_identifier', 'novae_zseo'), $metaData);
 
-                    $contentDraft = $this->contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
-                    $this->contentService->publishVersion($contentDraft->versionInfo);
-                } catch (Exception $e) {
-                    $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+                        $contentDraft = $this->contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
+                        $this->contentService->publishVersion($contentDraft->versionInfo);
+                    } catch (Exception $e) {
+                        $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+                    }
                 }
             }
         }
