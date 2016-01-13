@@ -35,14 +35,6 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
     const ADMIN_USER_ID = 14;
 
     /**
-     * Keys to ignore when importing xrow data from XML structure.
-     *
-     * @todo move to configuration
-     * @var array
-     */
-    const IGNORED_XROW_KEYS = array('MetaData', 'change', 'priority', 'sitemap_use');
-
-    /**
      * Default `metas` field type description.
      *
      * @todo move to configuration
@@ -275,7 +267,8 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
                 // prepare new field structure
                 if (xml_parse_into_struct($xmlParser, $value[$language], $valueArray) > 0) {
                     foreach ($valueArray as $element) {
-                        if (!in_array($element['tag'], self::IGNORED_XROW_KEYS)) {
+                        // some of the xrow field data keys are not needed, just skip them
+                        if (!in_array($element['tag'], array('MetaData', 'change', 'priority', 'sitemap_use'))) {
                             $metasFieldAttribute = new \Novactive\Bundle\eZSEOBundle\Core\Meta();
 
                             $metasFieldAttribute->setName($element['tag']);
