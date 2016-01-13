@@ -288,13 +288,13 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
                 if (!empty($value)) {
                     $output->writeln(sprintf("\t\tupdating: <info>%s</info>", $language));
                     try {
-                        $contentDraft = $this->contentService->createContentDraft($contentArray[$contentId]->contentInfo);
+                        $translatedContent = $this->contentService->loadContent($contentId, array($language));
 
+                        $contentDraft = $this->contentService->createContentDraft($translatedContent->contentInfo);
                         $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
-                        $contentUpdateStruct->initialLanguageCode = $language;
-                        $contentUpdateStruct->setField($this->configResolver->getParameter('fieldtype_metas_identifier', 'novae_zseo'), $metaData);
-
+                        $contentUpdateStruct->setField($this->configResolver->getParameter('fieldtype_metas_identifier', 'novae_zseo'), $metaData, $language);
                         $contentDraft = $this->contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
+
                         $this->contentService->publishVersion($contentDraft->versionInfo);
                     } catch (Exception $e) {
                         $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
