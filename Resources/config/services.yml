@@ -2,7 +2,10 @@ parameters:
     novactive.novaseobundle.legacy.configuration.class: Novactive\Bundle\eZSEOBundle\Core\LegacyConfiguration
     novactive.novaseobundle.meta_name_schema.class: Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema
     novactive.novaseobundle.twig_extension.class: Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension
+    novactive.novaseobundle.installer.field.class: Novactive\Bundle\eZSEOBundle\Installer\Field
+    novactive.novaseobundle.addfieldtype.class: Novactive\Bundle\eZSEOBundle\Command\AddNovaSEOMetasFieldTypeCommand
     novactive.novaseobundle.xrowconverter.class: Novactive\Bundle\eZSEOBundle\Command\ConvertXRow2NovaCommand
+    novactive.novaseobundle.admin_user_id: 14
 
 services:
     novactive.novaseobundle.legacy.configuration:
@@ -27,6 +30,23 @@ services:
             - [setHtml5Converter, ["@ezpublish.fieldtype.ezxmltext.converter.html5"]]
             - [setImageVariationService, ["@ezpublish.fieldtype.ezimage.variation_service", @ezpublish.fieldtype.ezimage]]
 
+    novactive.novaseobundle.installer.field:
+        class: %novactive.novaseobundle.installer.field.class%
+        arguments:
+            - @ezpublish.api.service.content_type
+
+    novactive.novaseobundle.addfieldtype:
+        class: %novactive.novaseobundle.addfieldtype.class%
+        arguments:
+            - @ezpublish.config.resolver
+            - @ezpublish.api.repository
+            - @ezpublish.api.service.user
+            - @ezpublish.api.service.content_type
+            - @novactive.novaseobundle.installer.field
+            - %novactive.novaseobundle.admin_user_id%
+        tags:
+            - { name: console.command }
+
     novactive.novaseobundle.xrowconverter:
         class: %novactive.novaseobundle.xrowconverter.class%
         arguments:
@@ -36,5 +56,7 @@ services:
             - @ezpublish.api.service.content_type
             - @ezpublish.api.service.search
             - @ezpublish.api.service.content
+            - @novactive.novaseobundle.installer.field
+            - %novactive.novaseobundle.admin_user_id%
         tags:
             - { name: console.command }

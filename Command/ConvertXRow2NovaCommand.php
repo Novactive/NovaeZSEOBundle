@@ -3,7 +3,6 @@
 namespace Novactive\Bundle\eZSEOBundle\Command;
 
 use Exception;
-use DateTime;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -19,6 +18,7 @@ use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Query;
 use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 use Novactive\Bundle\eZSEOBundle\Core;
+use Novactive\Bundle\eZSEOBundle\Installer\Field;
 
 /**
  * Converts xrow field type data to Nova eZ SEO Bundle format (requires legacy bridge).
@@ -27,41 +27,10 @@ use Novactive\Bundle\eZSEOBundle\Core;
  */
 class ConvertXRow2NovaCommand extends ContainerAwareCommand
 {
-    /**
-     * Default ID for Administrator user.
-     *
-     * @var int
-     */
-    const ADMIN_USER_ID = 14;
-
-    /**
-     * Default `metas` field type description.
-     *
-     * @todo move to configuration
-     * @var string
-     */
-    const METAS_FIELD_DESCRIPTION = 'Metas for Search Engine Optimizations';
-
-    /**
-     * Default `metas` field name.
-     *
-     * @todo move to configuration
-     * @var string
-     */
-    const METAS_FIELD_NAME = 'Metas';
-
-    /**
-     * Default `metas` group name.
-     *
-     * @todo move to configuration
-     * @var string
-     */
-    const METAS_FIELD_GROUP = 'novaseo';
-
     /** @var \eZ\Publish\Core\MVC\ConfigResolverInterface */
     private $configResolver;
 
-    /** @var |eZ\Publish\API\Repository\Repository */
+    /** @var \eZ\Publish\API\Repository\Repository */
     private $repository;
 
     /** @var \eZ\Publish\API\Repository\UserService */
@@ -75,6 +44,12 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
 
     /** @var \eZ\Publish\API\Repository\ContentService */
     private $contentService;
+
+    /** @var \Novactive\Bundle\eZSEOBundle\Installer\Field */
+    private $fieldInstaller;
+
+    /** @var int */
+    private $adminUserId;
 
     /**
      * Returns legacy kernel object.
@@ -166,42 +141,22 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
         }
 
         $contentTypeIdentifiers = [];
+        $fieldName = $this->configResolver->getParameter('fieldtype_metas_identifier', 'novae_zseo');
 
         // add new field type to existing ContentTypes
         foreach ($this->contentTypes as $contentType) {
             $contentTypeIdentifiers[] = $contentType->identifier;
 
-            $metasFieldDefinition = $contentType->getFieldDefinition($this->configResolver->getParameter('fieldtype_metas_identifier', 'novae_zseo'));
+            if (!$this->fieldInstaller->fieldExists($fieldName, $contentType)) {
+                if (!$this->fieldInstaller->addToContentType($fieldName, $contentType)) {
+                    $output->writeln(sprintf(
+                        'There were errors when adding new field to <info>%s</info> ContentType: <error>%s</error>',
+                        $contentType->getName($contentType->mainLanguageCode),
+                        $this->fieldInstaller->getErrorMessage()
+                    ));
 
-            // add `metas` field definition to selected ContentType only if it not exists
-            if (empty($metasFieldDefinition)) {
-                $contentTypeDraft = $this->contentTypeService->createContentTypeDraft($contentType);
-
-                $typeUpdate = $this->contentTypeService->newContentTypeUpdateStruct();
-                $typeUpdate->modificationDate = new DateTime();
-
-                $knowLanguage = array_keys($contentType->getDescriptions());
-
-                if (!in_array($contentType->mainLanguageCode, $knowLanguage)) {
-                    $knowLanguage[] = $contentType->mainLanguageCode;
+                    return;
                 }
-
-                $fieldCreateStruct = $this->contentTypeService->newFieldDefinitionCreateStruct(
-                    $this->configResolver->getParameter('fieldtype_metas_identifier', 'novae_zseo'),
-                    'novaseometas'
-                );
-                $fieldCreateStruct->names = array_fill_keys($knowLanguage, self::METAS_FIELD_NAME);
-                $fieldCreateStruct->descriptions = array_fill_keys($knowLanguage, self::METAS_FIELD_DESCRIPTION);
-                $fieldCreateStruct->fieldGroup = self::METAS_FIELD_GROUP;
-                $fieldCreateStruct->position = 100;
-                $fieldCreateStruct->isTranslatable = true;
-                $fieldCreateStruct->isRequired = false;
-                $fieldCreateStruct->isSearchable = false;
-                $fieldCreateStruct->isInfoCollector = false;
-
-                $this->contentTypeService->updateContentTypeDraft($contentTypeDraft, $typeUpdate);
-                $this->contentTypeService->addFieldDefinition($contentTypeDraft, $fieldCreateStruct);
-                $this->contentTypeService->publishContentTypeDraft($contentTypeDraft);
 
                 $output->writeln(sprintf('New field was added to <info>%s</info> ContentType', $contentType->getName($contentType->mainLanguageCode)));
             }
@@ -292,7 +247,7 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
 
                         $contentDraft = $this->contentService->createContentDraft($translatedContent->contentInfo);
                         $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
-                        $contentUpdateStruct->setField($this->configResolver->getParameter('fieldtype_metas_identifier', 'novae_zseo'), $metaData, $language);
+                        $contentUpdateStruct->setField($fieldName, $metaData, $language);
                         $contentDraft = $this->contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
 
                         $this->contentService->publishVersion($contentDraft->versionInfo);
@@ -308,7 +263,7 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->repository->setCurrentUser($this->userService->loadUser(self::ADMIN_USER_ID));
+        $this->repository->setCurrentUser($this->userService->loadUser($this->adminUserId));
     }
 
     /**
@@ -318,6 +273,8 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
      * @param \eZ\Publish\API\Repository\ContentTypeService $contentTypeService
      * @param \eZ\Publish\API\Repository\SearchService $searchService
      * @param \eZ\Publish\API\Repository\ContentService $contentService
+     * @param \Novactive\Bundle\eZSEOBundle\Installer\Field $fieldInstaller
+     * @param int $adminUserId
      */
     public function __construct(
         ConfigResolverInterface $configResolver,
@@ -325,7 +282,9 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
         UserService $userService,
         ContentTypeService $contentTypeService,
         SearchService $searchService,
-        ContentService $contentService
+        ContentService $contentService,
+        Field $fieldInstaller,
+        $adminUserId
     ) {
         $this->configResolver = $configResolver;
         $this->repository = $repository;
@@ -333,6 +292,8 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
         $this->contentTypeService = $contentTypeService;
         $this->searchService = $searchService;
         $this->contentService = $contentService;
+        $this->fieldInstaller = $fieldInstaller;
+        $this->adminUserId = $adminUserId;
 
         parent::__construct();
     }

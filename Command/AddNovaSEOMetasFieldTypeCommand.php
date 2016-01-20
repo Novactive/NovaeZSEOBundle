@@ -10,26 +10,40 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use eZ\Publish\API\Repository\Values\ContentType\ContentType;
-use DateTime;
+use eZ\Publish\API\Repository\ContentTypeService;
 use eZ\Publish\API\Repository\Repository;
+use eZ\Publish\API\Repository\UserService;
+use Novactive\Bundle\eZSEOBundle\Installer\Field;
 
 /**
  * Class AddNovaSEOMetasFieldTypeCommand
  */
-class AddNovaSEOMetasFieldTypeCommand extends ContainerAwareCommand
+class AddNovaSEOMetasFieldTypeCommand extends Command
 {
-    /**
-     * Repository eZ Publish
-     *
-     * @var Repository
-     */
-    protected $eZPublishRepository;
+    /** @var \eZ\Publish\Core\MVC\ConfigResolverInterface */
+    private $configResolver;
+
+    /** @var \eZ\Publish\API\Repository\Repository */
+    private $repository;
+
+    /** @var \eZ\Publish\API\Repository\UserService */
+    private $userService;
+
+    /** @var \eZ\Publish\API\Repository\ContentTypeService */
+    private $contentTypeService;
+
+    /** @var \Novactive\Bundle\eZSEOBundle\Installer\Field */
+    private $fieldInstaller;
+
+    /** @var int */
+    private $adminUserId;
 
     /**
      * List of the ContentType we'll manage
@@ -44,10 +58,10 @@ class AddNovaSEOMetasFieldTypeCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName( 'novae_zseo:addnovaseometasfieldtype' )
-            ->addOption( 'identifier', null, InputOption::VALUE_REQUIRED, 'a content type identifier' )
-            ->addOption( 'identifiers', null, InputOption::VALUE_REQUIRED, 'some content types identifier, separated by a comma' )
-            ->addOption( 'group_identifier', null, InputOption::VALUE_REQUIRED, 'a content type group identifier' )
+            ->setName('novae_zseo:addnovaseometasfieldtype')
+            ->addOption('identifier', null, InputOption::VALUE_REQUIRED, 'a content type identifier')
+            ->addOption('identifiers', null, InputOption::VALUE_REQUIRED, 'some content types identifier, separated by a comma')
+            ->addOption('group_identifier', null, InputOption::VALUE_REQUIRED, 'a content type group identifier')
             ->setDescription(
                 'Add the novaseometas FieldType to Content Types'
             )->setHelp(
@@ -64,59 +78,36 @@ EOT
     /**
      * Execute the Command
      *
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      */
-    protected function execute( InputInterface $input, OutputInterface $output )
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $input;// phpmd trick
-        $contentTypeService = $this->eZPublishRepository->getContentTypeService();
-        $configResolver = $this->getContainer()->get( "ezpublish.config.resolver" );
-        try
-        {
-            $contentTypes = $this->contentTypes;
-            if ( count( $contentTypes ) == 0 )
-            {
-                $output->writeln( "Nothing to do." );
-                return;
-            }
-            foreach ( $contentTypes as $contentType )
-            {
-                /** @var ContentType $contentType */
-                $contentTypeDraft = $contentTypeService->createContentTypeDraft( $contentType );
+        $contentTypes = $this->contentTypes;
+        if (count($contentTypes) == 0) {
+            $output->writeln("Nothing to do.");
 
-                $typeUpdate = $contentTypeService->newContentTypeUpdateStruct();
-                $typeUpdate->modificationDate = new DateTime();
-
-                $knowLanguage = array_keys( $contentType->getDescriptions() );
-                // just in case the mainLanguageCode is used for fallback, we need it
-                if ( !in_array( $contentType->mainLanguageCode, $knowLanguage ) )
-                {
-                    $knowLanguage[] = $contentType->mainLanguageCode;
-                }
-                $fieldCreateStruct = $contentTypeService->newFieldDefinitionCreateStruct(
-                    $configResolver->getParameter( 'fieldtype_metas_identifier', 'novae_zseo' ),
-                    'novaseometas'
-                );
-                $fieldCreateStruct->names = array_fill_keys( $knowLanguage, 'Metas' );
-                $fieldCreateStruct->descriptions = array_fill_keys( $knowLanguage, 'Metas for Search Engine Optimizations' );
-                $fieldCreateStruct->fieldGroup = 'novaseo';
-                $fieldCreateStruct->position = 100;
-                $fieldCreateStruct->isTranslatable = true;
-                $fieldCreateStruct->isRequired = false;
-                $fieldCreateStruct->isSearchable = false;
-                $fieldCreateStruct->isInfoCollector = false;
-                $contentTypeService->updateContentTypeDraft( $contentTypeDraft, $typeUpdate );
-                $contentTypeService->addFieldDefinition( $contentTypeDraft, $fieldCreateStruct );
-                $contentTypeService->publishContentTypeDraft( $contentTypeDraft );
-            }
-        }
-        catch ( \Exception $e )
-        {
-            $output->writeln( "<error>{$e->getMessage()}</error>" );
             return;
         }
-        $output->writeln( "FieldType added." );
+
+        $fieldName = $this->configResolver->getParameter('fieldtype_metas_identifier', 'novae_zseo');
+
+        foreach ($contentTypes as $contentType) {
+            if (!$this->fieldInstaller->fieldExists($fieldName, $contentType)) {
+                if (!$this->fieldInstaller->addToContentType($fieldName, $contentType)) {
+                    $output->writeln(sprintf(
+                        'There were errors when adding new field to <info>%s</info> ContentType: <error>%s</error>',
+                        $contentType->getName($contentType->mainLanguageCode),
+                        $this->fieldInstaller->getErrorMessage()
+                    ));
+
+                    return;
+                }
+                $output->writeln('FieldType added');
+            }
+            $output->writeln('FieldType already exists');
+        }
     }
 
     /**
@@ -129,12 +120,11 @@ EOT
     protected function getContentTypes( InputInterface $input )
     {
         $contentTypes = [];
-        $contentTypeService = $this->eZPublishRepository->getContentTypeService();
 
         if ( $contentTypeGroupIdentifier = $input->getOption( 'group_identifier' ) )
         {
-            $contentTypeGroup = $contentTypeService->loadContentTypeGroupByIdentifier( $contentTypeGroupIdentifier );
-            $contentTypes     = $contentTypeService->loadContentTypes( $contentTypeGroup );
+            $contentTypeGroup = $this->contentTypeService->loadContentTypeGroupByIdentifier( $contentTypeGroupIdentifier );
+            $contentTypes     = $this->contentTypeService->loadContentTypes( $contentTypeGroup );
         }
         if ( $contentTypeIdentifiers = explode( ",", $input->getOption( 'identifiers' ) ) )
         {
@@ -142,13 +132,13 @@ EOT
             {
                 if ( $identifier != "" )
                 {
-                    $contentTypes[] = $contentTypeService->loadContentTypeByIdentifier( $identifier );
+                    $contentTypes[] = $this->contentTypeService->loadContentTypeByIdentifier( $identifier );
                 }
             }
         }
         if ( $contentTypeIdentifier = $input->getOption( 'identifier' ) )
         {
-            $contentTypes[] = $contentTypeService->loadContentTypeByIdentifier( $contentTypeIdentifier );
+            $contentTypes[] = $this->contentTypeService->loadContentTypeByIdentifier( $contentTypeIdentifier );
         }
         return $contentTypes;
     }
@@ -184,7 +174,33 @@ EOT
     {
         $input;// phpmd trick
         $output;// phpmd trick
-        $this->eZPublishRepository = $this->getContainer()->get( "ezpublish.api.repository" );
-        $this->eZPublishRepository->setCurrentUser( $this->eZPublishRepository->getUserService()->loadUser( 14 ) );
+
+        $this->repository->setCurrentUser($this->userService->loadUser($this->adminUserId));
+    }
+
+    /**
+     * @param \eZ\Publish\Core\MVC\ConfigResolverInterface $configResolver
+     * @param \eZ\Publish\API\Repository\Repository $repository
+     * @param \eZ\Publish\API\Repository\UserService $userService
+     * @param \eZ\Publish\API\Repository\ContentTypeService $contentTypeService
+     * @param \Novactive\Bundle\eZSEOBundle\Installer\Field $fieldInstaller
+     * @param int $adminUserId
+     */
+    public function __construct(
+        ConfigResolverInterface $configResolver,
+        Repository $repository,
+        UserService $userService,
+        ContentTypeService $contentTypeService,
+        Field $fieldInstaller,
+        $adminUserId
+    ) {
+        $this->configResolver = $configResolver;
+        $this->repository = $repository;
+        $this->userService = $userService;
+        $this->contentTypeService = $contentTypeService;
+        $this->fieldInstaller = $fieldInstaller;
+        $this->adminUserId = $adminUserId;
+
+        parent::__construct();
     }
 }
