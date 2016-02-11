@@ -185,11 +185,11 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
 
             foreach ($contentArray as $content) {
                 foreach ($content->versionInfo->languageCodes as $languageCode) {
-                    $object = \eZContentObject::fetch($content->id, $languageCode);
-                    $attr = $object->attribute('data_map');
+                    $object = \eZContentObject::fetch($content->id);
+                    $dataMap = $object->fetchDataMap(false, $languageCode);
 
-                    if (!empty($attr['metadata'])) {
-                        $values[$content->id][$languageCode] = $attr['metadata']->DataText;
+                    if (!empty($dataMap['metadata'])) {
+                        $values[$content->id][$languageCode] = $dataMap['metadata']->DataText;
                     }
                 }
             }
