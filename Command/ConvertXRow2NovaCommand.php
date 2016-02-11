@@ -3,6 +3,7 @@
 namespace Novactive\Bundle\eZSEOBundle\Command;
 
 use Exception;
+use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,7 +18,7 @@ use eZ\Publish\API\Repository\Values\ContentType\ContentType;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Query;
 use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
-use Novactive\Bundle\eZSEOBundle\Core;
+use Novactive\Bundle\eZSEOBundle\Core\Meta;
 use Novactive\Bundle\eZSEOBundle\Installer\Field;
 
 /**
@@ -224,7 +225,7 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
                     foreach ($valueArray as $element) {
                         // some of the xrow field data keys are not needed, just skip them
                         if (!in_array($element['tag'], array('MetaData', 'change', 'priority', 'sitemap_use'))) {
-                            $metasFieldAttribute = new \Novactive\Bundle\eZSEOBundle\Core\Meta();
+                            $metasFieldAttribute = new Meta();
 
                             $metasFieldAttribute->setName($element['tag']);
                             // max 256 chars due to database column limitation
@@ -242,17 +243,23 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
             foreach ($metasFieldData as $language => $metaData) {
                 if (!empty($value)) {
                     $output->writeln(sprintf("\t\tupdating: <info>%s</info>", $language));
+
+                    $translatedContent = $this->contentService->loadContent($contentId, array($language));
+
+                    $contentDraft = $this->contentService->createContentDraft($translatedContent->contentInfo);
+                    $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
+                    $contentUpdateStruct->setField($fieldName, $metaData, $language);
+
                     try {
-                        $translatedContent = $this->contentService->loadContent($contentId, array($language));
-
-                        $contentDraft = $this->contentService->createContentDraft($translatedContent->contentInfo);
-                        $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
-                        $contentUpdateStruct->setField($fieldName, $metaData, $language);
-                        $contentDraft = $this->contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
-
-                        $this->contentService->publishVersion($contentDraft->versionInfo);
+                        $updatedContentDraft = $this->contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
                     } catch (Exception $e) {
                         $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+                    } finally {
+                        if ($updatedContentDraft) {
+                            $this->contentService->publishVersion($contentDraft->versionInfo);
+                        } else {
+                            $this->contentService->deleteVersion($contentDraft->versionInfo);
+                        }
                     }
                 }
             }
