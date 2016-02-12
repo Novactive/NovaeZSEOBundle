@@ -250,16 +250,18 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
                     $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
                     $contentUpdateStruct->setField($fieldName, $metaData, $language);
 
+                    $updatedContentDraft = null;
+
                     try {
                         $updatedContentDraft = $this->contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
                     } catch (Exception $e) {
                         $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
-                    } finally {
-                        if ($updatedContentDraft) {
-                            $this->contentService->publishVersion($contentDraft->versionInfo);
-                        } else {
-                            $this->contentService->deleteVersion($contentDraft->versionInfo);
-                        }
+                    }
+
+                    if ($updatedContentDraft) {
+                        $this->contentService->publishVersion($contentDraft->versionInfo);
+                    } else {
+                        $this->contentService->deleteVersion($contentDraft->versionInfo);
                     }
                 }
             }
