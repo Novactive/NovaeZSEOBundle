@@ -4,50 +4,43 @@ namespace Novactive\Bundle\eZSEOBundle\Installer;
 
 use Exception;
 use DateTime;
-use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\ContentTypeService;
 use eZ\Publish\API\Repository\Values\ContentType\ContentType;
 
 class Field
 {
-    /**
-     * Default `metas` field type description.
-     *
-     * @todo move to configuration
-     * @var string
-     */
-    const METAS_FIELD_DESCRIPTION = 'Metas for Search Engine Optimizations';
-
-    /**
-     * Default `metas` field name.
-     *
-     * @todo move to configuration
-     * @var string
-     */
-    const METAS_FIELD_NAME = 'Metas';
-
-    /**
-     * Default `metas` group name.
-     *
-     * @todo move to configuration
-     * @var string
-     */
-    const METAS_FIELD_GROUP = 'novaseo';
-
     /** @var \eZ\Publish\API\Repository\ContentTypeService */
     private $contentTypeService;
 
     /** @var string */
     private $errorMessage;
 
+    /** @var string */
+    private $metaFieldName;
+
+    /** @var string */
+    private $metaFieldDescription;
+
+    /** @var string */
+    private $metaFieldGroup;
+
     /**
      * @param \eZ\Publish\API\Repository\ContentTypeService $contentTypeService
+     * @param string $metaFieldName
+     * @param string $metaFieldDescription
+     * @param string $metaFieldGroup
      */
     public function __construct(
-        ContentTypeService $contentTypeService
+        ContentTypeService $contentTypeService,
+        $metaFieldName,
+        $metaFieldDescription,
+        $metaFieldGroup
     ) {
         $this->contentTypeService = $contentTypeService;
+        $this->metaFieldName = $metaFieldName;
+        $this->metaFieldDescription = $metaFieldDescription;
+        $this->metaFieldGroup = $metaFieldGroup;
     }
 
     /**
@@ -80,9 +73,9 @@ class Field
             'novaseometas'
         );
 
-        $fieldCreateStruct->names = array_fill_keys($knowLanguage, self::METAS_FIELD_NAME);
-        $fieldCreateStruct->descriptions = array_fill_keys($knowLanguage, self::METAS_FIELD_DESCRIPTION);
-        $fieldCreateStruct->fieldGroup = self::METAS_FIELD_GROUP;
+        $fieldCreateStruct->names = array_fill_keys($knowLanguage, $this->metaFieldName);
+        $fieldCreateStruct->descriptions = array_fill_keys($knowLanguage, $this->metaFieldDescription);
+        $fieldCreateStruct->fieldGroup = $this->metaFieldGroup;
         $fieldCreateStruct->position = 100;
         $fieldCreateStruct->isTranslatable = true;
         $fieldCreateStruct->isRequired = false;

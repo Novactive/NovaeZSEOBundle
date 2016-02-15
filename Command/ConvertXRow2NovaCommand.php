@@ -3,7 +3,6 @@
 namespace Novactive\Bundle\eZSEOBundle\Command;
 
 use Exception;
-use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,7 +13,6 @@ use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\UserService;
 use eZ\Publish\API\Repository\ContentTypeService;
-use eZ\Publish\API\Repository\Values\ContentType\ContentType;
 use eZ\Publish\API\Repository\SearchService;
 use eZ\Publish\API\Repository\Values\Content\Query;
 use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
@@ -52,6 +50,12 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
     /** @var int */
     private $adminUserId;
 
+    /** @var string */
+    private $metaDataFieldName;
+
+    /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType[] */
+    private $contentTypes;
+
     /**
      * Returns legacy kernel object.
      *
@@ -85,7 +89,7 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
      *
      * @param \Symfony\Component\Console\Input\InputInterface $input
      *
-     * @return ContentType[]
+     * @return \eZ\Publish\API\Repository\Values\ContentType\ContentType[]
      */
     protected function getContentTypes(InputInterface $input)
     {
@@ -141,11 +145,22 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
             return;
         }
 
-        $contentTypeIdentifiers = [];
+        $contentTypeIdentifiers = array();
         $fieldName = $this->configResolver->getParameter('fieldtype_metas_identifier', 'novae_zseo');
 
         // add new field type to existing ContentTypes
         foreach ($this->contentTypes as $contentType) {
+
+            // xrow field is missing
+            if (!$this->fieldInstaller->fieldExists($this->metaDataFieldName, $contentType)) {
+                $output->writeln(sprintf('xrow <info>%s</info> field is missing in <info>%s</info> ContentType',
+                    $this->metaDataFieldName,
+                    $contentType->getName($contentType->mainLanguageCode))
+                );
+
+                continue;
+            }
+
             $contentTypeIdentifiers[] = $contentType->identifier;
 
             if (!$this->fieldInstaller->fieldExists($fieldName, $contentType)) {
@@ -161,6 +176,15 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
 
                 $output->writeln(sprintf('New field was added to <info>%s</info> ContentType', $contentType->getName($contentType->mainLanguageCode)));
             }
+        }
+
+        if (empty($contentTypeIdentifiers)) {
+            $output->writeln(sprintf(
+                'Conversion canceled, xrow <info>%s</info> field is missing in selected ContentTypes',
+                $this->metaDataFieldName
+            ));
+
+            return;
         }
 
         // find and convert all related content objects
@@ -284,6 +308,7 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
      * @param \eZ\Publish\API\Repository\ContentService $contentService
      * @param \Novactive\Bundle\eZSEOBundle\Installer\Field $fieldInstaller
      * @param int $adminUserId
+     * @param string $metaDataFieldName
      */
     public function __construct(
         ConfigResolverInterface $configResolver,
@@ -293,7 +318,8 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
         SearchService $searchService,
         ContentService $contentService,
         Field $fieldInstaller,
-        $adminUserId
+        $adminUserId,
+        $metaDataFieldName
     ) {
         $this->configResolver = $configResolver;
         $this->repository = $repository;
@@ -303,6 +329,7 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
         $this->contentService = $contentService;
         $this->fieldInstaller = $fieldInstaller;
         $this->adminUserId = $adminUserId;
+        $this->metaDataFieldName = $metaDataFieldName;
 
         parent::__construct();
     }

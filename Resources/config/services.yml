@@ -5,7 +5,12 @@ parameters:
     novactive.novaseobundle.installer.field.class: Novactive\Bundle\eZSEOBundle\Installer\Field
     novactive.novaseobundle.addfieldtype.class: Novactive\Bundle\eZSEOBundle\Command\AddNovaSEOMetasFieldTypeCommand
     novactive.novaseobundle.xrowconverter.class: Novactive\Bundle\eZSEOBundle\Command\ConvertXRow2NovaCommand
+
     novactive.novaseobundle.admin_user_id: 14
+    novactive.novaseobundle.meta_field_name: Metas
+    novactive.novaseobundle.meta_field_description: Metas for Search Engine Optimizations
+    novactive.novaseobundle.meta_field_group: novaseo
+    novactive.novaseobundle.xrow_fied_name: metadata
 
 services:
     novactive.novaseobundle.legacy.configuration:
@@ -34,6 +39,9 @@ services:
         class: %novactive.novaseobundle.installer.field.class%
         arguments:
             - @ezpublish.api.service.content_type
+            - %novactive.novaseobundle.meta_field_name%
+            - %novactive.novaseobundle.meta_field_description%
+            - %novactive.novaseobundle.meta_field_group%
 
     novactive.novaseobundle.addfieldtype:
         class: %novactive.novaseobundle.addfieldtype.class%
@@ -58,5 +66,6 @@ services:
             - @ezpublish.api.service.content
             - @novactive.novaseobundle.installer.field
             - %novactive.novaseobundle.admin_user_id%
+            - %novactive.novaseobundle.xrow_fied_name%
         tags:
             - { name: console.command }
