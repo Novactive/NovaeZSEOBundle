@@ -58,7 +58,6 @@ services:
     novactive.novaseobundle.xrowconverter:
         class: %novactive.novaseobundle.xrowconverter.class%
         arguments:
-            - @ezpublish.config.resolver
             - @ezpublish.api.repository
             - @ezpublish.api.service.user
             - @ezpublish.api.service.content_type
@@ -67,5 +66,7 @@ services:
             - @novactive.novaseobundle.installer.field
             - %novactive.novaseobundle.admin_user_id%
             - %novactive.novaseobundle.xrow_fied_name%
+        calls:
+            - [setFieldTypeMetasIdentifier, [$fieldtype_metas_identifier;novae_zseo$]]
         tags:
             - { name: console.command }

@@ -8,7 +8,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\ContentService;
 use eZ\Publish\API\Repository\UserService;
@@ -26,9 +25,6 @@ use Novactive\Bundle\eZSEOBundle\Installer\Field;
  */
 class ConvertXRow2NovaCommand extends ContainerAwareCommand
 {
-    /** @var \eZ\Publish\Core\MVC\ConfigResolverInterface */
-    private $configResolver;
-
     /** @var \eZ\Publish\API\Repository\Repository */
     private $repository;
 
@@ -52,6 +48,9 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
 
     /** @var string */
     private $metaDataFieldName;
+
+    /** @var string */
+    private $fieldTypeMetasIdentifier;
 
     /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType[] */
     private $contentTypes;
@@ -146,7 +145,6 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
         }
 
         $contentTypeIdentifiers = array();
-        $fieldName = $this->configResolver->getParameter('fieldtype_metas_identifier', 'novae_zseo');
 
         // add new field type to existing ContentTypes
         foreach ($this->contentTypes as $contentType) {
@@ -163,8 +161,8 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
 
             $contentTypeIdentifiers[] = $contentType->identifier;
 
-            if (!$this->fieldInstaller->fieldExists($fieldName, $contentType)) {
-                if (!$this->fieldInstaller->addToContentType($fieldName, $contentType)) {
+            if (!$this->fieldInstaller->fieldExists($this->fieldTypeMetasIdentifier, $contentType)) {
+                if (!$this->fieldInstaller->addToContentType($this->fieldTypeMetasIdentifier, $contentType)) {
                     $output->writeln(sprintf(
                         'There were errors when adding new field to <info>%s</info> ContentType: <error>%s</error>',
                         $contentType->getName($contentType->mainLanguageCode),
@@ -272,7 +270,7 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
 
                     $contentDraft = $this->contentService->createContentDraft($translatedContent->contentInfo);
                     $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
-                    $contentUpdateStruct->setField($fieldName, $metaData, $language);
+                    $contentUpdateStruct->setField($this->fieldTypeMetasIdentifier, $metaData, $language);
 
                     $updatedContentDraft = null;
 
@@ -300,7 +298,14 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param \eZ\Publish\Core\MVC\ConfigResolverInterface $configResolver
+     * @param string $value
+     */
+    public function setFieldTypeMetasIdentifier($value)
+    {
+        $this->fieldTypeMetasIdentifier = $value;
+    }
+
+    /**
      * @param \eZ\Publish\API\Repository\Repository $repository
      * @param \eZ\Publish\API\Repository\UserService $userService
      * @param \eZ\Publish\API\Repository\ContentTypeService $contentTypeService
@@ -311,7 +316,6 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
      * @param string $metaDataFieldName
      */
     public function __construct(
-        ConfigResolverInterface $configResolver,
         Repository $repository,
         UserService $userService,
         ContentTypeService $contentTypeService,
@@ -321,7 +325,6 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
         $adminUserId,
         $metaDataFieldName
     ) {
-        $this->configResolver = $configResolver;
         $this->repository = $repository;
         $this->userService = $userService;
         $this->contentTypeService = $contentTypeService;
