@@ -55,19 +55,52 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
     /** @var \eZ\Publish\API\Repository\Values\ContentType\ContentType[] */
     private $contentTypes;
 
-    /**
-     * Returns legacy kernel object.
-     *
-     * We cannot use legacy kernel injected by Symfony because of the inactive scope exception:
-     * `You cannot create a service ("request") of an inactive scope ("request").`
-     *
-     * @return \eZ\Publish\Core\MVC\Legacy\Kernel
-     */
-    private function getLegacyKernel()
-    {
-        $legacyKernel = $this->getContainer()->get('ezpublish_legacy.kernel');
+    /** @var string */
+    private $errorMessage;
 
-        return $legacyKernel();
+    /**
+     * @param \eZ\Publish\API\Repository\Repository $repository
+     * @param \eZ\Publish\API\Repository\UserService $userService
+     * @param \eZ\Publish\API\Repository\ContentTypeService $contentTypeService
+     * @param \eZ\Publish\API\Repository\SearchService $searchService
+     * @param \eZ\Publish\API\Repository\ContentService $contentService
+     * @param \Novactive\Bundle\eZSEOBundle\Installer\Field $fieldInstaller
+     * @param int $adminUserId
+     * @param string $metaDataFieldName
+     */
+    public function __construct(
+        Repository $repository,
+        UserService $userService,
+        ContentTypeService $contentTypeService,
+        SearchService $searchService,
+        ContentService $contentService,
+        Field $fieldInstaller,
+        $adminUserId,
+        $metaDataFieldName
+    ) {
+        $this->repository = $repository;
+        $this->userService = $userService;
+        $this->contentTypeService = $contentTypeService;
+        $this->searchService = $searchService;
+        $this->contentService = $contentService;
+        $this->fieldInstaller = $fieldInstaller;
+        $this->adminUserId = $adminUserId;
+        $this->metaDataFieldName = $metaDataFieldName;
+
+        parent::__construct();
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setFieldTypeMetasIdentifier($value)
+    {
+        $this->fieldTypeMetasIdentifier = $value;
+    }
+
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $this->repository->setCurrentUser($this->userService->loadUser($this->adminUserId));
     }
 
     protected function configure()
@@ -81,37 +114,6 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
                 "The <info>%command.name%</info> command converts existing xrow field type data to Nova eZ SEO bundle format.\r\n".
                 "You can select the ContentType via the <info>identifier</info>, <info>identifiers</info> or <info>group_identifier</info> option."
             );
-    }
-
-    /**
-     * Gets ContentTypes depending on the input arguments.
-     *
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     *
-     * @return \eZ\Publish\API\Repository\Values\ContentType\ContentType[]
-     */
-    protected function getContentTypes(InputInterface $input)
-    {
-        $contentTypesCollection = [];
-
-        if ($contentTypeGroupIdentifier = $input->getOption('group_identifier')) {
-            $contentTypeGroup = $this->contentTypeService->loadContentTypeGroupByIdentifier($contentTypeGroupIdentifier);
-            $contentTypesCollection = $this->contentTypeService->loadContentTypes($contentTypeGroup);
-        }
-
-        if ($contentTypeIdentifiers = explode(',', $input->getOption('identifiers'))) {
-            foreach ($contentTypeIdentifiers as $identifier) {
-                if (!empty($identifier)) {
-                    $contentTypesCollection[] = $this->contentTypeService->loadContentTypeByIdentifier($identifier);
-                }
-            }
-        }
-
-        if ($contentTypeIdentifier = $input->getOption('identifier')) {
-            $contentTypesCollection[] = $this->contentTypeService->loadContentTypeByIdentifier($contentTypeIdentifier);
-        }
-
-        return $contentTypesCollection;
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
@@ -185,42 +187,14 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
             return;
         }
 
-        // find and convert all related content objects
-        $query = new Query();
-
-        $query->query = new Criterion\ContentTypeIdentifier($contentTypeIdentifiers);
-        $query->performCount = false;
-
-        $searchResults = $this->searchService->findContent($query);
-
-        // prepare search results
-        $contentArray = array();
-        foreach ($searchResults->searchHits as $searchHit) {
-            $contentArray[$searchHit->valueObject->id] = $searchHit->valueObject;
-        }
-
+        // fetch all related content objects
+        $contentArray = $this->getAllByContentTypes($contentTypeIdentifiers);
         $output->writeln(sprintf("\r\nStatus:\t<info>%d</info> content objects found", count($contentArray)));
 
         // retrieve xrow field data using legacy extension
-        $xrowValues = $this->getLegacyKernel()->runCallback(function () use ($contentArray) {
-            $values = array();
-
-            foreach ($contentArray as $content) {
-                foreach ($content->versionInfo->languageCodes as $languageCode) {
-                    $object = \eZContentObject::fetch($content->id);
-                    $dataMap = $object->fetchDataMap(false, $languageCode);
-
-                    if (!empty($dataMap['metadata'])) {
-                        $values[$content->id][$languageCode] = $dataMap['metadata']->DataText;
-                    }
-                }
-            }
-
-            return $values;
-        });
+        $xrowValues = $this->getXrowValues($contentArray);
         $output->writeln(sprintf("\t<info>%d</info> xrow fields retrieved\r\n", count($xrowValues)));
 
-        // add new draft with converted xrow data for every content object
         $conversionCounter = 0;
         $conversionTotal = count($xrowValues);
 
@@ -237,53 +211,16 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
                 )
             );
 
-            $metasFieldData = array();
-            foreach ($value as $language => $metaData) {
-                $xmlParser = xml_parser_create();
-                xml_parser_set_option($xmlParser, XML_OPTION_CASE_FOLDING, false);
+            // convert xrow to nova structure
+            $metasFieldData = $this->convertXrowToNova($value);
 
-                // prepare new field structure
-                if (xml_parse_into_struct($xmlParser, $value[$language], $valueArray) > 0) {
-                    foreach ($valueArray as $element) {
-                        // some of the xrow field data keys are not needed, just skip them
-                        if (!in_array($element['tag'], array('MetaData', 'change', 'priority', 'sitemap_use'))) {
-                            $metasFieldAttribute = new Meta();
-
-                            $metasFieldAttribute->setName($element['tag']);
-                            // max 256 chars due to database column limitation
-                            $metasFieldAttribute->setContent(empty($element['value']) ? '' : substr($element['value'], 0, 255));
-
-                            $metasFieldData[$language][$element['tag']] = $metasFieldAttribute;
-                        }
-                    }
-                }
-
-                xml_parser_free($xmlParser);
-            }
-
-            // publish data with the new field structure
+            // update content with the new field structure
             foreach ($metasFieldData as $language => $metaData) {
                 if (!empty($value)) {
                     $output->writeln(sprintf("\t\tupdating: <info>%s</info>", $language));
 
-                    $translatedContent = $this->contentService->loadContent($contentId, array($language));
-
-                    $contentDraft = $this->contentService->createContentDraft($translatedContent->contentInfo);
-                    $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
-                    $contentUpdateStruct->setField($this->fieldTypeMetasIdentifier, $metaData, $language);
-
-                    $updatedContentDraft = null;
-
-                    try {
-                        $updatedContentDraft = $this->contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
-                    } catch (Exception $e) {
-                        $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
-                    }
-
-                    if ($updatedContentDraft) {
-                        $this->contentService->publishVersion($contentDraft->versionInfo);
-                    } else {
-                        $this->contentService->deleteVersion($contentDraft->versionInfo);
+                    if (!$this->updateContent($contentId, $metaData, $language)) {
+                        $output->writeln(sprintf('<error>%s</error>', $this->errorMessage));
                     }
                 }
             }
@@ -292,48 +229,177 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
         $output->writeln('Operation completed.');
     }
 
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    /**
+     * Returns legacy kernel object.
+     *
+     * We cannot use legacy kernel injected by Symfony because of the inactive scope exception:
+     * `You cannot create a service ("request") of an inactive scope ("request").`
+     *
+     * @return \eZ\Publish\Core\MVC\Legacy\Kernel
+     */
+    private function getLegacyKernel()
     {
-        $this->repository->setCurrentUser($this->userService->loadUser($this->adminUserId));
+        $legacyKernel = $this->getContainer()->get('ezpublish_legacy.kernel');
+
+        return $legacyKernel();
     }
 
     /**
-     * @param string $value
+     * Gets ContentTypes depending on the input arguments.
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     *
+     * @return \eZ\Publish\API\Repository\Values\ContentType\ContentType[]
      */
-    public function setFieldTypeMetasIdentifier($value)
+    protected function getContentTypes(InputInterface $input)
     {
-        $this->fieldTypeMetasIdentifier = $value;
+        $contentTypesCollection = [];
+
+        if ($contentTypeGroupIdentifier = $input->getOption('group_identifier')) {
+            $contentTypeGroup = $this->contentTypeService->loadContentTypeGroupByIdentifier($contentTypeGroupIdentifier);
+            $contentTypesCollection = $this->contentTypeService->loadContentTypes($contentTypeGroup);
+        }
+
+        if ($contentTypeIdentifiers = explode(',', $input->getOption('identifiers'))) {
+            foreach ($contentTypeIdentifiers as $identifier) {
+                if (!empty($identifier)) {
+                    $contentTypesCollection[] = $this->contentTypeService->loadContentTypeByIdentifier($identifier);
+                }
+            }
+        }
+
+        if ($contentTypeIdentifier = $input->getOption('identifier')) {
+            $contentTypesCollection[] = $this->contentTypeService->loadContentTypeByIdentifier($contentTypeIdentifier);
+        }
+
+        return $contentTypesCollection;
     }
 
     /**
-     * @param \eZ\Publish\API\Repository\Repository $repository
-     * @param \eZ\Publish\API\Repository\UserService $userService
-     * @param \eZ\Publish\API\Repository\ContentTypeService $contentTypeService
-     * @param \eZ\Publish\API\Repository\SearchService $searchService
-     * @param \eZ\Publish\API\Repository\ContentService $contentService
-     * @param \Novactive\Bundle\eZSEOBundle\Installer\Field $fieldInstaller
-     * @param int $adminUserId
-     * @param string $metaDataFieldName
+     * Fetches all content objects based on $contentTypeIdentifiers.
+     *
+     * @param string[] $contentTypeIdentifiers
+     *
+     * @return \eZ\Publish\API\Repository\Values\Content\Content[]
      */
-    public function __construct(
-        Repository $repository,
-        UserService $userService,
-        ContentTypeService $contentTypeService,
-        SearchService $searchService,
-        ContentService $contentService,
-        Field $fieldInstaller,
-        $adminUserId,
-        $metaDataFieldName
-    ) {
-        $this->repository = $repository;
-        $this->userService = $userService;
-        $this->contentTypeService = $contentTypeService;
-        $this->searchService = $searchService;
-        $this->contentService = $contentService;
-        $this->fieldInstaller = $fieldInstaller;
-        $this->adminUserId = $adminUserId;
-        $this->metaDataFieldName = $metaDataFieldName;
+    private function getAllByContentTypes($contentTypeIdentifiers)
+    {
+        $query = new Query();
 
-        parent::__construct();
+        $query->query = new Criterion\ContentTypeIdentifier($contentTypeIdentifiers);
+        $query->performCount = false;
+
+        $searchResults = $this->searchService->findContent($query);
+
+        // prepare search results
+        $contentArray = array();
+        foreach ($searchResults->searchHits as $searchHit) {
+            $contentArray[$searchHit->valueObject->id] = $searchHit->valueObject;
+        }
+
+        return $contentArray;
+    }
+
+    /**
+     * Retrieves xrow attribute values using legacy kernel.
+     *
+     * @param \eZ\Publish\API\Repository\Values\Content\Content[] $contentArray
+     *
+     * @return array
+     */
+    private function getXrowValues($contentArray)
+    {
+        $xrowValues = $this->getLegacyKernel()->runCallback(function () use ($contentArray) {
+            $values = array();
+
+            foreach ($contentArray as $content) {
+                foreach ($content->versionInfo->languageCodes as $languageCode) {
+                    $object = \eZContentObject::fetch($content->id);
+                    $dataMap = $object->fetchDataMap(false, $languageCode);
+
+                    if (!empty($dataMap['metadata'])) {
+                        $values[$content->id][$languageCode] = $dataMap['metadata']->DataText;
+                    }
+                }
+            }
+
+            return $values;
+        });
+
+        return $xrowValues;
+    }
+
+    /**
+     * Converts existing xrow structure to `metas` format.
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    private function convertXrowToNova($data)
+    {
+        $metasFieldData = array();
+
+        foreach ($data as $language => $metaData) {
+            $xmlParser = xml_parser_create();
+            xml_parser_set_option($xmlParser, XML_OPTION_CASE_FOLDING, false);
+
+            // prepare new field structure
+            if (xml_parse_into_struct($xmlParser, $data[$language], $valueArray) > 0) {
+                foreach ($valueArray as $element) {
+                    // some of the xrow field data keys are not needed, just skip them
+                    if (!in_array($element['tag'], array('MetaData', 'change', 'priority', 'sitemap_use'))) {
+                        $metasFieldAttribute = new Meta();
+
+                        $metasFieldAttribute->setName($element['tag']);
+                        // max 256 chars due to database column limitation
+                        $metasFieldAttribute->setContent(empty($element['value']) ? '' : substr($element['value'], 0, 255));
+
+                        $metasFieldData[$language][$element['tag']] = $metasFieldAttribute;
+                    }
+                }
+            }
+
+            xml_parser_free($xmlParser);
+        }
+
+        return $metasFieldData;
+    }
+
+    /**
+     * Updates and publish content by adding `metas` field.
+     *
+     * @param mixed $contentId
+     * @param \Novactive\Bundle\eZSEOBundle\Core\Meta $metaData
+     * @param string $language
+     *
+     * @return bool
+     */
+    private function updateContent($contentId, $metaData, $language)
+    {
+        $result = true;
+
+        $translatedContent = $this->contentService->loadContent($contentId, array($language));
+
+        $contentDraft = $this->contentService->createContentDraft($translatedContent->contentInfo);
+        $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
+        $contentUpdateStruct->setField($this->fieldTypeMetasIdentifier, $metaData, $language);
+
+        $updatedContentDraft = null;
+
+        try {
+            $updatedContentDraft = $this->contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
+        } catch (Exception $e) {
+            $this->errorMessage = $e->getMessage();
+            $result = false;
+        }
+
+        if ($updatedContentDraft) {
+            $this->contentService->publishVersion($contentDraft->versionInfo);
+        } else {
+            $this->contentService->deleteVersion($contentDraft->versionInfo);
+        }
+
+        return $result;
     }
 }
