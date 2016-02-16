@@ -223,7 +223,7 @@ Help:
      - Category will be: SEO
 ```
 
-## Convert xrow field type with data to the new novametas format
+## Convert existing [xrow field type](https://github.com/xrowgmbh/xrowmetadata) to the `metas` format
 
 ```bash
 $ php ezpublish/console novae_zseo:convertxrow -h
@@ -239,6 +239,8 @@ Options:
  --siteaccess          SiteAccess to use for operations. If not provided, default siteaccess will be used
 
 Help:
- The novae_zseo:convertxrow command converts existing xrow field type data to Nova eZ SEO bundle format.
+ The novae_zseo:convertxrow command converts existing [xrow field type](https://github.com/xrowgmbh/xrowmetadata) data to Nova's `metas` format.
  You can select the ContentType via the identifier, identifiers or group_identifier option.
+
+ Converter will add `metas` field to specified content type and convert all existing xrow `metadata` fields to `metas` format. Because of the compatibility reason `fieldtype_metas` configuration should include at least `title`, `description` and `keyword` items.
 ```
