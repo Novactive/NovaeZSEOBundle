@@ -143,7 +143,7 @@ class NovaeZSEOExtension extends \Twig_Extension
         );
         $content = $this->eZRepository->getContentService()->loadContentByContentInfo( $contentInfo );
         $contentMetas = $this->innerComputeMetas( $content, $field, $contentType, $fallback );
-        if ( $fallback )
+        if ( $fallback && !$this->customFallBackService)
         {
             $rootNode = $this->eZRepository->getLocationService()->loadLocation(
                 $this->configResolver->getParameter( "content.tree_root.location_id" )
