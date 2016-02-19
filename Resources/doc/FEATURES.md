@@ -23,3 +23,4 @@
 * Asynchronous Sitemap generation ( ESI based ? X-Location-Id and so on )
 * Back office edition for  **&lt;meta&gt;**, **&lt;link&gt;**, Robots.txt and Google Verification
 * Any ideas ?
+* Meta viewport (essentiel for responsive handling)

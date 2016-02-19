@@ -138,17 +138,18 @@ class NovaeZSEOExtension extends \Twig_Extension
     public function computeMetas( Field $field, ContentInfo $contentInfo )
     {
         $fallback = false;
+        $languages = $this->configResolver->getParameter( 'languages' );
         $contentType = $this->eZRepository->getContentTypeService()->loadContentType(
             $contentInfo->contentTypeId
         );
-        $content = $this->eZRepository->getContentService()->loadContentByContentInfo( $contentInfo );
+        $content = $this->eZRepository->getContentService()->loadContentByContentInfo( $contentInfo, $languages );
         $contentMetas = $this->innerComputeMetas( $content, $field, $contentType, $fallback );
         if ( $fallback && !$this->customFallBackService)
         {
             $rootNode = $this->eZRepository->getLocationService()->loadLocation(
                 $this->configResolver->getParameter( "content.tree_root.location_id" )
             );
-            $rootContent = $this->eZRepository->getContentService()->loadContentByContentInfo( $rootNode->contentInfo );
+            $rootContent = $this->eZRepository->getContentService()->loadContentByContentInfo( $rootNode->contentInfo, $languages );
             $rootContentType = $this->eZRepository->getContentTypeService()->loadContentType(
                 $rootContent->contentInfo->contentTypeId
             );
