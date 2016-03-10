@@ -380,6 +380,7 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
         $result = true;
 
         $translatedContent = $this->contentService->loadContent($contentId, array($language));
+        $publicationDate = $translatedContent->getFieldValue('publication_date', $language);
 
         $contentDraft = $this->contentService->createContentDraft($translatedContent->contentInfo);
         $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
@@ -395,7 +396,12 @@ class ConvertXRow2NovaCommand extends ContainerAwareCommand
         }
 
         if ($updatedContentDraft) {
-            $this->contentService->publishVersion($contentDraft->versionInfo);
+            $updatedContent = $this->contentService->publishVersion($contentDraft->versionInfo);
+
+            // sets original publication date
+            $metadataUpdateStruct = $this->contentService->newContentMetadataUpdateStruct();
+            $metadataUpdateStruct->publishedDate = $publicationDate->value;
+            $this->contentService->updateContentMetadata($updatedContent->contentInfo, $metadataUpdateStruct);
         } else {
             $this->contentService->deleteVersion($contentDraft->versionInfo);
         }
