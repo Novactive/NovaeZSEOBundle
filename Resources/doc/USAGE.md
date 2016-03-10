@@ -229,12 +229,14 @@ Help:
 $ php ezpublish/console novae_zseo:convertxrow -h
 
 Usage:
- novae_zseo:convertxrow [--identifier="..."] [--identifiers="..."] [--group_identifier="..."]
+ novae_zseo:convertxrow [--identifier="..."] [--identifiers="..."] [--group_identifier="..."] [--limit=25] [--xrow_name="metadata"]
 
 Options:
  --identifier          a content type identifier
  --identifiers         some content types identifier, separated by a comma
  --group_identifier    a content type group identifier
+ --limit               limit of objects processed in each loop
+ --xrow_name           name of the existing xrow field name
  ...
  --siteaccess          SiteAccess to use for operations. If not provided, default siteaccess will be used
 
@@ -242,5 +244,5 @@ Help:
  The novae_zseo:convertxrow command converts existing [xrow field type](https://github.com/xrowgmbh/xrowmetadata) data to Nova's `metas` format.
  You can select the ContentType via the identifier, identifiers or group_identifier option.
 
- Converter will add `metas` field to specified content type and convert all existing xrow `metadata` fields to `metas` format. Because of the compatibility reason `fieldtype_metas` configuration should include at least `title`, `description` and `keyword` items.
+ Converter will add `metas` field to specified content type and convert all existing xrow `metadata` fields to `metas` format. Because of the compatibility reason `fieldtype_metas` configuration should include at least `title`, `description` and `keywords` items.
 ```

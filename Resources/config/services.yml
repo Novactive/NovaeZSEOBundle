@@ -4,13 +4,13 @@ parameters:
     novactive.novaseobundle.twig_extension.class: Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension
     novactive.novaseobundle.installer.field.class: Novactive\Bundle\eZSEOBundle\Installer\Field
     novactive.novaseobundle.addfieldtype.class: Novactive\Bundle\eZSEOBundle\Command\AddNovaSEOMetasFieldTypeCommand
-    novactive.novaseobundle.xrowconverter.class: Novactive\Bundle\eZSEOBundle\Command\ConvertXRow2NovaCommand
+    novactive.novaseobundle.xrowconverter.class: Novactive\Bundle\eZSEOBundle\Command\ConvertXrow2NovaCommand
+    novactive.novaseobundle.converter.xrow2nova.class: Novactive\Bundle\eZSEOBundle\Converter\Xrow2NovaConverter
 
     novactive.novaseobundle.admin_user_id: 14
     novactive.novaseobundle.meta_field_name: Metas
     novactive.novaseobundle.meta_field_description: Metas for Search Engine Optimizations
     novactive.novaseobundle.meta_field_group: novaseo
-    novactive.novaseobundle.xrow_fied_name: metadata
 
 services:
     novactive.novaseobundle.legacy.configuration:
@@ -61,12 +61,18 @@ services:
             - @ezpublish.api.repository
             - @ezpublish.api.service.user
             - @ezpublish.api.service.content_type
-            - @ezpublish.api.service.search
-            - @ezpublish.api.service.content
+            - @novactive.novaseobundle.converter.xrow2nova
             - @novactive.novaseobundle.installer.field
             - %novactive.novaseobundle.admin_user_id%
-            - %novactive.novaseobundle.xrow_fied_name%
         calls:
-            - [setFieldTypeMetasIdentifier, [$fieldtype_metas_identifier;novae_zseo$]]
+            - [setMetasFieldNameIdentifier, [$fieldtype_metas_identifier;novae_zseo$]]
         tags:
             - { name: console.command }
+
+    novactive.novaseobundle.converter.xrow2nova:
+        class: %novactive.novaseobundle.converter.xrow2nova.class%
+        arguments:
+            - @ezpublish.api.service.search
+            - @ezpublish.api.service.content
+        calls:
+            - [setMetasFieldNameIdentifier, [$fieldtype_metas_identifier;novae_zseo$]]
