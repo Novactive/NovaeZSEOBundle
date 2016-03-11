@@ -261,7 +261,7 @@ class Xrow2NovaConverter extends Controller implements ContentConverter
         $result = true;
 
         $translatedContent = $this->contentService->loadContent($contentId, array($language));
-        $publicationDate = $translatedContent->getFieldValue('publication_date', $language);
+        $publishedDate = $translatedContent->contentInfo->publishedDate;
 
         $contentDraft = $this->contentService->createContentDraft($translatedContent->contentInfo);
         $contentUpdateStruct = $this->contentService->newContentUpdateStruct();
@@ -281,7 +281,7 @@ class Xrow2NovaConverter extends Controller implements ContentConverter
 
             // sets original publication date
             $metadataUpdateStruct = $this->contentService->newContentMetadataUpdateStruct();
-            $metadataUpdateStruct->publishedDate = $publicationDate->value;
+            $metadataUpdateStruct->publishedDate = $publishedDate;
             $this->contentService->updateContentMetadata($updatedContent->contentInfo, $metadataUpdateStruct);
         } else {
             $this->contentService->deleteVersion($contentDraft->versionInfo);
