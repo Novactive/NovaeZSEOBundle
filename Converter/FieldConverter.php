@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Rafał Toborek <rafal.toborek@ez.no>
  */
-interface ContentConverter
+interface FieldConverter
 {
     /**
      * @param \Symfony\Component\Console\Output\OutputInterface $value

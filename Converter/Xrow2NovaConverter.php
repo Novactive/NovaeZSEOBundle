@@ -16,7 +16,7 @@ use Novactive\Bundle\eZSEOBundle\Core\Meta;
  *
  * @author Rafał Toborek <rafal.toborek@ez.no>
  */
-class Xrow2NovaConverter extends Controller implements ContentConverter
+class Xrow2NovaConverter extends Controller implements FieldConverter
 {
     /** @var \eZ\Publish\API\Repository\SearchService */
     private $searchService;

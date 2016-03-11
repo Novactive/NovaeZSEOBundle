@@ -13,7 +13,7 @@ use eZ\Publish\API\Repository\ContentTypeService;
 use eZ\Publish\API\Repository\Values\Content\Query;
 use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 use Novactive\Bundle\eZSEOBundle\Installer\Field;
-use Novactive\Bundle\eZSEOBundle\Converter\ContentConverter;
+use Novactive\Bundle\eZSEOBundle\Converter\FieldConverter;
 
 /**
  * Converts xrow field type data to Nova eZ SEO Bundle format (requires legacy bridge).
@@ -49,7 +49,7 @@ class ConvertXrow2NovaCommand extends ContainerAwareCommand
      * @param \eZ\Publish\API\Repository\Repository $repository
      * @param \eZ\Publish\API\Repository\UserService $userService
      * @param \eZ\Publish\API\Repository\ContentTypeService $contentTypeService
-     * @param \Novactive\Bundle\eZSEOBundle\Converter\ContentConverter $xrow2nova
+     * @param \Novactive\Bundle\eZSEOBundle\Converter\FieldConverter $xrow2nova
      * @param \Novactive\Bundle\eZSEOBundle\Installer\Field $fieldInstaller
      * @param int $adminUserId
      */
@@ -57,7 +57,7 @@ class ConvertXrow2NovaCommand extends ContainerAwareCommand
         Repository $repository,
         UserService $userService,
         ContentTypeService $contentTypeService,
-        ContentConverter $xrow2nova,
+        FieldConverter $xrow2nova,
         Field $fieldInstaller,
         $adminUserId
     ) {
