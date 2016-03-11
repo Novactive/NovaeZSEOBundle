@@ -14,6 +14,7 @@ use eZ\Publish\API\Repository\Values\Content\Query;
 use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 use Novactive\Bundle\eZSEOBundle\Installer\Field;
 use Novactive\Bundle\eZSEOBundle\Converter\FieldConverter;
+use Novactive\Bundle\eZSEOBundle\Converter\ContentTypesHelper;
 
 /**
  * Converts xrow field type data to Nova eZ SEO Bundle format (requires legacy bridge).
@@ -34,6 +35,10 @@ class ConvertXrow2NovaCommand extends ContainerAwareCommand
     /** @var \Novactive\Bundle\eZSEOBundle\Installer\Field */
     private $fieldInstaller;
 
+    /** @var \Novactive\Bundle\eZSEOBundle\Converter\ContentTypesHelper */
+    private $contentTypesHelper;
+
+    /** @var \Novactive\Bundle\eZSEOBundle\Converter\FieldConverter */
     private $xrow2nova;
 
     /** @var int */
@@ -51,6 +56,7 @@ class ConvertXrow2NovaCommand extends ContainerAwareCommand
      * @param \eZ\Publish\API\Repository\ContentTypeService $contentTypeService
      * @param \Novactive\Bundle\eZSEOBundle\Converter\FieldConverter $xrow2nova
      * @param \Novactive\Bundle\eZSEOBundle\Installer\Field $fieldInstaller
+     * @param \Novactive\Bundle\eZSEOBundle\Converter\ContentTypesHelper $contentTypesHelper
      * @param int $adminUserId
      */
     public function __construct(
@@ -59,6 +65,7 @@ class ConvertXrow2NovaCommand extends ContainerAwareCommand
         ContentTypeService $contentTypeService,
         FieldConverter $xrow2nova,
         Field $fieldInstaller,
+        ContentTypesHelper $contentTypesHelper,
         $adminUserId
     ) {
         $this->repository = $repository;
@@ -66,6 +73,7 @@ class ConvertXrow2NovaCommand extends ContainerAwareCommand
         $this->contentTypeService = $contentTypeService;
         $this->fieldInstaller = $fieldInstaller;
         $this->xrow2nova = $xrow2nova;
+        $this->contentTypesHelper = $contentTypesHelper;
         $this->adminUserId = $adminUserId;
 
         parent::__construct();
@@ -116,7 +124,22 @@ class ConvertXrow2NovaCommand extends ContainerAwareCommand
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $contentTypesCollection = $this->getContentTypes($input);
+        $contentTypesCollection = array();
+
+        $groupIdentifier = $input->getOption('group_identifier');
+        if (!empty($groupIdentifier)) {
+            $contentTypesCollection = $this->contentTypesHelper->getContentTypesByGroup($groupIdentifier);
+        }
+
+        $identifiers = $input->getOption('identifiers');
+        if (!empty($identifiers)) {
+            $contentTypesCollection = $this->contentTypesHelper->getContentTypesByIdentifier($identifiers);
+        }
+
+        $identifier = $input->getOption('identifier');
+        if (!empty($identifier)) {
+            $contentTypesCollection = $this->contentTypesHelper->getContentTypesByIdentifier($identifier);
+        }
 
         $output->writeln('<info>Selected ContentTypes:</info>');
 
@@ -196,36 +219,5 @@ class ConvertXrow2NovaCommand extends ContainerAwareCommand
         );
 
         $output->writeln('Operation completed.');
-    }
-
-    /**
-     * Gets ContentTypes depending on the input arguments.
-     *
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     *
-     * @return \eZ\Publish\API\Repository\Values\ContentType\ContentType[]
-     */
-    protected function getContentTypes(InputInterface $input)
-    {
-        $contentTypesCollection = [];
-
-        if ($contentTypeGroupIdentifier = $input->getOption('group_identifier')) {
-            $contentTypeGroup = $this->contentTypeService->loadContentTypeGroupByIdentifier($contentTypeGroupIdentifier);
-            $contentTypesCollection = $this->contentTypeService->loadContentTypes($contentTypeGroup);
-        }
-
-        if ($contentTypeIdentifiers = explode(',', $input->getOption('identifiers'))) {
-            foreach ($contentTypeIdentifiers as $identifier) {
-                if (!empty($identifier)) {
-                    $contentTypesCollection[] = $this->contentTypeService->loadContentTypeByIdentifier($identifier);
-                }
-            }
-        }
-
-        if ($contentTypeIdentifier = $input->getOption('identifier')) {
-            $contentTypesCollection[] = $this->contentTypeService->loadContentTypeByIdentifier($contentTypeIdentifier);
-        }
-
-        return $contentTypesCollection;
     }
 }

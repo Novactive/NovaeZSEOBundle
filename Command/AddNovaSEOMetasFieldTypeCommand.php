@@ -17,10 +17,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use eZ\Publish\API\Repository\Values\ContentType\ContentType;
-use eZ\Publish\API\Repository\ContentTypeService;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\UserService;
 use Novactive\Bundle\eZSEOBundle\Installer\Field;
+use Novactive\Bundle\eZSEOBundle\Converter\ContentTypesHelper;
 
 /**
  * Class AddNovaSEOMetasFieldTypeCommand
@@ -36,11 +36,11 @@ class AddNovaSEOMetasFieldTypeCommand extends Command
     /** @var \eZ\Publish\API\Repository\UserService */
     private $userService;
 
-    /** @var \eZ\Publish\API\Repository\ContentTypeService */
-    private $contentTypeService;
-
     /** @var \Novactive\Bundle\eZSEOBundle\Installer\Field */
     private $fieldInstaller;
+
+    /** @var \Novactive\Bundle\eZSEOBundle\Converter\ContentTypesHelper */
+    private $contentTypesHelper;
 
     /** @var int */
     private $adminUserId;
@@ -111,44 +111,27 @@ EOT
     }
 
     /**
-     * Get the ContentType depending on the input arguments
-     *
-     * @param InputInterface     $input
-     *
-     * @return ContentType[]
-     */
-    protected function getContentTypes( InputInterface $input )
-    {
-        $contentTypes = [];
-
-        if ( $contentTypeGroupIdentifier = $input->getOption( 'group_identifier' ) )
-        {
-            $contentTypeGroup = $this->contentTypeService->loadContentTypeGroupByIdentifier( $contentTypeGroupIdentifier );
-            $contentTypes     = $this->contentTypeService->loadContentTypes( $contentTypeGroup );
-        }
-        if ( $contentTypeIdentifiers = explode( ",", $input->getOption( 'identifiers' ) ) )
-        {
-            foreach ( $contentTypeIdentifiers as $identifier )
-            {
-                if ( $identifier != "" )
-                {
-                    $contentTypes[] = $this->contentTypeService->loadContentTypeByIdentifier( $identifier );
-                }
-            }
-        }
-        if ( $contentTypeIdentifier = $input->getOption( 'identifier' ) )
-        {
-            $contentTypes[] = $this->contentTypeService->loadContentTypeByIdentifier( $contentTypeIdentifier );
-        }
-        return $contentTypes;
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function interact( InputInterface $input, OutputInterface $output )
     {
-        $contentTypes = $this->getContentTypes( $input );
+        $contentTypes = array();
+
+        $groupIdentifier = $input->getOption('group_identifier');
+        if (!empty($groupIdentifier)) {
+            $contentTypes = $this->contentTypesHelper->getContentTypesByGroup($groupIdentifier);
+        }
+
+        $identifiers = $input->getOption('identifiers');
+        if (!empty($identifiers)) {
+            $contentTypes = $this->contentTypesHelper->getContentTypesByIdentifier($identifiers);
+        }
+
+        $identifier = $input->getOption('identifier');
+        if (!empty($identifier)) {
+            $contentTypes = $this->contentTypesHelper->getContentTypesByIdentifier($identifier);
+        }
+
         $output->writeln( "<info>Selected Content Type:</info>" );
         foreach ( $contentTypes as $contentType )
         {
@@ -182,23 +165,23 @@ EOT
      * @param \eZ\Publish\Core\MVC\ConfigResolverInterface $configResolver
      * @param \eZ\Publish\API\Repository\Repository $repository
      * @param \eZ\Publish\API\Repository\UserService $userService
-     * @param \eZ\Publish\API\Repository\ContentTypeService $contentTypeService
      * @param \Novactive\Bundle\eZSEOBundle\Installer\Field $fieldInstaller
+     * @param \Novactive\Bundle\eZSEOBundle\Converter\ContentTypesHelper $contentTypesHelper
      * @param int $adminUserId
      */
     public function __construct(
         ConfigResolverInterface $configResolver,
         Repository $repository,
         UserService $userService,
-        ContentTypeService $contentTypeService,
         Field $fieldInstaller,
+        ContentTypesHelper $contentTypesHelper,
         $adminUserId
     ) {
         $this->configResolver = $configResolver;
         $this->repository = $repository;
         $this->userService = $userService;
-        $this->contentTypeService = $contentTypeService;
         $this->fieldInstaller = $fieldInstaller;
+        $this->contentTypesHelper = $contentTypesHelper;
         $this->adminUserId = $adminUserId;
 
         parent::__construct();

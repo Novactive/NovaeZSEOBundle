@@ -6,6 +6,7 @@ parameters:
     novactive.novaseobundle.addfieldtype.class: Novactive\Bundle\eZSEOBundle\Command\AddNovaSEOMetasFieldTypeCommand
     novactive.novaseobundle.xrowconverter.class: Novactive\Bundle\eZSEOBundle\Command\ConvertXrow2NovaCommand
     novactive.novaseobundle.converter.xrow2nova.class: Novactive\Bundle\eZSEOBundle\Converter\Xrow2NovaConverter
+    novactive.novaseobundle.converter.content_types_helper.class: Novactive\Bundle\eZSEOBundle\Converter\ContentTypesHelper
 
     novactive.novaseobundle.admin_user_id: 14
     novactive.novaseobundle.meta_field_name: Metas
@@ -49,8 +50,8 @@ services:
             - @ezpublish.config.resolver
             - @ezpublish.api.repository
             - @ezpublish.api.service.user
-            - @ezpublish.api.service.content_type
             - @novactive.novaseobundle.installer.field
+            - @novactive.novaseobundle.converter.content_types_helper
             - %novactive.novaseobundle.admin_user_id%
         tags:
             - { name: console.command }
@@ -63,6 +64,7 @@ services:
             - @ezpublish.api.service.content_type
             - @novactive.novaseobundle.converter.xrow2nova
             - @novactive.novaseobundle.installer.field
+            - @novactive.novaseobundle.converter.content_types_helper
             - %novactive.novaseobundle.admin_user_id%
         calls:
             - [setMetasFieldNameIdentifier, [$fieldtype_metas_identifier;novae_zseo$]]
@@ -76,3 +78,8 @@ services:
             - @ezpublish.api.service.content
         calls:
             - [setMetasFieldNameIdentifier, [$fieldtype_metas_identifier;novae_zseo$]]
+
+    novactive.novaseobundle.converter.content_types_helper:
+        class: %novactive.novaseobundle.converter.content_types_helper.class%
+        arguments:
+            - @ezpublish.api.service.content_type
