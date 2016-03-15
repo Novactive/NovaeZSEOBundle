@@ -76,6 +76,7 @@ services:
         arguments:
             - @ezpublish.api.service.search
             - @ezpublish.api.service.content
+            - @?logger
         calls:
             - [setMetasFieldNameIdentifier, [$fieldtype_metas_identifier;novae_zseo$]]
 

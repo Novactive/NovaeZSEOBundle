@@ -3,6 +3,7 @@
 namespace Novactive\Bundle\eZSEOBundle\Converter;
 
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use eZ\Bundle\EzPublishLegacyBundle\Controller;
 use eZ\Publish\API\Repository\ContentService;
@@ -24,6 +25,9 @@ class Xrow2NovaConverter extends Controller implements FieldConverter
     /** @var \eZ\Publish\API\Repository\ContentService */
     private $contentService;
 
+    /** @var null|\Psr\Log\LoggerInterface */
+    private $logger;
+
     /** @var string */
     private $xrowFieldNameIdentifier;
 
@@ -42,13 +46,16 @@ class Xrow2NovaConverter extends Controller implements FieldConverter
     /**
      * @param \eZ\Publish\API\Repository\SearchService $searchService
      * @param \eZ\Publish\API\Repository\ContentService $contentService
+     * @param \Psr\Log\LoggerInterface|null $logger
      */
     public function __construct(
         SearchService $searchService,
-        ContentService $contentService
+        ContentService $contentService,
+        LoggerInterface $logger = null
     ) {
         $this->searchService = $searchService;
         $this->contentService = $contentService;
+        $this->logger = $logger;
     }
 
     /**
@@ -272,6 +279,16 @@ class Xrow2NovaConverter extends Controller implements FieldConverter
         try {
             $updatedContentDraft = $this->contentService->updateContent($contentDraft->versionInfo, $contentUpdateStruct);
         } catch (Exception $e) {
+            if (isset($this->logger)) {
+                $this->logger->error(sprintf(
+                    '[Xrow2NovaConverter] error: %s (contentId: %s, language: %s, title: %s)',
+                    $e->getMessage(),
+                    $contentId,
+                    $language,
+                    $translatedContent->contentInfo->name
+                ));
+            }
+
             $this->errorMessage = $e->getMessage();
             $result = false;
         }
