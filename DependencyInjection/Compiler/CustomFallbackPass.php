@@ -23,19 +23,19 @@ class CustomFallbackPass implements CompilerPassInterface
      *
      * @param ContainerBuilder $container
      */
-    public function process( ContainerBuilder $container )
+    public function process(ContainerBuilder $container)
     {
-        $configs = $container->getExtensionConfig( 'novae_zseo' );
+        $configs = $container->getExtensionConfig('novae_zseo');
 
         //@todo: How to do that by SiteAccess
-        $fallbackService = $configs[0]['system']['default']['custom_fallback_service'];
-
-        if ( $fallbackService !== null )
-        {
-            $container->getDefinition( 'novactive.novaseobundle.twig_extension' )->addMethodCall(
-                "setCustomFallbackService",
-                [ new Reference( $fallbackService ) ]
-            );
+        if (isset($configs[0]['system']['default']['custom_fallback_service'])) {
+            $fallbackService = $configs[0]['system']['default']['custom_fallback_service'];
+            if ($fallbackService !== null) {
+                $container->getDefinition('novactive.novaseobundle.twig_extension')->addMethodCall(
+                    "setCustomFallbackService",
+                    [new Reference($fallbackService)]
+                );
+            }
         }
     }
 }
