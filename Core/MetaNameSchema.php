@@ -26,6 +26,7 @@ use eZ\Publish\SPI\Persistence\Content\Type\Handler as ContentTypeHandler;
 use eZ\Publish\Core\Base\Container\ApiLoader\FieldTypeCollectionFactory;
 use eZ\Publish\Core\Repository\Helper\FieldTypeRegistry;
 use eZ\Publish\API\Repository\Repository as RepositoryInterface;
+use eZ\Publish\Core\Helper\TranslationHelper;
 
 /**
  * Class MetaNameSchema
@@ -61,22 +62,41 @@ class MetaNameSchema extends NameSchemaService
     protected $repository;
 
     /**
+     * Translation Helper
+     *
+     * @var TranslationHelper
+     */
+    protected $translationHelper;
+
+    /**
      * Meta content data max length
      *
      * @var int
      */
     protected $fieldContentMaxLength = 255;
 
+    /**
+     * MetaNameSchema constructor.
+     *
+     * @param ContentTypeHandler         $contentTypeHandler
+     * @param FieldTypeCollectionFactory $collectionFactory
+     * @param RepositoryInterface        $repository
+     * @param TranslationHelper          $helper
+     * @param array                      $settings
+     */
     public function __construct(
         ContentTypeHandler $contentTypeHandler,
         FieldTypeCollectionFactory $collectionFactory,
         RepositoryInterface $repository,
+        TranslationHelper $helper,
         array $settings
     ) {
-        $fieldTypes = $collectionFactory->getFieldTypes();
-        $registry   = new FieldTypeRegistry($fieldTypes);
+        $fieldTypes        = $collectionFactory->getFieldTypes();
+        $registry          = new FieldTypeRegistry($fieldTypes);
+        $settings['limit'] = $this->fieldContentMaxLength;
         parent::__construct($contentTypeHandler, $registry, $settings);
-        $this->repository = $repository;
+        $this->repository        = $repository;
+        $this->translationHelper = $helper;
     }
 
     /**
@@ -120,12 +140,6 @@ class MetaNameSchema extends NameSchemaService
      */
     public function resolveMeta(Meta $meta, Content $content, ContentType $contentType = null)
     {
-
-        $this->settings = array (
-            'limit'    => $this->fieldContentMaxLength,
-            'sequence' => '...',
-        );
-
         if ($contentType === null) {
             $contentType = $this->repository->getContentTypeService()->loadContentType(
                 $content->contentInfo->contentTypeId
@@ -280,8 +294,7 @@ class MetaNameSchema extends NameSchemaService
                 return $this->getVariation($fieldImageValue, "image", $languageCode, "medium");
             }
         }
-
-        return '';
+        return $this->translationHelper->getTranslatedContentName($relatedContent, $languageCode);
     }
 
     /**

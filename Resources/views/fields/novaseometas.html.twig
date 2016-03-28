@@ -22,9 +22,9 @@
             {% if fallbackedContent is not empty %}
                 {% if meta.name == "title" %}
                     {% set isTtitleFind = true %}
-                    <title>{{ fallbackedContent }}</title>
+                    <title fallbacked>{{ fallbackedContent }}</title>
                 {% else %}
-                    <meta name="{{ meta.name }}" content="{{ fallbackedContent }}"/>
+                    <meta name="{{ meta.name }}" content="{{ fallbackedContent }}"  fallbacked />
                 {% endif %}
             {% endif %}
         {% endif %}
