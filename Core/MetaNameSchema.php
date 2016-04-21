@@ -233,7 +233,7 @@ class MetaNameSchema extends NameSchemaService
         {
             if ( $fieldImageValue->uri )
             {
-                return $this->getVariation( $fieldImageValue, "image", $languageCode, "medium" );
+                return $this->getVariation( $fieldImageValue, "image", $languageCode, "social_network_image" );
             }
         }
         return '';
@@ -258,7 +258,7 @@ class MetaNameSchema extends NameSchemaService
             $value,
             $fieldDefinitionIdentifier,
             $languageCode,
-            "medium"
+            "social_network_image"
         );
     }
 }
