@@ -1,0 +1,7 @@
+system:
+    default:
+        image_variations:
+            social_network_image:
+                filters:
+                    strip: ~
+                    upscale: { min:[200,200] }
