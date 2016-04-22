@@ -32,7 +32,7 @@ before_script:
   - php ezpublish/console assetic:dump --env=behat --no-debug
 
 script:
-  - ./bin/phpcs --standard=vendor/novactive/phpcs-novastandards/src/NovaEZ vendor/novactive/ezseobundle
+  - ./bin/phpcs --standard=vendor/novactive/phpcs-novastandards/src/NovaEZ "$NOVABUNDLE_PATH"
   #- ./bin/phpmd "$NOVABUNDLE_PATH" text cleancode,codesize,controversial,design
   - ./bin/phpcpd "$NOVABUNDLE_PATH"
   - ./bin/phpunit -c "$NOVABUNDLE_PATH" --testsuite NovaeZSEOBundleNoCrawler
