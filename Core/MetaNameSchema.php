@@ -291,7 +291,7 @@ class MetaNameSchema extends NameSchemaService
         // @todo: we can probably be better here and handle more than just "image"
         if ($fieldImageValue = $relatedContent->getFieldValue('image')) {
             if ($fieldImageValue->uri) {
-                return $this->getVariation($fieldImageValue, "image", $languageCode, "medium");
+                return $this->getVariation($fieldImageValue, "image", $languageCode, "social_network_image");
             }
         }
         return $this->translationHelper->getTranslatedContentName($relatedContent, $languageCode);
@@ -316,7 +316,7 @@ class MetaNameSchema extends NameSchemaService
             $value,
             $fieldDefinitionIdentifier,
             $languageCode,
-            "medium"
+            "social_network_image"
         );
     }
 }
