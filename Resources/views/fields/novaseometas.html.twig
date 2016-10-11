@@ -11,7 +11,6 @@
                 {% set isTtitleFind = true %}
             {% elseif meta.name == "canonical" %}
                 <link rel="canonical" href="{{ meta.content }}" />
-                {% set isCanonicalFind = true %}
             {% elseif meta.name|trim starts with "og" %}
                 <meta property="{{ meta.name }}" content="{{ meta.content }}"/>
             {% else %}
@@ -19,9 +18,6 @@
             {% endif %}
         {% endif %}
     {% endfor %}
-    {% if contentInfo.mainLocationId is defined and isCanonicalFind == false %}
-        <link rel="canonical" href="{{ path( 'ez_urlalias', {'locationId': contentInfo.mainLocationId} ) }}" />
-    {% endif %}
     {% if isTtitleFind == false %}
         <title>{{ ez_content_name( contentInfo ) }}</title>
     {% endif %}
