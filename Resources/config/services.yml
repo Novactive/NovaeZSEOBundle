@@ -19,9 +19,11 @@ services:
 
     novactive.novaseobundle.meta_name_schema:
         class: %novactive.novaseobundle.meta_name_schema.class%
-        arguments: [@ezpublish.api.repository]
+        arguments: [@ezpublish.api.repository, @ezpublish.repository.helper.nameable_field_type_registry]
         calls:
             - [setLanguages, ["$languages$"]]
             - [setHtml5Converter, ["@ezpublish.fieldtype.ezxmltext.converter.html5"]]
             - [setImageVariationService, ["@ezpublish.fieldtype.ezimage.variation_service", @ezpublish.fieldtype.ezimage]]
 
+    ezpublish.repository.helper.nameable_field_type_registry:
+        class: eZ\Publish\Core\Repository\Helper\NameableFieldTypeRegistry
