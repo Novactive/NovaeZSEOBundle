@@ -212,7 +212,7 @@ class NovaeZSEOExtension extends \Twig_Extension
                     $fieldDefinition = $contentType->getFieldDefinition( $fieldDefIdentifier );
                     $configuration   = $fieldDefinition->getFieldSettings()['configuration'];
                     // but if we need something is the configuration we take it
-                    if ( $configuration[$meta->getName()] )
+                    if ( isset($configuration[$meta->getName()]) )
                     {
                         $meta->setContent( $configuration[$meta->getName()] );
                     }
