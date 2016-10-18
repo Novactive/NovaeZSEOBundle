@@ -27,6 +27,8 @@ use eZ\Publish\Core\Base\Container\ApiLoader\FieldTypeCollectionFactory;
 use eZ\Publish\Core\Repository\Helper\FieldTypeRegistry;
 use eZ\Publish\API\Repository\Repository as RepositoryInterface;
 use eZ\Publish\Core\Helper\TranslationHelper;
+use eZ\Publish\Core\Repository\Helper\ContentTypeDomainMapper;
+use eZ\Publish\SPI\Persistence\Content\Language\Handler as ContentLanguageHandler;
 
 /**
  * Class MetaNameSchema
@@ -75,6 +77,14 @@ class MetaNameSchema extends NameSchemaService
      */
     protected $fieldContentMaxLength = 255;
 
+
+    /**
+     * FieldTypeCollectionFactory
+     *
+     * @var FieldTypeCollectionFactory
+     */
+    protected $collectionFactory;
+
     /**
      * MetaNameSchema constructor.
      *
@@ -87,14 +97,21 @@ class MetaNameSchema extends NameSchemaService
     public function __construct(
         ContentTypeHandler $contentTypeHandler,
         FieldTypeCollectionFactory $collectionFactory,
+        ContentLanguageHandler $languageHandler,
         RepositoryInterface $repository,
         TranslationHelper $helper,
         array $settings
     ) {
-        $fieldTypes        = $collectionFactory->getFieldTypes();
-        $registry          = new FieldTypeRegistry($fieldTypes);
-        $settings['limit'] = $this->fieldContentMaxLength;
-        parent::__construct($contentTypeHandler, $registry, $settings);
+        $this->collectionFactory = $collectionFactory;
+        $fieldTypes              = $collectionFactory->getFieldTypes();
+        $nameable                = new \eZ\Publish\Core\Repository\Helper\NameableFieldTypeRegistry($fieldTypes);
+        $registry                = new FieldTypeRegistry($fieldTypes);
+        $settings['limit']       = $this->fieldContentMaxLength;
+        $handler                 = new ContentTypeDomainMapper(
+            $languageHandler,
+            $registry
+        );
+        parent::__construct($contentTypeHandler, $handler, $nameable, $settings);
         $this->repository        = $repository;
         $this->translationHelper = $helper;
     }
@@ -165,7 +182,6 @@ class MetaNameSchema extends NameSchemaService
         return false;
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -173,13 +189,17 @@ class MetaNameSchema extends NameSchemaService
     {
         $fieldTitles = array ();
 
+        $fieldTypes = $this->collectionFactory->getFieldTypes();
+
         foreach ($schemaIdentifiers as $fieldDefinitionIdentifier) {
             if (isset($fieldMap[$fieldDefinitionIdentifier][$languageCode])) {
                 if ($contentType instanceof SPIContentType) {
                     $fieldDefinition = null;
                     foreach ($contentType->fieldDefinitions as $spiFieldDefinition) {
                         if ($spiFieldDefinition->identifier === $fieldDefinitionIdentifier) {
-                            $fieldDefinition = $spiFieldDefinition;
+                            $fieldDefinition = $this->contentTypeDomainMapper->buildFieldDefinitionDomainObject(
+                                $spiFieldDefinition
+                            );
                             break;
                         }
                     }
@@ -188,20 +208,13 @@ class MetaNameSchema extends NameSchemaService
                         $fieldTitles[$fieldDefinitionIdentifier] = '';
                         continue;
                     }
-
-                    $fieldType = $this->fieldTypeRegistry->getFieldType(
-                        $fieldDefinition->fieldType
-                    );
                 } elseif ($contentType instanceof ContentType) {
                     $fieldDefinition = $contentType->getFieldDefinition($fieldDefinitionIdentifier);
-                    $fieldType       = $this->fieldTypeRegistry->getFieldType(
-                        $fieldDefinition->fieldTypeIdentifier
-                    );
                 } else {
                     throw new InvalidArgumentType('$contentType', 'API or SPI variant of ContentType');
                 }
 
-                // eZ XML Text
+                //eZ XML Text
                 if ($fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof XmlTextValue) {
                     $fieldTitles[$fieldDefinitionIdentifier] = $this->handleXmlTextValue(
                         $fieldMap[$fieldDefinitionIdentifier][$languageCode]
@@ -228,8 +241,12 @@ class MetaNameSchema extends NameSchemaService
                     continue;
                 }
 
-                $fieldTitles[$fieldDefinitionIdentifier] = $fieldType->getName(
-                    $fieldMap[$fieldDefinitionIdentifier][$languageCode]
+                $closure                                 = $fieldTypes[$fieldDefinition->fieldTypeIdentifier];
+                $nameable                                = $closure();
+                $fieldTitles[$fieldDefinitionIdentifier] = $nameable->getName(
+                    $fieldMap[$fieldDefinitionIdentifier][$languageCode],
+                    $fieldDefinition,
+                    $languageCode
                 );
             }
         }
@@ -294,6 +311,7 @@ class MetaNameSchema extends NameSchemaService
                 return $this->getVariation($fieldImageValue, "image", $languageCode, "social_network_image");
             }
         }
+
         return $this->translationHelper->getTranslatedContentName($relatedContent, $languageCode);
     }
 
