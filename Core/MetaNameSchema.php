@@ -77,13 +77,12 @@ class MetaNameSchema extends NameSchemaService
      */
     protected $fieldContentMaxLength = 255;
 
-
     /**
-     * FieldTypeCollectionFactory
+     * FieldTypeRegistry
      *
-     * @var FieldTypeCollectionFactory
+     * @var FieldTypeRegistry
      */
-    protected $collectionFactory;
+    protected $fieldTypeRegistry;
 
     /**
      * MetaNameSchema constructor.
@@ -102,14 +101,13 @@ class MetaNameSchema extends NameSchemaService
         TranslationHelper $helper,
         array $settings
     ) {
-        $this->collectionFactory = $collectionFactory;
         $fieldTypes              = $collectionFactory->getFieldTypes();
         $nameable                = new \eZ\Publish\Core\Repository\Helper\NameableFieldTypeRegistry($fieldTypes);
-        $registry                = new FieldTypeRegistry($fieldTypes);
+        $this->fieldTypeRegistry = new FieldTypeRegistry($fieldTypes);
         $settings['limit']       = $this->fieldContentMaxLength;
         $handler                 = new ContentTypeDomainMapper(
             $languageHandler,
-            $registry
+            $this->fieldTypeRegistry
         );
         parent::__construct($contentTypeHandler, $handler, $nameable, $settings);
         $this->repository        = $repository;
@@ -189,8 +187,6 @@ class MetaNameSchema extends NameSchemaService
     {
         $fieldTitles = array ();
 
-        $fieldTypes = $this->collectionFactory->getFieldTypes();
-
         foreach ($schemaIdentifiers as $fieldDefinitionIdentifier) {
             if (isset($fieldMap[$fieldDefinitionIdentifier][$languageCode])) {
                 if ($contentType instanceof SPIContentType) {
@@ -241,9 +237,8 @@ class MetaNameSchema extends NameSchemaService
                     continue;
                 }
 
-                $closure                                 = $fieldTypes[$fieldDefinition->fieldTypeIdentifier];
-                $nameable                                = $closure();
-                $fieldTitles[$fieldDefinitionIdentifier] = $nameable->getName(
+                $fieldType = $this->fieldTypeRegistry->getFieldType($fieldDefinition->fieldTypeIdentifier);
+                $fieldTitles[$fieldDefinitionIdentifier] = $fieldType->getName(
                     $fieldMap[$fieldDefinitionIdentifier][$languageCode],
                     $fieldDefinition,
                     $languageCode
