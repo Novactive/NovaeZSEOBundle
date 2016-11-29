@@ -29,9 +29,7 @@
         {% else %}
             {% set route = ez_route( params={"language": lang} ) %}
             {# we can't do the diff with 404 #}
-            {% if route.route != "ez_legacy" %}
-                <link rel="alternate" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( route ) }}" />
-            {% endif %}
+            <link rel="alternate" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( route ) }}" />
         {% endif %}
     {% endfor %}
 {% endif %}

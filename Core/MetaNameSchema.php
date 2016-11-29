@@ -10,14 +10,15 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core;
 
+use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\Parser\FieldType\RichText;
 use eZ\Publish\API\Repository\Values\Content\Field;
+use eZ\Publish\Core\FieldType\RichText\Converter as RichTextConverterInterface;
 use eZ\Publish\Core\Repository\Values\Content\VersionInfo;
 use eZ\Publish\Core\Repository\Helper\NameSchemaService;
 use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\API\Repository\Values\ContentType\ContentType;
-use eZ\Publish\Core\FieldType\XmlText\Converter\Html5 as Html5Converter;
 use eZ\Publish\SPI\Variation\VariationHandler;
-use eZ\Publish\Core\FieldType\XmlText\Value as XmlTextValue;
+use eZ\Publish\Core\FieldType\RichText\Value as RichTextValue;
 use eZ\Publish\Core\FieldType\Relation\Value as RelationValue;
 use eZ\Publish\Core\FieldType\Image\Value as ImageValue;
 use eZ\Publish\SPI\Persistence\Content\Type as SPIContentType;
@@ -45,9 +46,9 @@ class MetaNameSchema extends NameSchemaService
     /**
      * Html5 converter
      *
-     * @var Html5Converter
+     * @var RichTextConverterInterface
      */
-    protected $html5Converter;
+    protected $richTextConverter;
 
     /**
      * Alias Generator
@@ -125,13 +126,13 @@ class MetaNameSchema extends NameSchemaService
     }
 
     /**
-     * Set HTML Converter
+     * Set Rich text converter
      *
-     * @param Html5Converter $converter
+     * @param RichTextConverterInterface $richTextConverter
      */
-    public function setHtml5Converter(Html5Converter $converter)
+    public function setRichTextConverter($richTextConverter)
     {
-        $this->html5Converter = $converter;
+        $this->richTextConverter = $richTextConverter;
     }
 
     /**
@@ -211,8 +212,8 @@ class MetaNameSchema extends NameSchemaService
                 }
 
                 //eZ XML Text
-                if ($fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof XmlTextValue) {
-                    $fieldTitles[$fieldDefinitionIdentifier] = $this->handleXmlTextValue(
+                if ($fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof RichTextValue) {
+                    $fieldTitles[$fieldDefinitionIdentifier] = $this->handleRichTextValue(
                         $fieldMap[$fieldDefinitionIdentifier][$languageCode]
                     );
                     continue;
@@ -275,15 +276,15 @@ class MetaNameSchema extends NameSchemaService
     }
 
     /**
-     * Get a Text from a XML
+     * Get a Text from a Rich text field type
      *
-     * @param XmlTextValue $value
+     * @param RichTextValue $value
      *
      * @return string
      */
-    protected function handleXmlTextValue(XmlTextValue $value)
+    protected function handleRichTextValue(RichTextValue $value)
     {
-        return trim(strip_tags($this->html5Converter->convert($value->xml)));
+        return trim(strip_tags($this->richTextConverter->convert($value->xml)->saveHTML()));
     }
 
     /**

@@ -9,11 +9,11 @@ use eZ\Publish\API\Repository\ContentTypeService;
  */
 class ContentTypesHelper
 {
-    /** @var \eZ\Publish\API\Repository\ContentTypeServic|ContentTypeService */
+    /** @var \eZ\Publish\API\Repository\ContentTypeService|ContentTypeService */
     private $contentTypeService;
 
     /**
-     * @param \eZ\Publish\API\Repository\ContentTypeServic $contentTypeService
+     * @param \eZ\Publish\API\Repository\ContentTypeService $contentTypeService
      */
     public function __construct(ContentTypeService $contentTypeService)
     {

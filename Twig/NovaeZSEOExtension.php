@@ -117,7 +117,11 @@ class NovaeZSEOExtension extends \Twig_Extension
         return $this->localeConverter->convertToPOSIX( $eZLocale );
     }
 
-
+    /**
+     * @param ContentInfo $contentInfo
+     * @param $metaName
+     * @return string
+     */
     public function getFallbackedMetaContent( ContentInfo $contentInfo, $metaName )
     {
         if ( $this->customFallBackService instanceof CustomFallbackInterface )

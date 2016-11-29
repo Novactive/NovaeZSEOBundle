@@ -1,4 +1,13 @@
 system:
     default:
+        fielddefinition_settings_templates:
+            -
+                template: "NovaeZSEOBundle:fields:fielddefinition_settings.html.twig"
+
+        fielddefinition_edit_templates:
+            -
+                template: "NovaeZSEOBundle:fields:field_types.html.twig"
+
         field_templates:
-            - {template: NovaeZSEOBundle:fields:novaseometas.html.twig, priority: 0}
+            -
+                template: "NovaeZSEOBundle:fields:novaseometas.html.twig"
