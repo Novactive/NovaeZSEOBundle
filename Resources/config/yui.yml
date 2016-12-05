@@ -24,7 +24,7 @@ system:
                     requires: ['ez-templatebasedview', 'metaview-ez-template']
                     path: "%ezseobundle.public_dir%/js/views/value/meta-view.js"
                 meta-editview:
-                    requires: ['ez-fieldeditview', 'metaeditview-ez-template']
+                    requires: ['ez-templatebasedview', 'metaeditview-ez-template']
                     path: "%ezseobundle.public_dir%/js/views/value/meta-editview.js"
                 metaview-ez-template:
                     type: 'template'

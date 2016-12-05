@@ -2,6 +2,16 @@
     padding-bottom: 10px;
 }
 
+.novaseometas-input-ui .ez-view-metaeditview:before,
+.novaseometas-input-ui .ez-view-metaeditview:after {
+    content: " ";
+    display: table;
+}
+
+.novaseometas-input-ui .ez-view-metaeditview:after {
+    clear: both;
+}
+
 .novaseometas-input-ui label {
     float: left;
     width: 12%;

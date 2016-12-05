@@ -4,38 +4,43 @@ YUI.add('meta-editview', function (Y) {
 
     var FIELDTYPE_IDENTIFIER = 'meta';
 
-    Y.Novactive.MetaEditView = Y.Base.create('metaEditView', Y.eZ.FieldEditView, [], {
+    Y.Novactive.MetaEditView = Y.Base.create('metaEditView', Y.eZ.TemplateBasedView, [], {
 
-        render: function () {
-            this.get('container').setHTML(this.template({
-                fieldId: this.get("fieldId"),
-                default_pattern: this.get("default_pattern"),
-                icon: this.get('icon'),
-                identifier: this.get('identifier'),
-                label: this.get('label')
-            }));
+            render: function () {
+                this.get('container').setHTML(this.template({
+                    fieldId: this.get("fieldId"),
+                    default_pattern: this.get("default_pattern"),
+                    icon: this.get('icon'),
+                    identifier: this.get('identifier'),
+                    label: this.get('label'),
+                    inputName: this.get('inputName')
+                }));
 
-            return this;
+                return this;
+            },
+            getValue: function () {
+                var result = {};
+
+                result.meta_name = this.get("identifier");
+                result.meta_content = this.get("container").one('#'+this.get('inputName')).get('value');
+
+                return result;
+            }
         },
-        _getFieldValue: function() {
-            var result = {};
-
-            result.metaName = this.get("identifier");
-            result.metaContent = this.get("container").one('.ez-view-metaeditview input').get('value');
-
-            return result;
-        }
-    },
-    {
-        ATTRS: {
-            fieldId: null,
-            default_pattern: null,
-            icon: null,
-            identifier: null,
-            label: null
-        }
-
-    });
+        {
+            ATTRS: {
+                fieldId: null,
+                default_pattern: null,
+                icon: null,
+                identifier: null,
+                label: null,
+                inputName: {
+                    getter: function () {
+                        return "metas-" + this.get('identifier').replace(':', '_') + "-" + this.get('fieldId');
+                    }
+                }
+            }
+        });
 
     Y.eZ.FieldEditView.registerFieldEditView(FIELDTYPE_IDENTIFIER, Y.Novactive.MetaEditView);
 });

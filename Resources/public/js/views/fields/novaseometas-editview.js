@@ -25,17 +25,19 @@ YUI.add('novaseometas-editview', function (Y) {
             var views = [],
                 viewsById = [],
                 view,
-                fieldId = "",
-                //fieldId = this.get('field').get('id'),
-                config = this.get('config');
+                field = this.get('field'),
+                fieldId = field.id,
+                fieldMetasConfig = this.get('fieldDefinition').fieldSettings.configuration,
+                globalMetasConfig = this.get('config').seoMetas;
 
-            Y.Array.each(config.seoMetas, function (meta) {
+            Y.Array.each(globalMetasConfig, function (meta) {
                 view = new Y.Novactive.MetaEditView({
                     fieldId: fieldId,
-                    default_pattern: meta.default_pattern,
+                    default_pattern: fieldMetasConfig[meta.identifier] != undefined && fieldMetasConfig[meta.identifier] != null ? fieldMetasConfig[meta.identifier] : meta.default_pattern,
                     icon: meta.icon,
                     identifier: meta.identifier,
-                    label: meta.label
+                    label: meta.label,
+                    value: ""
                 });
                 viewsById[meta.identifier] = view;
                 views.push(view);
@@ -110,11 +112,11 @@ YUI.add('novaseometas-editview', function (Y) {
          * @return mixed
          */
         _getFieldValue: function () {
-
+            var res = [];
             Y.Array.each(this._metaEditViews, function (view) {
-                console.log(view._getFieldValue());
+                res.push(view.getValue());
             });
-
+            return res;
         },
     });
 
