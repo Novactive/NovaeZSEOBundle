@@ -1,2 +1,2 @@
-<label>Test</label>
-<input type="text">
+<label>{{ label }}</label>
+<input id="{{ fieldId }}" type="text" placeholder="{{ default_pattern }}" value="" name="{{ identifier }}" />

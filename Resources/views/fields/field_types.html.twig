@@ -1,10 +1,13 @@
 {% extends 'EzSystemsRepositoryFormsBundle:ContentType:field_types.html.twig' %}
 
 {% block novaseometas_field_definition_edit %}
-    NovaeZSEOBundle:fields:field_types.html.twig
     <div class="novaseometas-settings configuration">
-        {{- form_label(form.configuration) -}}
-        {{- form_errors(form.configuration) -}}
-        {{- form_widget(form.configuration) -}}
+        {% for child in form.configuration %}
+            <div class="pure-control-group">
+                {{- form_label(child) -}}
+                {{- form_errors(child) -}}
+                {{- form_widget(child) -}}
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}

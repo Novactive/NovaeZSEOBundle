@@ -24,11 +24,11 @@ system:
                     requires: ['ez-templatebasedview', 'metaview-ez-template']
                     path: "%ezseobundle.public_dir%/js/views/value/meta-view.js"
                 meta-editview:
-                    requires: ['ez-templatebasedview', 'metaeditview-ez-template']
+                    requires: ['ez-fieldeditview', 'metaeditview-ez-template']
                     path: "%ezseobundle.public_dir%/js/views/value/meta-editview.js"
                 metaview-ez-template:
                     type: 'template'
-                    path: "%ezseobundle.public_dir%/templates/value/edit/meta.hbt"
+                    path: "%ezseobundle.public_dir%/templates/value/view/meta.hbt"
                 metaeditview-ez-template:
                     type: 'template'
                     path: "%ezseobundle.public_dir%/templates/value/edit/meta.hbt"

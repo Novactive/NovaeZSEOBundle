@@ -50,6 +50,14 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
     {
         $metasConfig = $this->configResolver->getParameter('fieldtype_metas', 'novae_zseo');
 
+        $aConfigurations = $data->fieldDefinition->fieldSettings["configuration"];
+        foreach($metasConfig as $key=>$meta) {
+            if (!isset($aConfigurations[$key])){
+                $aConfigurations[$key] = "";
+            }
+        }
+        $data->fieldSettings["configuration"] = $aConfigurations;
+
         $fieldDefinitionForm
             ->add('configuration', CollectionType::class, [
                 'entry_type' => TextType::class,

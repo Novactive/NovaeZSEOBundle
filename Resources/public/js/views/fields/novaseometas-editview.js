@@ -25,7 +25,8 @@ YUI.add('novaseometas-editview', function (Y) {
             var views = [],
                 viewsById = [],
                 view,
-                fieldId = this.get('field').get('id'),
+                fieldId = "",
+                //fieldId = this.get('field').get('id'),
                 config = this.get('config');
 
             Y.Array.each(config.seoMetas, function (meta) {
@@ -109,10 +110,11 @@ YUI.add('novaseometas-editview', function (Y) {
          * @return mixed
          */
         _getFieldValue: function () {
-            console.error(
-                'Error: _getFieldValue() is not implemented in ' + this.constructor.NAME
-            );
-            return undefined;
+
+            Y.Array.each(this._metaEditViews, function (view) {
+                console.log(view._getFieldValue());
+            });
+
         },
     });
 

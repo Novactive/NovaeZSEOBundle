@@ -2,4 +2,4 @@ system:
     default:
         css:
             files:
-                - %ezseobundle.public_dir%/css/views/fields/edit/novaseometas.css
+                - '%ezseobundle.public_dir%/css/views/fields/edit/novaseometas.css'

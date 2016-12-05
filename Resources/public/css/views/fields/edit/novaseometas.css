@@ -1,0 +1,13 @@
+.novaseometas-input-ui > div {
+    padding-bottom: 10px;
+}
+
+.novaseometas-input-ui label {
+    float: left;
+    width: 12%;
+    padding-top:7px;
+}
+
+.novaseometas-input-ui input {
+    width: 75%;
+}
