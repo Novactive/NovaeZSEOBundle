@@ -37,7 +37,7 @@ But you will have to manage yourself. ( we can't do that for you, but we'd simpl
 ### &lt;meta&gt; Configuration
 
 ```yml
-novae_zseo:
+nova_ezseo:
     system:
         default:
             default_metas:
@@ -53,7 +53,7 @@ novae_zseo:
 ### &lt;link&gt; Configuration
 
 ```yml
-novae_zseo:
+nova_ezseo:
     system:
         default:
             default_links:
@@ -64,13 +64,13 @@ novae_zseo:
                     href: { route : 'yourproject_home' }
                     title: 'Home'
                 Search:
-                    href: { legacy_uri: '/content/advancedsearch' }
+                    href: { route: 'yourproject_search_route' }
                     title: 'Search'
                 'Shortcut icon':
-                    href: { asset: '/design/standard/images/favicon.ico' }
+                    href: { asset: '/bundles/sitebundle/images/favicon.ico' }
                     type: 'image/x-icon'
                 Alternate:
-                    href: { legacy_uri: '/rss/feed/my_feed' }
+                    href: { route: 'yourproject_rss_feed_route' }
                     title: 'RSS'
                     type: 'application/rss+xml'
 ```
@@ -83,7 +83,7 @@ novae_zseo:
 You can add your Metas in your configuration
 
 ```yml
-novae_zseo:
+nova_ezseo:
     system:
         default:
             fieldtype_metas_identifier: "metas"
@@ -110,7 +110,7 @@ This configuration defines 3 metas, _title_, _description_ and _keyword_
 Your sitemap is automatically generated on the fly.
 
 ```yml
-novae_zseo:
+nova_ezseo:
     system:
         default:
             sitemap_excludes:
@@ -126,7 +126,7 @@ novae_zseo:
 You can manage the Google Verification file in the configuration
 
 ```yml
-novae_zseo:
+nova_ezseo:
     system:
         default:
             google_verification: 1234567890
@@ -140,7 +140,7 @@ novae_zseo:
 You can insert the GA Marker by just adding your id: UA-XXXXXXXX-X
 
 ```yml
-novae_zseo:
+nova_ezseo:
     system:
         default:
             google_gatracker: UA-XXXXXXXX-X
@@ -152,7 +152,7 @@ novae_zseo:
 You can manage the Robots.txt file
 
 ```yml
-novae_zseo:
+nova_ezseo:
     system:
         default:
             google_verification: 1234567890
@@ -204,7 +204,7 @@ Started at the version 1.1.0, you can define a CustomFallback service
 Ex:
 
 ```yml
-novae_zseo:
+nova_ezseo:
     system:
         default:
             custom_fallback_service: yourname.seo.fallback
@@ -230,9 +230,9 @@ No more limits!
 A command is provided to simply add the FieldType, you can always do it by the Administration Inferface
 
 ```bash
-$ php ezpublish/console novae_zseo:addnovaseometasfieldtype -h
+$ php ezpublish/console nova_ezseo:addnovaseometasfieldtype -h
 Usage:
- novae_zseo:addnovaseometasfieldtype [--identifier="..."] [--identifiers="..."] [--group_identifier="..."]
+ nova_ezseo:addnovaseometasfieldtype [--identifier="..."] [--identifiers="..."] [--group_identifier="..."]
 
 Options:
  --identifier          a content type identifier
@@ -242,9 +242,9 @@ Options:
  --siteaccess          SiteAccess to use for operations. If not provided, default siteaccess will be used
 
 Help:
- The command novae_zseo:addnovaseometasfieldtype add the FieldType 'novaseometas'.
+ The command nova_ezseo:addnovaseometasfieldtype add the FieldType 'novaseometas'.
  You can select the Content Type via the identifier, identifiers, group_identifier option.
-     - Identifier will be: %novae_zseo.default.fieldtype_metas_identifier%
+     - Identifier will be: %nova_ezseo.default.fieldtype_metas_identifier%
      - Name will be: Metas
      - Category will be: SEO
 ```
@@ -252,10 +252,10 @@ Help:
 ## Convert existing [xrow field type](https://github.com/xrowgmbh/xrowmetadata) to the `metas` format
 
 ```bash
-$ php ezpublish/console novae_zseo:convertxrow -h
+$ php ezpublish/console nova_ezseo:convertxrow -h
 
 Usage:
- novae_zseo:convertxrow [--identifier="..."] [--identifiers="..."] [--group_identifier="..."] [--limit=25] [--xrow_name="metadata"]
+ nova_ezseo:convertxrow [--identifier="..."] [--identifiers="..."] [--group_identifier="..."] [--limit=25] [--xrow_name="metadata"]
 
 Options:
  --identifier          a content type identifier
@@ -267,7 +267,7 @@ Options:
  --siteaccess          SiteAccess to use for operations. If not provided, default siteaccess will be used
 
 Help:
- The novae_zseo:convertxrow command converts existing [xrow field type](https://github.com/xrowgmbh/xrowmetadata) data to Nova's `metas` format.
+ The nova_ezseo:convertxrow command converts existing [xrow field type](https://github.com/xrowgmbh/xrowmetadata) data to Nova's `metas` format.
  You can select the ContentType via the identifier, identifiers or group_identifier option.
 
  Converter will add `metas` field to specified content type and convert all existing xrow `metadata` fields to `metas` format. Because of the compatibility reason `fieldtype_metas` configuration should include at least `title`, `description` and `keywords` items.

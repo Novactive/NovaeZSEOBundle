@@ -3,8 +3,8 @@
 
 ## Requirements
 
-* eZ Publish 5.4+ / eZ Publish Community Project 2014.07+
-* PHP 5.4+
+* eZPlatform 1.6+ / eZStudio 1.6+
+* PHP 5.6+
 
 
 ## <i class="fa fa-3x fa-spinner"></i><br /> Installation steps
@@ -18,7 +18,7 @@ Add the following to your composer.json and run `php composer.phar update novact
 # composer.json
 
 "require": {
-    "novactive/ezseobundle": "dev-master",
+    "novactive/ezseobundle": "dev-develop-6.6.x",
 }
 ```
 
@@ -55,16 +55,6 @@ _novaezseoRoutes:
     type:     annotation
     prefix:   /
 ```
-
-
-### Install the Legacy extension
-
-```bash
-php ezpublish/console ezpublish:legacybundles:install_extensions
-cd ezpublish_legacy
-php bin/php/ezpgenerateautoloads.php -e
-```
-
 
 ### Create the table
 
