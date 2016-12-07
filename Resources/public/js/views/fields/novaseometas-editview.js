@@ -26,6 +26,7 @@ YUI.add('novaseometas-editview', function (Y) {
                 viewsById = [],
                 view,
                 field = this.get('field'),
+                fieldValue = field.fieldValue,
                 fieldId = field.id,
                 fieldMetasConfig = this.get('fieldDefinition').fieldSettings.configuration,
                 globalMetasConfig = this.get('config').seoMetas;
@@ -37,7 +38,7 @@ YUI.add('novaseometas-editview', function (Y) {
                     icon: meta.icon,
                     identifier: meta.identifier,
                     label: meta.label,
-                    value: ""
+                    value: fieldValue[meta.identifier]
                 });
                 viewsById[meta.identifier] = view;
                 views.push(view);

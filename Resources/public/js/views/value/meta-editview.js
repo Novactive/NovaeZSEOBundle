@@ -7,13 +7,15 @@ YUI.add('meta-editview', function (Y) {
     Y.Novactive.MetaEditView = Y.Base.create('metaEditView', Y.eZ.TemplateBasedView, [], {
 
             render: function () {
+                var value = this.get('value');
                 this.get('container').setHTML(this.template({
                     fieldId: this.get("fieldId"),
                     default_pattern: this.get("default_pattern"),
                     icon: this.get('icon'),
                     identifier: this.get('identifier'),
                     label: this.get('label'),
-                    inputName: this.get('inputName')
+                    inputName: this.get('inputName'),
+                    value: value != undefined ? value.meta_content : ""
                 }));
 
                 return this;
@@ -34,6 +36,7 @@ YUI.add('meta-editview', function (Y) {
                 icon: null,
                 identifier: null,
                 label: null,
+                value: null,
                 inputName: {
                     getter: function () {
                         return "metas-" + this.get('identifier').replace(':', '_') + "-" + this.get('fieldId');

@@ -11,8 +11,8 @@
 namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas;
 
 use eZ\Publish\Core\FieldType\GatewayBasedStorage;
-use eZ\Publish\SPI\Persistence\Content\VersionInfo;
 use eZ\Publish\SPI\Persistence\Content\Field;
+use eZ\Publish\SPI\Persistence\Content\VersionInfo;
 use Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\LegacyStorage;
 
 /**
@@ -38,6 +38,12 @@ class MetasStorage extends GatewayBasedStorage
 
         /** @var LegacyStorage $gateway */
         $gateway = $this->getGateway( $context );
+
+        $metas = $gateway->loadFieldData( $versionInfo, $field );
+        if ($metas) {
+            $gateway->deleteFieldData( $versionInfo, array($field->id) );
+        }
+
         $gateway->storeFieldData( $versionInfo, $field );
     }
 
