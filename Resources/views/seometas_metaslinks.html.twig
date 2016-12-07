@@ -18,7 +18,14 @@
 {% for rel, attrs in novae_zseo.default_links %}
     {% if attrs.href is not empty %}
         {% set href = attrs.href %}
-        <link rel="{{ rel }}"{% if attrs.type is defined %} type="{{ attrs.type }}"{% endif %}{% if attrs.title is defined %} title="{{ attrs.title }}"{% endif %}{% if href.location_id is defined %} href="{{ path( 'ez_urlalias', {'locationId': href.location_id } ) }}"{% endif %}{% if href.route is defined %} href="{{ path( href.route ) }}"{% endif %}{% if href.legacy_uri is defined %} href="{{ path( 'ez_legacy', {'module_uri': href.legacy_uri } ) }}"{% endif %}{% if href.asset is defined %} href="{{ asset( href.asset ) }}"{% endif %} />
+        {% if href.location_id is defined %}
+            {% set href = path( 'ez_urlalias', {'locationId': href.location_id } ) %}
+        {% elseif href.route is defined %}
+            {% set href = path( href.route ) %}
+        {% elseif href.asset is defined %}
+            {% set href = asset( href.asset ) %}
+        {% endif %}
+        <link rel="{{ rel }}"{% if attrs.type is defined %} type="{{ attrs.type }}"{% endif %}{% if attrs.title is defined %} title="{{ attrs.title }}"{% endif %} {% if not href is iterable %}href="{{ href }}"{% endif %}/>
     {% endif %}
 {% endfor %}
 

@@ -19,16 +19,16 @@ parameters:
 #        Top:
 #            href: { route : 'route_name' }
 #            title: 'Home'
-        Search:
-            href: { legacy_uri: '/content/advancedsearch' }
-            title: 'Search'
+#        Search:
+#            href: { route: 'search_route_name' }
+#            title: 'Search'
         'Shortcut icon':
-            href: { asset: '/design/standard/images/favicon.ico' }
+            href: { asset: '/bundles/sitebundle/images/favicon.ico' }
             type: 'image/x-icon'
-        Alternate:
-            href: { legacy_uri: '/rss/feed/my_feed' }
-            title: 'RSS'
-            type: 'application/rss+xml'
+#        Alternate:
+#            href: { route: 'rss_feed_route_name' }
+#            title: 'RSS'
+#            type: 'application/rss+xml'
     novae_zseo.default.fieldtype_metas_identifier: "metas"
     novae_zseo.default.fieldtype_metas:
         title:
