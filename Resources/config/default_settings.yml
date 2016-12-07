@@ -48,26 +48,26 @@ parameters:
             default_pattern: ~
             icon: 'link'
         'og:title':
-            label: 'Title'
+            label: 'Facebook - Title'
             default_pattern: "<title|name>"
             icon: 'facebook-official'
         'og:description':
-            label: 'Description'
+            label: 'Facebook - Description'
             default_pattern: "<short_description|description|title|name>"
             icon: 'facebook-official'
         'og:image':
-            label: 'Image'
+            label: 'Facebook - Image'
             default_pattern: "<image|picture>"
             icon: 'facebook-official'
         'twitter:title':
-            label: 'Title'
+            label: 'Twitter - Title'
             default_pattern: "<title|name>"
             icon: 'twitter-square'
         'twitter:description':
-            label: 'Description'
+            label: 'Twitter - Description'
             default_pattern: "<short_description|description|title|name>"
             icon: 'twitter-square'
         'twitter:image':
-            label: 'Image'
+            label: 'Twitter - Image'
             default_pattern: "<image|picture>"
             icon: 'twitter-square'
