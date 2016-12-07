@@ -165,7 +165,7 @@ class Type extends FieldType
         foreach ( $value->metas as $meta )
         {
             /** @var Meta $meta */
-            $hash[] = array(
+            $hash[$meta->getName()] = array(
                 "meta_name"  => $meta->getName(),
                 "meta_content" => $meta->getContent(),
             );
