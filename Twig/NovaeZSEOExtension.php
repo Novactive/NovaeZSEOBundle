@@ -158,7 +158,7 @@ class NovaeZSEOExtension extends \Twig_Extension
                 $rootContent->contentInfo->contentTypeId
             );
             // We need to load the good field too
-            $metasIdentifier = $this->configResolver->getParameter( 'fieldtype_metas_identifier', 'novae_zseo' );
+            $metasIdentifier = $this->configResolver->getParameter( 'fieldtype_metas_identifier', 'nova_ezseo' );
             $rootMetas = $this->innerComputeMetas( $rootContent, $metasIdentifier, $rootContentType, $fallback );
             foreach ( $contentMetas as $key => $metaContent )
             {
@@ -195,7 +195,7 @@ class NovaeZSEOExtension extends \Twig_Extension
 
         if ( $metasFieldValue instanceof MetasFieldValue )
         {
-            $metasConfig = $this->configResolver->getParameter( 'fieldtype_metas', 'novae_zseo' );
+            $metasConfig = $this->configResolver->getParameter( 'fieldtype_metas', 'nova_ezseo' );
             // as the configuration is the last fallback we need to loop on it.
             foreach ( $metasConfig as $metaName => $metasSettings )
             {
@@ -244,10 +244,10 @@ class NovaeZSEOExtension extends \Twig_Extension
      */
     public function getGlobals()
     {
-        $identifier = $this->configResolver->getParameter( "fieldtype_metas_identifier", "novae_zseo" );
-        $metas      = $this->configResolver->getParameter( "default_metas", "novae_zseo" );
-        $links      = $this->configResolver->getParameter( "default_links", "novae_zseo" );
-        $gatracker  = $this->configResolver->getParameter( "google_gatracker", "novae_zseo" );
+        $identifier = $this->configResolver->getParameter( "fieldtype_metas_identifier", "nova_ezseo" );
+        $metas      = $this->configResolver->getParameter( "default_metas", "nova_ezseo" );
+        $links      = $this->configResolver->getParameter( "default_links", "nova_ezseo" );
+        $gatracker  = $this->configResolver->getParameter( "google_gatracker", "nova_ezseo" );
         $novaeZseo  = [
             "fieldtype_metas_identifier" => $identifier,
             "default_metas"              => $metas,
@@ -255,6 +255,6 @@ class NovaeZSEOExtension extends \Twig_Extension
             "google_gatracker"           => $gatracker != "~" ? $gatracker : null
         ];
 
-        return [ 'novae_zseo' => $novaeZseo ];
+        return [ 'nova_ezseo' => $novaeZseo ];
     }
 }

@@ -50,7 +50,7 @@ class AddMetasFieldCommandTest extends NovaeZSEOBundleTestCase
     {
         $app = new Application( static::createClient()->getKernel() );
         $app->add( new AddNovaSEOMetasFieldTypeCommand() );
-        $command = $app->find( 'novae_zseo:addnovaseometasfieldtype' );
+        $command = $app->find( 'nova_ezseo:addnovaseometasfieldtype' );
         $tester  = new CommandTester( $command );
         $input   = [ 'command' => $command->getName() ];
         if ( count( $arguments ) > 0 )

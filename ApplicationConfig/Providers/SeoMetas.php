@@ -33,7 +33,7 @@ class SeoMetas implements Provider
     public function getConfig()
     {
         $list = [];
-        $metas = $this->configResolver->getParameter('fieldtype_metas', 'novae_zseo');
+        $metas = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
         foreach ($metas as $metaIdentifier => $meta) {
             $meta['identifier'] = $metaIdentifier;
             $list[] = $meta;

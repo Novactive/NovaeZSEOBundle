@@ -48,7 +48,7 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
      */
     public function mapFieldDefinitionForm(FormInterface $fieldDefinitionForm, FieldDefinitionData $data)
     {
-        $metasConfig = $this->configResolver->getParameter('fieldtype_metas', 'novae_zseo');
+        $metasConfig = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
 
         $aConfigurations = $data->fieldDefinition->fieldSettings["configuration"];
         foreach($metasConfig as $key=>$meta) {

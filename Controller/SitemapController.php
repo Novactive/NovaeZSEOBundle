@@ -45,7 +45,7 @@ class SitemapController extends Controller
     protected function getQuery()
     {
         $locationService = $this->get( "ezpublish.api.repository" )->getLocationService();
-        $excludes        = $this->getConfigResolver()->getParameter( 'sitemap_excludes', 'novae_zseo' );
+        $excludes        = $this->getConfigResolver()->getParameter( 'sitemap_excludes', 'nova_ezseo' );
         $query           = new Query();
         $criterion[]     = new Criterion\Visibility( Criterion\Visibility::VISIBLE );
         foreach ( $excludes['contentTypeIdentifiers'] as $contentTypeIdentifier )

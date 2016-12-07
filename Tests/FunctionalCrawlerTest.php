@@ -25,7 +25,7 @@ class FunctionalCrawlerTest extends NovaeZSEOBundleTestCase
         $this->assertTrue( $crawler->filter( 'html meta' )->count() > 0 );
         $container      = $client->getContainer();
         $configResolver = $container->get( "ezpublish.config.resolver" );
-        $defaultMetas   = $configResolver->getParameter( "default_metas", "novae_zseo" );
+        $defaultMetas   = $configResolver->getParameter( "default_metas", "nova_ezseo" );
         foreach ( $defaultMetas as $metaName => $metaContent )
         {
             if ( !$metaContent )
@@ -56,7 +56,7 @@ class FunctionalCrawlerTest extends NovaeZSEOBundleTestCase
         $this->assertTrue( $crawler->filter( 'html meta' )->count() > 0 );
         $container      = $client->getContainer();
         $configResolver = $container->get( "ezpublish.config.resolver" );
-        $defaultLinks = $configResolver->getParameter( "default_links", "novae_zseo" );
+        $defaultLinks = $configResolver->getParameter( "default_links", "nova_ezseo" );
         foreach ( $defaultLinks as $linkRel => $linkConfig )
         {
             $linkTagsHtml = $crawler->filter( "html link[rel='{$linkRel}']" );

@@ -1,18 +1,18 @@
 parameters:
-    novae_zseo.default.robots_disallow: []
-    novae_zseo.default.google_gatracker: ~
-    novae_zseo.default.google_verification: 1234567890
-    novae_zseo.default.custom_fallback_service: ~
-    novae_zseo.default.sitemap_excludes:
+    nova_ezseo.default.robots_disallow: []
+    nova_ezseo.default.google_gatracker: ~
+    nova_ezseo.default.google_verification: 1234567890
+    nova_ezseo.default.custom_fallback_service: ~
+    nova_ezseo.default.sitemap_excludes:
         locations: []
         subtrees: []
         contentTypeIdentifiers: ['plopix']
-    novae_zseo.default.default_metas:
+    nova_ezseo.default.default_metas:
         author: "eZ Community Bundle Nova eZ SEO Bundle"
         copyright: ~
         generator: "eZ Platform"
         MSSmartTagsPreventParsing: "TRUE"
-    novae_zseo.default.default_links:
+    nova_ezseo.default.default_links:
         Index:
             href: { location_id: 2 }
             title: 'Home'
@@ -29,8 +29,8 @@ parameters:
 #            href: { route: 'rss_feed_route_name' }
 #            title: 'RSS'
 #            type: 'application/rss+xml'
-    novae_zseo.default.fieldtype_metas_identifier: "metas"
-    novae_zseo.default.fieldtype_metas:
+    nova_ezseo.default.fieldtype_metas_identifier: "metas"
+    nova_ezseo.default.fieldtype_metas:
         title:
             label: 'Title'
             default_pattern: "<title|name>"

@@ -58,7 +58,7 @@ class AddNovaSEOMetasFieldTypeCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('novae_zseo:addnovaseometasfieldtype')
+            ->setName('nova_ezseo:addnovaseometasfieldtype')
             ->addOption('identifier', null, InputOption::VALUE_REQUIRED, 'a content type identifier')
             ->addOption('identifiers', null, InputOption::VALUE_REQUIRED, 'some content types identifier, separated by a comma')
             ->addOption('group_identifier', null, InputOption::VALUE_REQUIRED, 'a content type group identifier')
@@ -68,7 +68,7 @@ class AddNovaSEOMetasFieldTypeCommand extends Command
                 <<<EOT
 The command <info>%command.name%</info> add the FieldType 'novaseometas'.
 You can select the Content Type via the <info>identifier</info>, <info>identifiers</info>, <info>group_identifier</info> option.
-    - Identifier will be: <comment>%novae_zseo.default.fieldtype_metas_identifier%</comment>
+    - Identifier will be: <comment>%nova_ezseo.default.fieldtype_metas_identifier%</comment>
     - Name will be: <comment>Metas</comment>
     - Category will be: <comment>SEO</comment>
 EOT
@@ -91,7 +91,7 @@ EOT
             return;
         }
 
-        $fieldName = $this->configResolver->getParameter('fieldtype_metas_identifier', 'novae_zseo');
+        $fieldName = $this->configResolver->getParameter('fieldtype_metas_identifier', 'nova_ezseo');
 
         foreach ($contentTypes as $contentType) {
             if (!$this->fieldInstaller->fieldExists($fieldName, $contentType)) {

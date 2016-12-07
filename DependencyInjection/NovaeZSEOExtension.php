@@ -88,7 +88,7 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
         $loader->load( 'fieldtypes.yml' );
         $loader->load( 'default_settings.yml' );
 
-        $processor = new ConfigurationProcessor( $container, 'novae_zseo' );
+        $processor = new ConfigurationProcessor( $container, 'nova_ezseo' );
         $processor->mapSetting( 'fieldtype_metas_identifier', $config );
         $processor->mapSetting( 'fieldtype_metas', $config );
         $processor->mapSetting( 'google_verification', $config );
