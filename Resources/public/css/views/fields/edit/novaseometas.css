@@ -1,3 +1,15 @@
+.ez-metas-list{
+    list-style: none;
+}
+.ez-metas-list li{
+    padding-bottom: 10px;
+}
+
+.ez-metas-list,
+.novaseometas-input-ui {
+    border-left: 3px solid #F4D8B1;
+    padding-left: 20px;
+}
 .novaseometas-input-ui > div {
     padding-bottom: 10px;
 }
@@ -16,8 +28,42 @@
     float: left;
     width: 12%;
     padding-top:7px;
+    font-weight: bold;
 }
 
 .novaseometas-input-ui input {
     width: 75%;
+}
+.novaseometas-settings{
+    border-left: 3px solid #F4D8B1;
+}
+.novaseometas-settings .pure-control-group input {
+    border: 1px solid #F4D8B1;
+}
+.nova-signature:before,
+.nova-signature:after {
+    content: " ";
+    display: table;
+}
+
+.nova-signature:after {
+    clear: both;
+}
+.nova-signature .handcrafted {
+    text-align: right;
+}
+.nova-signature .handcrafted img,
+.nova-signature .handcrafted span {
+    display: block;
+    float:right;
+}
+.nova-signature .handcrafted span {
+    text-align: right;
+    padding-top: 18px;
+    padding-right: 10px;
+}
+
+.nova-signature .handcrafted .fa {
+    color: #F19A22;
+    font-weight: bold;
 }

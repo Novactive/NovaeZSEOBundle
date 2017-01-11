@@ -2,4 +2,5 @@ system:
     default:
         css:
             files:
+                - '%ezseobundle.public_dir%/font/font-awesome.min.css'
                 - '%ezseobundle.public_dir%/css/views/fields/edit/novaseometas.css'
