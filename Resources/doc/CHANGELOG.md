@@ -1,5 +1,10 @@
 # <i class="fa fa-3x fa-file"></i><br />Changelog
 
+## 2.0.0
+
+* Remove the Legacy code
+* Add the Admin UI.
+
 ## 1.1.0
 
 * New feature: CustomFallback (see Features)

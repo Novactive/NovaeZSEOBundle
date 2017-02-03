@@ -3,7 +3,7 @@
 
 ## Requirements
 
-* eZPlatform 1.6+ / eZStudio 1.6+
+* eZ Platform
 * PHP 5.6+
 
 
@@ -18,7 +18,7 @@ Add the following to your composer.json and run `php composer.phar update novact
 # composer.json
 
 "require": {
-    "novactive/ezseobundle": "dev-develop-6.6.x",
+    "novactive/ezseobundle": "2.x",
 }
 ```
 
