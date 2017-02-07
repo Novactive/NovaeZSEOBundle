@@ -12,6 +12,7 @@ namespace Novactive\Bundle\eZSEOBundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Novactive\Bundle\eZSEOBundle\DependencyInjection\Compiler\CustomFallbackPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 /**
  * Class NovaeZSEOBundle
