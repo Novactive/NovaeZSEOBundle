@@ -28,6 +28,14 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
 {
 
     /**
+     * {@inheritdoc}
+     */
+    public function getAlias()
+    {
+        return "nova_ezseo";
+    }
+
+    /**
      * Add configuration
      *
      * @param ContainerBuilder $container
