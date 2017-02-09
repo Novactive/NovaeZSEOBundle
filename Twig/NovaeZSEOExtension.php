@@ -244,12 +244,14 @@ class NovaeZSEOExtension extends \Twig_Extension
      */
     public function getGlobals()
     {
-        $identifier = $this->configResolver->getParameter( "fieldtype_metas_identifier", "nova_ezseo" );
-        $metas      = $this->configResolver->getParameter( "default_metas", "nova_ezseo" );
-        $links      = $this->configResolver->getParameter( "default_links", "nova_ezseo" );
-        $gatracker  = $this->configResolver->getParameter( "google_gatracker", "nova_ezseo" );
-        $novaeZseo  = [
+        $identifier     = $this->configResolver->getParameter( "fieldtype_metas_identifier", "nova_ezseo" );
+        $fieldtypeMetas = $this->configResolver->getParameter( "fieldtype_metas", "nova_ezseo" );
+        $metas          = $this->configResolver->getParameter( "default_metas", "nova_ezseo" );
+        $links          = $this->configResolver->getParameter( "default_links", "nova_ezseo" );
+        $gatracker      = $this->configResolver->getParameter( "google_gatracker", "nova_ezseo" );
+        $novaeZseo      = [
             "fieldtype_metas_identifier" => $identifier,
+            "fieldtype_metas"            => $fieldtypeMetas,
             "default_metas"              => $metas,
             "default_links"              => $links,
             "google_gatracker"           => $gatracker != "~" ? $gatracker : null
