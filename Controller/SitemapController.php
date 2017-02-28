@@ -54,7 +54,11 @@ class SitemapController extends Controller
         }
         foreach ( $excludes['subtrees'] as $locationId )
         {
-            $excludedLocation = $locationService->loadLocation( $locationId );
+            $excludedLocation = $this->getRepository()->sudo(
+                function () use ($locationService, $locationId) {
+                    return $locationService->loadLocation($locationId);
+                }
+            );
             $criterion[]      = new Criterion\LogicalNot( new Criterion\Subtree( $excludedLocation->pathString ) );
         }
         foreach ( $excludes['locations'] as $locationId )
