@@ -15,6 +15,7 @@ use eZ\Bundle\EzPublishCoreBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use DOMDocument;
 use DOMElement;
 use DateTime;
@@ -163,7 +164,7 @@ class SitemapController extends Controller
              *
              */
             $location = $searchHit->valueObject;
-            $url      = $this->generateUrl( $location, [ ], true );
+            $url      = $this->generateUrl( $location, [ ], UrlGeneratorInterface::ABSOLUTE_URL );
             $modified = $location->contentInfo->modificationDate->format( "c" );
             $loc      = $sitemap->createElement( "loc", $url );
             $lastmod  = $sitemap->createElement( "lastmod", $modified );
@@ -187,7 +188,7 @@ class SitemapController extends Controller
         for ( $sitemapNumber = 1; $sitemapNumber <= $numberOfPage; $sitemapNumber++ )
         {
             $sitemapElt       = $sitemap->createElement( "sitemap" );
-            $locUrl           = $this->generateUrl( "_novaseo_sitemap_page", [ "page" => $sitemapNumber ], true );
+            $locUrl           = $this->generateUrl( "_novaseo_sitemap_page", [ "page" => $sitemapNumber ], UrlGeneratorInterface::ABSOLUTE_URL );
             $loc              = $sitemap->createElement( "loc", $locUrl );
             $date             = new DateTime();
             $modificationDate = $date->format( 'c' );
