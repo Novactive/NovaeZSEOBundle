@@ -3,6 +3,7 @@
     "description": "Novactive eZ SEO Bundle is an eZPlatform/eZStudio bundle for SEO simplications. metas, sitemaps, robots.txt, etc.",
     "keywords": ["seo", "ezpublish", "novactive", "metas", "robots.txt", "sitemap"],
     "homepage": "https://github.com/Novactive/NovaeZSEOBundle",
+    "type": "ezplatform-bundle",    
     "authors": [
         {
             "name": "Novactive",
