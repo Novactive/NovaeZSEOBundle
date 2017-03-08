@@ -1,6 +1,7 @@
 {
     "name": "novactive/ezseobundle",
     "description": "Novactive eZ SEO Bundle is an eZ Publish 5 bundle for SEO simplications. metas, sitemaps, robots.txt, etc.",
+    "type": "ezplatform-bundle",
     "keywords": ["seo", "ezpublish", "novactive", "metas", "robots.txt", "sitemap"],
     "homepage": "https://github.com/Novactive/NovaeZSEOBundle",
     "type": "ezplatform-bundle",
