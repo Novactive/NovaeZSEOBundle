@@ -25,7 +25,9 @@
 {% if  ezpublish.availableLanguages|length > 1 %}
     {% for lang in ezpublish.availableLanguages %}
         {% if location is defined %}
-            <link rel="alternate" data-sa="{{ ezpublish.translationSiteAccess( lang ) }}" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( location, {"siteaccess": ezpublish.translationSiteAccess( lang ) } ) }}" />
+            {% if lang in content.versionInfo.languageCodes %}
+                <link rel="alternate" data-sa="{{ ezpublish.translationSiteAccess( lang ) }}" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( location, {"siteaccess": ezpublish.translationSiteAccess( lang ) } ) }}" />
+            {% endif %}
         {% else %}
             {% set route = ez_route( params={"language": lang} ) %}
             {# we can't do the diff with 404 #}
