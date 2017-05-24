@@ -11,6 +11,7 @@ namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas;
 
 use eZ\Publish\Core\FieldType\FieldType;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentType;
+use eZ\Publish\Core\FieldType\ValidationError;
 use eZ\Publish\Core\FieldType\Value as CoreValue;
 use eZ\Publish\SPI\FieldType\Value as SPIValue;
 use eZ\Publish\SPI\Persistence\Content\FieldValue;
@@ -23,6 +24,58 @@ class Type extends FieldType
 {
 
     const IDENTIFIER = 'novaseometas';
+
+    /**
+     * @var array
+     */
+    protected $settingsSchema = array(
+        'configuration' => array(
+            'type' => 'hash',
+            'default' => array(),
+        ),
+    );
+
+    /**
+     * Validates the fieldSettings of a FieldDefinitionCreateStruct or FieldDefinitionUpdateStruct.
+     *
+     * @param mixed $fieldSettings
+     *
+     * @return \eZ\Publish\SPI\FieldType\ValidationError[]
+     */
+    public function validateFieldSettings($fieldSettings)
+    {
+        $validationErrors = array();
+
+        foreach ($fieldSettings as $settingKey => $settingValue) {
+            switch ($settingKey) {
+                case 'configuration':
+                    if (!is_array($settingValue)) {
+                        $validationErrors[] = new ValidationError(
+                            "FieldType '%fieldType%' expects setting '%setting%' to be of type '%type%'",
+                            null,
+                            array(
+                                '%fieldType%' => $this->getFieldTypeIdentifier(),
+                                '%setting%' => $settingKey,
+                                '%type%' => 'hash',
+                            ),
+                            "[$settingKey]"
+                        );
+                    }
+                    break;
+                default:
+                    $validationErrors[] = new ValidationError(
+                        "Setting '%setting%' is unknown",
+                        null,
+                        array(
+                            '%setting%' => $settingKey,
+                        ),
+                        "[$settingKey]"
+                    );
+            }
+        }
+
+        return $validationErrors;
+    }
 
     /**
      * Return the FieldType identifier ( Legacy DataTypeString )
@@ -45,11 +98,15 @@ class Type extends FieldType
     {
         if ( is_array( $inputValue ) )
         {
-            foreach ( $inputValue as $inputValueItem )
+            foreach ( $inputValue as $index => $inputValueItem )
             {
                 if ( !$inputValueItem instanceof Meta )
                 {
-                    return $inputValue;
+                    throw new InvalidArgumentType(
+                        '$inputValue[' . $index . ']',
+                        "\\Novactive\\Bundle\\SEOBundle\\API\\Repository\\Values\\Metas\\Meta",
+                        $inputValueItem
+                    );
                 }
             }
             $inputValue = new Value( $inputValue );
@@ -165,7 +222,7 @@ class Type extends FieldType
         foreach ( $value->metas as $meta )
         {
             /** @var Meta $meta */
-            $hash[] = array(
+            $hash[$meta->getName()] = array(
                 "meta_name"  => $meta->getName(),
                 "meta_content" => $meta->getContent(),
             );

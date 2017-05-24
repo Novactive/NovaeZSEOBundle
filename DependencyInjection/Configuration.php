@@ -25,7 +25,7 @@ class Configuration extends SiteAccessConfiguration
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode    = $treeBuilder->root( 'novae_zseo' );
+        $rootNode    = $treeBuilder->root( 'nova_ezseo' );
         $systemNode  = $this->generateScopeBaseNode( $rootNode );
         $systemNode
             ->scalarNode( 'custom_fallback_service' )->defaultValue( '~' )->end()

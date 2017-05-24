@@ -1,24 +1,31 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-{% for name, content in novae_zseo.default_metas %}
+{% for name, content in nova_ezseo.default_metas %}
     {% if content is not empty %}
         <meta name="{{ name }}" content="{{ content }}"/>
     {% endif %}
 {% endfor %}
 
-{% if content is defined and content.fields[novae_zseo.fieldtype_metas_identifier] is defined %}
-    {{ ez_render_field( content, novae_zseo.fieldtype_metas_identifier ) }}
+{% if content is defined and content.fields[nova_ezseo.fieldtype_metas_identifier] is defined %}
+    {{ ez_render_field( content, nova_ezseo.fieldtype_metas_identifier ) }}
 {% endif %}
 
-{% if content is defined and content.fields[novae_zseo.fieldtype_metas_identifier] is not defined %}
+{% if content is defined and content.fields[nova_ezseo.fieldtype_metas_identifier] is not defined %}
     {% if content.contentInfo.mainLocationId is defined %}
         <link rel="canonical" href="{{ path( 'ez_urlalias', {'locationId': content.contentInfo.mainLocationId} ) }}" />
     {% endif %}
 {% endif %}
 
-{% for rel, attrs in novae_zseo.default_links %}
+{% for rel, attrs in nova_ezseo.default_links %}
     {% if attrs.href is not empty %}
         {% set href = attrs.href %}
-        <link rel="{{ rel }}"{% if attrs.type is defined %} type="{{ attrs.type }}"{% endif %}{% if attrs.title is defined %} title="{{ attrs.title }}"{% endif %}{% if href.location_id is defined %} href="{{ path( 'ez_urlalias', {'locationId': href.location_id } ) }}"{% endif %}{% if href.route is defined %} href="{{ path( href.route ) }}"{% endif %}{% if href.legacy_uri is defined %} href="{{ path( 'ez_legacy', {'module_uri': href.legacy_uri } ) }}"{% endif %}{% if href.asset is defined %} href="{{ asset( href.asset ) }}"{% endif %} />
+        {% if href.location_id is defined %}
+            {% set href = path( 'ez_urlalias', {'locationId': href.location_id } ) %}
+        {% elseif href.route is defined %}
+            {% set href = path( href.route ) %}
+        {% elseif href.asset is defined %}
+            {% set href = asset( href.asset ) %}
+        {% endif %}
+        <link rel="{{ rel }}"{% if attrs.type is defined %} type="{{ attrs.type }}"{% endif %}{% if attrs.title is defined %} title="{{ attrs.title }}"{% endif %} {% if not href is iterable %}href="{{ href }}"{% endif %}/>
     {% endif %}
 {% endfor %}
 
@@ -31,9 +38,7 @@
         {% else %}
             {% set route = ez_route( params={"language": lang} ) %}
             {# we can't do the diff with 404 #}
-            {% if route.route != "ez_legacy" %}
-                <link rel="alternate" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( route ) }}" />
-            {% endif %}
+            <link rel="alternate" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( route ) }}" />
         {% endif %}
     {% endfor %}
 {% endif %}

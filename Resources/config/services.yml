@@ -1,12 +1,10 @@
 parameters:
-    novactive.novaseobundle.legacy.configuration.class: Novactive\Bundle\eZSEOBundle\Core\LegacyConfiguration
     novactive.novaseobundle.meta_name_schema.class: Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema
     novactive.novaseobundle.twig_extension.class: Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension
     novactive.novaseobundle.installer.field.class: Novactive\Bundle\eZSEOBundle\Installer\Field
     novactive.novaseobundle.addfieldtype.class: Novactive\Bundle\eZSEOBundle\Command\AddNovaSEOMetasFieldTypeCommand
-    novactive.novaseobundle.xrowconverter.class: Novactive\Bundle\eZSEOBundle\Command\ConvertXrow2NovaCommand
-    novactive.novaseobundle.converter.xrow2nova.class: Novactive\Bundle\eZSEOBundle\Converter\Xrow2NovaConverter
     novactive.novaseobundle.converter.content_types_helper.class: Novactive\Bundle\eZSEOBundle\Converter\ContentTypesHelper
+    novactive.novaseobundle.application_config.provider.seo_metas.class: Novactive\Bundle\eZSEOBundle\ApplicationConfig\Providers\SeoMetas
 
     novactive.novaseobundle.admin_user_id: 14
     novactive.novaseobundle.meta_field_name: Metas
@@ -14,74 +12,59 @@ parameters:
     novactive.novaseobundle.meta_field_group: novaseo
 
 services:
-    novactive.novaseobundle.legacy.configuration:
-        class: %novactive.novaseobundle.legacy.configuration.class%
-        arguments:
-            - @ezpublish.config.resolver.core
-        tags:
-            - { name: kernel.event_subscriber }
-
     novactive.novaseobundle.twig_extension:
-        class: %novactive.novaseobundle.twig_extension.class%
-        arguments: [@ezpublish.api.repository, @novactive.novaseobundle.meta_name_schema,@ezpublish.config.resolver, @ezpublish.locale.converter]
+        class: "%novactive.novaseobundle.twig_extension.class%"
+        arguments:
+            - "@ezpublish.api.repository"
+            - "@novactive.novaseobundle.meta_name_schema"
+            - "@ezpublish.config.resolver"
+            - "@ezpublish.locale.converter"
         public: false
         tags:
             - { name: twig.extension }
 
     novactive.novaseobundle.meta_name_schema:
-        class: %novactive.novaseobundle.meta_name_schema.class%
-        arguments: [@ezpublish.spi.persistence.content_type_handler, @ezpublish.field_type_collection.factory, @ezpublish.spi.persistence.cache.contentlanguagehandler, @ezpublish.api.repository,@ezpublish.translation_helper,  []]
-
+        class: "%novactive.novaseobundle.meta_name_schema.class%"
+        arguments:
+            - "@ezpublish.spi.persistence.content_type_handler"
+            - "@ezpublish.field_type_collection.factory"
+            - "@ezpublish.spi.persistence.cache.contentlanguagehandler"
+            - "@ezpublish.api.repository"
+            - "@ezpublish.translation_helper"
+            - []
         calls:
             - [setLanguages, ["$languages$"]]
-            - [setHtml5Converter, ["@ezpublish.fieldtype.ezxmltext.converter.html5"]]
-            - [setImageVariationService, ["@ezpublish.fieldtype.ezimage.variation_service", @ezpublish.fieldtype.ezimage]]
+            - [setRichTextConverter, ["@ezpublish.fieldType.ezrichtext.converter.output.xhtml5"]]
+            - [setImageVariationService, ["@ezpublish.fieldtype.ezimage.variation_service", "@ezpublish.fieldtype.ezimage"]]
 
     novactive.novaseobundle.installer.field:
-        class: %novactive.novaseobundle.installer.field.class%
+        class: "%novactive.novaseobundle.installer.field.class%"
         arguments:
-            - @ezpublish.api.service.content_type
-            - %novactive.novaseobundle.meta_field_name%
-            - %novactive.novaseobundle.meta_field_description%
-            - %novactive.novaseobundle.meta_field_group%
+            - "@ezpublish.api.service.content_type"
+            - "%novactive.novaseobundle.meta_field_name%"
+            - "%novactive.novaseobundle.meta_field_description%"
+            - "%novactive.novaseobundle.meta_field_group%"
 
     novactive.novaseobundle.addfieldtype:
-        class: %novactive.novaseobundle.addfieldtype.class%
+        class: "%novactive.novaseobundle.addfieldtype.class%"
         arguments:
-            - @ezpublish.config.resolver
-            - @ezpublish.api.repository
-            - @ezpublish.api.service.user
-            - @novactive.novaseobundle.installer.field
-            - @novactive.novaseobundle.converter.content_types_helper
-            - %novactive.novaseobundle.admin_user_id%
+            - "@ezpublish.config.resolver"
+            - "@ezpublish.api.repository"
+            - "@ezpublish.api.service.user"
+            - "@novactive.novaseobundle.installer.field"
+            - "@novactive.novaseobundle.converter.content_types_helper"
+            - "%novactive.novaseobundle.admin_user_id%"
         tags:
             - { name: console.command }
-
-    novactive.novaseobundle.xrowconverter:
-        class: %novactive.novaseobundle.xrowconverter.class%
-        arguments:
-            - @ezpublish.api.repository
-            - @ezpublish.api.service.user
-            - @ezpublish.api.service.content_type
-            - @novactive.novaseobundle.converter.xrow2nova
-            - @novactive.novaseobundle.installer.field
-            - @novactive.novaseobundle.converter.content_types_helper
-            - %novactive.novaseobundle.admin_user_id%
-        calls:
-            - [setMetasFieldNameIdentifier, [$fieldtype_metas_identifier;novae_zseo$]]
-        tags:
-            - { name: console.command }
-
-    novactive.novaseobundle.converter.xrow2nova:
-        class: %novactive.novaseobundle.converter.xrow2nova.class%
-        arguments:
-            - @ezpublish.api.service.search
-            - @ezpublish.api.service.content
-            - @?logger
-        calls:
-            - [setMetasFieldNameIdentifier, [$fieldtype_metas_identifier;novae_zseo$]]
 
     novactive.novaseobundle.converter.content_types_helper:
-        class: %novactive.novaseobundle.converter.content_types_helper.class%
+        class: "%novactive.novaseobundle.converter.content_types_helper.class%"
         arguments:
-            - @ezpublish.api.service.content_type
+            - "@ezpublish.api.service.content_type"
+
+    novactive.novaseobundle.application_config.provider.seo_metas:
+      class: "%novactive.novaseobundle.application_config.provider.seo_metas.class%"
+      arguments:
+          - "@ezpublish.config.resolver"
+      tags:
+          - {name: ezsystems.platformui.application_config_provider, key: 'seoMetas'}

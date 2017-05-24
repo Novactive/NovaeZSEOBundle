@@ -1,36 +1,36 @@
 parameters:
-    novae_zseo.default.robots_disallow: []
-    novae_zseo.default.google_gatracker: ~
-    novae_zseo.default.google_verification: 1234567890
-    novae_zseo.default.custom_fallback_service: ~
-    novae_zseo.default.sitemap_excludes:
+    nova_ezseo.default.robots_disallow: []
+    nova_ezseo.default.google_gatracker: ~
+    nova_ezseo.default.google_verification: 1234567890
+    nova_ezseo.default.custom_fallback_service: ~
+    nova_ezseo.default.sitemap_excludes:
         locations: []
         subtrees: []
         contentTypeIdentifiers: ['plopix']
-    novae_zseo.default.default_metas:
+    nova_ezseo.default.default_metas:
         author: "eZ Community Bundle Nova eZ SEO Bundle"
         copyright: ~
         generator: "eZ Platform"
         MSSmartTagsPreventParsing: "TRUE"
-    novae_zseo.default.default_links:
+    nova_ezseo.default.default_links:
         Index:
             href: { location_id: 2 }
             title: 'Home'
 #        Top:
 #            href: { route : 'route_name' }
 #            title: 'Home'
-        Search:
-            href: { legacy_uri: '/content/advancedsearch' }
-            title: 'Search'
+#        Search:
+#            href: { route: 'search_route_name' }
+#            title: 'Search'
         'Shortcut icon':
-            href: { asset: '/design/standard/images/favicon.ico' }
+            href: { asset: '/bundles/sitebundle/images/favicon.ico' }
             type: 'image/x-icon'
-        Alternate:
-            href: { legacy_uri: '/rss/feed/my_feed' }
-            title: 'RSS'
-            type: 'application/rss+xml'
-    novae_zseo.default.fieldtype_metas_identifier: "metas"
-    novae_zseo.default.fieldtype_metas:
+#        Alternate:
+#            href: { route: 'rss_feed_route_name' }
+#            title: 'RSS'
+#            type: 'application/rss+xml'
+    nova_ezseo.default.fieldtype_metas_identifier: "metas"
+    nova_ezseo.default.fieldtype_metas:
         title:
             label: 'Title'
             default_pattern: "<title|name>"
@@ -48,26 +48,26 @@ parameters:
             default_pattern: ~
             icon: 'link'
         'og:title':
-            label: 'Title'
+            label: 'Facebook - Title'
             default_pattern: "<title|name>"
             icon: 'facebook-official'
         'og:description':
-            label: 'Description'
+            label: 'Facebook - Description'
             default_pattern: "<short_description|description|title|name>"
             icon: 'facebook-official'
         'og:image':
-            label: 'Image'
+            label: 'Facebook - Image'
             default_pattern: "<image|picture>"
             icon: 'facebook-official'
         'twitter:title':
-            label: 'Title'
+            label: 'Twitter - Title'
             default_pattern: "<title|name>"
             icon: 'twitter-square'
         'twitter:description':
-            label: 'Description'
+            label: 'Twitter - Description'
             default_pattern: "<short_description|description|title|name>"
             icon: 'twitter-square'
         'twitter:image':
-            label: 'Image'
+            label: 'Twitter - Image'
             default_pattern: "<image|picture>"
             icon: 'twitter-square'

@@ -10,7 +10,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core;
 
-use eZDebug;
+use eZ\Publish\API\Repository\Exceptions\PropertyNotFoundException;
 
 /**
  * Class representing a Meta
@@ -133,9 +133,7 @@ class Meta
                 return $this->getContent();
                 break;
             default:
-                eZDebug::writeError( "Attribute '$name' does not exist", "NovactiveSEOBundle" );
-
-                return null;
+                throw new PropertyNotFoundException($name, get_class($this));
                 break;
         }
     }

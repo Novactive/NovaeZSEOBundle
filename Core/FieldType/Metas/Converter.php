@@ -16,11 +16,20 @@ use eZ\Publish\SPI\Persistence\Content\FieldValue;
 use eZ\Publish\SPI\Persistence\Content\Type\FieldDefinition;
 use eZ\Publish\Core\FieldType\FieldSettings;
 
-/**
- * Class Converter
- */
 class Converter implements LegacyConverter
 {
+    /**
+     * Factory for current class.
+     *
+     * @note Class should instead be configured as service if it gains dependencies.
+     *
+     * @return Converter
+     */
+    public static function create()
+    {
+        return new self();
+    }
+
     /**
      * Converts data from $value to $storageFieldValue
      *
@@ -49,6 +58,11 @@ class Converter implements LegacyConverter
      */
     public function toStorageFieldDefinition( FieldDefinition $fieldDef, StorageFieldDefinition $storageDef )
     {
+        $fieldSettings = $fieldDef->fieldTypeConstraints->fieldSettings;
+
+        if (isset($fieldSettings['configuration'])) {
+            $storageDef->dataText5 = json_encode($fieldSettings['configuration']);
+        }
     }
 
     /**

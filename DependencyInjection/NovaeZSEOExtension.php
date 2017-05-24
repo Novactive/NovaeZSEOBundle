@@ -9,6 +9,7 @@
  */
 namespace Novactive\Bundle\eZSEOBundle\DependencyInjection;
 
+use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -33,10 +34,45 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
      */
     public function prepend( ContainerBuilder $container )
     {
+        $container->prependExtensionConfig('assetic', array('bundles' => array('NovaeZSEOBundle')));
+
         $config = Yaml::parse( __DIR__ . '/../Resources/config/ez_field_templates.yml' );
         $container->prependExtensionConfig( 'ezpublish', $config );
         $config_variations = Yaml::parse( __DIR__ . '/../Resources/config/variations.yml' );
         $container->prependExtensionConfig( 'ezpublish', $config_variations );
+
+        $this->prependYui($container);
+        $this->prependCss($container);
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    private function prependYui(ContainerBuilder $container)
+    {
+        $container->setParameter(
+            'ezseobundle.public_dir',
+            'bundles/novaezseo'
+        );
+        $yuiConfigFile = __DIR__ . '/../Resources/config/yui.yml';
+        $config = Yaml::parse(file_get_contents($yuiConfigFile));
+        $container->prependExtensionConfig('ez_platformui', $config);
+        $container->addResource(new FileResource($yuiConfigFile));
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     */
+    private function prependCss(ContainerBuilder $container)
+    {
+        $container->setParameter(
+            'ezseobundle.public_dir',
+            'bundles/novaezseo'
+        );
+        $cssConfigFile = __DIR__ . '/../Resources/config/css.yml';
+        $config = Yaml::parse(file_get_contents($cssConfigFile));
+        $container->prependExtensionConfig('ez_platformui', $config);
+        $container->addResource(new FileResource($cssConfigFile));
     }
 
     /**
@@ -52,7 +88,7 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
         $loader->load( 'fieldtypes.yml' );
         $loader->load( 'default_settings.yml' );
 
-        $processor = new ConfigurationProcessor( $container, 'novae_zseo' );
+        $processor = new ConfigurationProcessor( $container, 'nova_ezseo' );
         $processor->mapSetting( 'fieldtype_metas_identifier', $config );
         $processor->mapSetting( 'fieldtype_metas', $config );
         $processor->mapSetting( 'google_verification', $config );

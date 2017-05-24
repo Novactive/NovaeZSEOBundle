@@ -115,7 +115,7 @@ class LegacyStorage extends Gateway
      */
     public function getFieldData( VersionInfo $versionInfo, Field $field )
     {
-        $field->value->externalData = $this->loadFieldData( $field->id, $versionInfo->versionNo );
+        $field->value->externalData = $this->loadFieldData( $versionInfo, $field );
     }
 
     /**
@@ -149,14 +149,14 @@ class LegacyStorage extends Gateway
     }
 
     /**
-     * Returns the data for the given $fieldId and $versionNo
+     * Returns the data for the given $field and $version
      *
-     * @param mixed $fieldId
-     * @param mixed $versionNo
+     * @param VersionInfo $versionInfo
+     * @param Field $field
      *
      * @return array
      */
-    protected function loadFieldData( $fieldId, $versionNo )
+    public function loadFieldData( VersionInfo $versionInfo, Field $field )
     {
         $connection = $this->getConnection();
 
@@ -168,11 +168,11 @@ class LegacyStorage extends Gateway
                 $query->expr->lAnd(
                     $query->expr->eq(
                         $connection->quoteColumn( "objectattribute_id" ),
-                        $query->bindValue( $fieldId, null, PDO::PARAM_INT )
+                        $query->bindValue( $field->id, null, PDO::PARAM_INT )
                     ),
                     $query->expr->eq(
                         $connection->quoteColumn( "objectattribute_version" ),
-                        $query->bindValue( $versionNo, null, PDO::PARAM_INT )
+                        $query->bindValue( $versionInfo->versionNo, null, PDO::PARAM_INT )
                     )
                 )
             );
