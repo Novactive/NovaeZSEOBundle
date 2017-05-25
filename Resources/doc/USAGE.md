@@ -94,13 +94,13 @@ nova_ezseo:
                 description:
                     label: 'Description'
                     default_pattern: "<description|short_description|title|name>"
-                keyword:
+                keywords:
                     label: 'Keywords'
                     default_pattern: ~
 
 ```
 
-This configuration defines 3 metas, _title_, _description_ and _keyword_
+This configuration defines 3 metas, _title_, _description_ and _keywords_
 
 > You can add what you want to here.
 
