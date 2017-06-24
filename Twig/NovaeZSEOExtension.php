@@ -24,7 +24,7 @@ use Novactive\Bundle\eZSEOBundle\Core\CustomFallbackInterface;
 /**
  * Class NovaeZSEOExtension
  */
-class NovaeZSEOExtension extends \Twig_Extension
+class NovaeZSEOExtension extends \Twig_Extension implements \Twig_Extension_GlobalsInterface
 {
     /**
      * The eZ Publish object name pattern service (extended)
