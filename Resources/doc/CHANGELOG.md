@@ -1,5 +1,9 @@
 # <i class="fa fa-3x fa-file"></i><br />Changelog
 
+## 2.1.0
+
+* add Bing Verification Controller and Config
+
 ## 2.0.0
 
 * Remove the Legacy code
