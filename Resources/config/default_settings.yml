@@ -2,6 +2,7 @@ parameters:
     nova_ezseo.default.robots_disallow: []
     nova_ezseo.default.google_gatracker: ~
     nova_ezseo.default.google_verification: 1234567890
+    nova_ezseo.default.bing_verification: ~
     nova_ezseo.default.custom_fallback_service: ~
     nova_ezseo.default.sitemap_excludes:
         locations: []
