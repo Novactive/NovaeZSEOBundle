@@ -16,6 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use DOMDocument;
 
 /**
  * Class SEOController
@@ -70,6 +71,36 @@ class SEOController extends Controller
         $response = new Response();
         $response->setSharedMaxAge( 24 * 3600 );
         $response->setContent( "google-site-verification: google{$key}.html" );
+        return $response;
+    }
+
+    /**
+     * Bing Verification route
+     *
+     * @Route("/BingSiteAuth.xml")
+     * @Method("GET")
+     * @throws NotFoundHttpException
+     * @return Response
+     */
+    public function bingVerifAction()
+    {
+        if ( !$this->getConfigResolver()->hasParameter( 'bing_verification', 'novae_zseo' ) )
+        {
+            throw new NotFoundHttpException( "Bing Verification Key not found" );
+        }
+
+        $key = $this->getConfigResolver()->getParameter( 'bing_verification', 'novae_zseo' );
+
+        $xml = new DOMDocument("1.0", "UTF-8");
+        $xml->formatOutput = true;
+
+        $root = $xml->createElement("users");
+        $root->appendChild($xml->createElement("user", $key));
+        $xml->appendChild($root);
+
+        $response = new Response($xml->saveXML());
+        $response->setSharedMaxAge( 24 * 3600 );
+        $response->headers->set("Content-Type", "text/xml");
         return $response;
     }
 }
