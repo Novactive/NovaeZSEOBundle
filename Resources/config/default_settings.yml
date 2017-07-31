@@ -1,9 +1,9 @@
 parameters:
     novae_zseo.default.robots_disallow: []
     novae_zseo.default.robots:
-        sitemap:
-            - { route : 'sitemap' }
-            - { uri : '/sitemap.xml.gz' }
+#        sitemap:
+#            - { route : 'sitemap' }
+#            - { uri : '/sitemap.xml.gz' }
         allow: []
         disallow: []
     novae_zseo.default.google_gatracker: ~
