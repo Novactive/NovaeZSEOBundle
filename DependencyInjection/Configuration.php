@@ -76,10 +76,26 @@ class Configuration extends SiteAccessConfiguration
                     ->end()
                 ->end()
             ->end()
-            ->arrayNode( 'robots_disallow' )
-                ->prototype( 'scalar' )
+            ->arrayNode( 'robots_disallow' )->prototype( 'scalar' )->end()->end()
+            ->arrayNode( 'robots' )
+                ->children()
+                    ->arrayNode( 'sitemap' )
+                        ->prototype('array')
+                            ->children()
+                                ->scalarNode( 'uri' )->end()
+                                ->scalarNode( 'route' )->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                    ->arrayNode( 'allow' )
+                        ->prototype( "variable" )->end()
+                    ->end()
+                    ->arrayNode( 'disallow' )
+                        ->prototype( "variable" )->end()
+                    ->end()
+                ->end()
             ->end()
-            ->end();
+            ;
         return $treeBuilder;
     }
 }

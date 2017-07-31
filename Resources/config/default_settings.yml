@@ -1,5 +1,11 @@
 parameters:
     novae_zseo.default.robots_disallow: []
+    novae_zseo.default.robots:
+        sitemap:
+            - { route : 'sitemap' }
+            - { uri : '/sitemap.xml.gz' }
+        allow: []
+        disallow: []
     novae_zseo.default.google_gatracker: ~
     novae_zseo.default.google_verification: 1234567890
     novae_zseo.default.bing_verification: ~

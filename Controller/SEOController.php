@@ -40,14 +40,49 @@ class SEOController extends Controller
         {
             $robots[] = "Disallow: /";
         }
-        $rules = $this->getConfigResolver()->getParameter( 'robots_disallow', 'novae_zseo' );
-        if ( is_array( $rules ) )
+
+        $robotsRules = $this->getConfigResolver()->getParameter( 'robots', 'novae_zseo' );
+        if ( !empty( $robotsRules["sitemap"] ) )
         {
-            foreach ( $rules as $rule )
+            foreach ( $robotsRules["sitemap"] as $sitemapRules )
+            {
+                foreach ($sitemapRules as $key => $value) {
+                    if ($key == "route") {
+                        $url = $this->get('router')->generate($value, [], UrlGeneratorInterface::ABSOLUTE_URL);
+                        $robots[] = "Sitemap: {$url}";
+                    }
+                    if ($key == "uri") {
+                        $robots[] = "Sitemap: {$this->get('request')->getSchemeAndHttpHost()}{$value}";
+                    }
+                }
+            }
+        }
+
+        if ( !empty( $robotsRules["allow"] ) )
+        {
+            foreach ( $robotsRules["allow"] as $rule )
+            {
+                $robots[] = "Allow: {$rule}";
+            }
+        }
+
+        if ( !empty( $robotsRules["disallow"] ) )
+        {
+            foreach ( $robotsRules["disallow"] as $rule )
             {
                 $robots[] = "Disallow: {$rule}";
             }
+        } else {
+            $rules = $this->getConfigResolver()->getParameter( 'robots_disallow', 'novae_zseo' );
+            if ( is_array( $rules ) )
+            {
+                foreach ( $rules as $rule )
+                {
+                    $robots[] = "Disallow: {$rule}";
+                }
+            }
         }
+
         $response->setContent( implode( "\n", $robots ) );
         $response->headers->set( "Content-Type", "text/plain" );
         return $response;
