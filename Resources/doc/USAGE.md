@@ -83,7 +83,7 @@ novae_zseo:
 You can add your Metas in your configuration
 
 ```yml
-novae_zseo:
+nova_ezseo:
     system:
         default:
             fieldtype_metas_identifier: "metas"
