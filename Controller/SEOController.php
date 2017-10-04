@@ -100,4 +100,3 @@ class SEOController extends Controller
         return $response;
     }
 }
-}
