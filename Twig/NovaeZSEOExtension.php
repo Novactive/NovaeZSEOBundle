@@ -211,15 +211,18 @@ class NovaeZSEOExtension extends \Twig_Extension
      */
     public function getGlobals()
     {
-        $identifier = $this->configResolver->getParameter( "fieldtype_metas_identifier", "novae_zseo" );
-        $metas      = $this->configResolver->getParameter( "default_metas", "novae_zseo" );
-        $links      = $this->configResolver->getParameter( "default_links", "novae_zseo" );
-        $gatracker  = $this->configResolver->getParameter( "google_gatracker", "novae_zseo" );
+        $identifier          = $this->configResolver->getParameter( "fieldtype_metas_identifier", "novae_zseo" );
+        $metas               = $this->configResolver->getParameter( "default_metas", "novae_zseo" );
+        $links               = $this->configResolver->getParameter( "default_links", "novae_zseo" );
+        $gatracker           = $this->configResolver->getParameter( "google_gatracker", "novae_zseo" );
+        $googleverification  = $this->configResolver->getParameter( "google_verification", "novae_zseo" );
+
         $novaeZseo  = [
             "fieldtype_metas_identifier" => $identifier,
             "default_metas"              => $metas,
             "default_links"              => $links,
-            "google_gatracker"           => $gatracker != "~" ? $gatracker : null
+            "google_gatracker"           => $gatracker != "~" ? $gatracker : null,
+            "google_verification"        => $googleverification != "~" ? $googleverification : null
         ];
 
         return [ 'novae_zseo' => $novaeZseo ];
