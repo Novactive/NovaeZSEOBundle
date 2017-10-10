@@ -43,3 +43,11 @@
         </script>
     {% endif %}
 {% endif %}
+
+{% if novae_zseo.google_verification %}
+    {% if app.environment != "prod" %}
+        <!-- Google Varification : {{ novae_zseo.google_verification  }} -->
+    {% else %}
+        <meta name="google-site-verification" content="{{ novae_zseo.google_verification }}">
+    {% endif %}
+{% endif %}
