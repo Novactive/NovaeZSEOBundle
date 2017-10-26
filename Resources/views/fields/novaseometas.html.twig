@@ -31,7 +31,7 @@
             {% endif %}
         {% endif %}
     {% endfor %}
-    {% if contentInfo.mainLocationId is defined and isCanonicalFind == false %}
+    {% if contentInfo.mainLocationId is defined and contentInfo.mainLocationId is not null and isCanonicalFind == false %}
         <link rel="canonical" href="{{ path( 'ez_urlalias', {'locationId': contentInfo.mainLocationId} ) }}" />
     {% endif %}
     {% if isTtitleFind == false %}

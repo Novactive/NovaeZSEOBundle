@@ -10,7 +10,7 @@
 {% endif %}
 
 {% if content is defined and content.fields[nova_ezseo.fieldtype_metas_identifier] is not defined %}
-    {% if content.contentInfo.mainLocationId is defined %}
+    {% if content.contentInfo.mainLocationId is defined and content.contentInfo.mainLocationId is not null %}
         <link rel="canonical" href="{{ path( 'ez_urlalias', {'locationId': content.contentInfo.mainLocationId} ) }}" />
     {% endif %}
 {% endif %}
@@ -31,7 +31,7 @@
 
 {% if  ezpublish.availableLanguages|length > 1 %}
     {% for lang in ezpublish.availableLanguages %}
-        {% if location is defined %}
+        {% if location is defined and not location.isDraft %}
             <link rel="alternate" data-sa="{{ ezpublish.translationSiteAccess( lang ) }}" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( location, {"siteaccess": ezpublish.translationSiteAccess( lang ) } ) }}" />
         {% else %}
             {% set route = ez_route( params={"language": lang} ) %}
