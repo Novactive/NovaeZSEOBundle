@@ -20,6 +20,7 @@ use eZ\Publish\API\Repository\Values\ContentType\ContentType;
 use eZ\Publish\SPI\Variation\VariationHandler;
 use eZ\Publish\Core\FieldType\RichText\Value as RichTextValue;
 use eZ\Publish\Core\FieldType\Relation\Value as RelationValue;
+use eZ\Publish\Core\FieldType\RelationList\Value as RelationListValue;
 use eZ\Publish\Core\FieldType\Image\Value as ImageValue;
 use eZ\Publish\SPI\Persistence\Content\Type as SPIContentType;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentType;
@@ -30,6 +31,7 @@ use eZ\Publish\API\Repository\Repository as RepositoryInterface;
 use eZ\Publish\Core\Helper\TranslationHelper;
 use eZ\Publish\Core\Repository\Helper\ContentTypeDomainMapper;
 use eZ\Publish\SPI\Persistence\Content\Language\Handler as ContentLanguageHandler;
+use eZ\Publish\Core\FieldType\RelationList\NameableField as RelationListNameableField;
 
 /**
  * Class MetaNameSchema
@@ -86,6 +88,13 @@ class MetaNameSchema extends NameSchemaService
     protected $fieldTypeRegistry;
 
     /**
+     * RelationListNameableField
+     *
+     * @var RelationListNameableField
+     */
+    protected $relationListNameableField;
+
+    /**
      * MetaNameSchema constructor.
      *
      * @param ContentTypeHandler         $contentTypeHandler
@@ -100,6 +109,7 @@ class MetaNameSchema extends NameSchemaService
         ContentLanguageHandler $languageHandler,
         RepositoryInterface $repository,
         TranslationHelper $helper,
+        RelationListNameableField $relationListNameableField,
         array $settings
     ) {
         $fieldTypes              = $collectionFactory->getFieldTypes();
@@ -113,6 +123,7 @@ class MetaNameSchema extends NameSchemaService
         parent::__construct($contentTypeHandler, $handler, $nameable, $settings);
         $this->repository        = $repository;
         $this->translationHelper = $helper;
+        $this->relationListNameableField = $relationListNameableField;
     }
 
     /**
@@ -228,6 +239,16 @@ class MetaNameSchema extends NameSchemaService
                     continue;
                 }
 
+                //eZ Object Relation List
+                if ($fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof RelationListValue) {
+                    $fieldTitles[$fieldDefinitionIdentifier] = $this->handleRelationListValue(
+                        $fieldMap[$fieldDefinitionIdentifier][$languageCode],
+                        $fieldDefinition,
+                        $languageCode
+                    );
+                    continue;
+                }
+
                 // eZ Image
                 if ($fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof ImageValue) {
                     $fieldTitles[$fieldDefinitionIdentifier] = $this->handleImageValue(
@@ -309,6 +330,11 @@ class MetaNameSchema extends NameSchemaService
         }
 
         return $this->translationHelper->getTranslatedContentName($relatedContent, $languageCode);
+    }
+
+    protected function handleRelationListValue(RelationListValue $value, $fieldDefinition, $languageCode)
+    {
+        return $this->relationListNameableField->getFieldName($value, $fieldDefinition, $languageCode);
     }
 
     /**

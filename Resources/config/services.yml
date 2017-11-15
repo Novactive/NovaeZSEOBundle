@@ -31,6 +31,7 @@ services:
             - "@ezpublish.spi.persistence.cache.contentlanguagehandler"
             - "@ezpublish.api.repository"
             - "@ezpublish.translation_helper"
+            - "@ezpublish.fieldType.ezobjectrelationlist.nameable_field"
             - []
         calls:
             - [setLanguages, ["$languages$"]]
