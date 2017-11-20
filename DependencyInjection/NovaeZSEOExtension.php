@@ -44,9 +44,10 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
     {
         $container->prependExtensionConfig('assetic', array('bundles' => array('NovaeZSEOBundle')));
 
-        $config = Yaml::parse( __DIR__ . '/../Resources/config/ez_field_templates.yml' );
+        $config = Yaml::parse(file_get_contents( __DIR__ . '/../Resources/config/ez_field_templates.yml' ));
         $container->prependExtensionConfig( 'ezpublish', $config );
-        $config_variations = Yaml::parse( __DIR__ . '/../Resources/config/variations.yml' );
+
+        $config_variations = Yaml::parse(file_get_contents( __DIR__ . '/../Resources/config/variations.yml' ));
         $container->prependExtensionConfig( 'ezpublish', $config_variations );
 
         $this->prependYui($container);
