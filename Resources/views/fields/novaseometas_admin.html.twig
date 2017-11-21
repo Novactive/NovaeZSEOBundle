@@ -1,0 +1,11 @@
+{% extends "EzPublishCoreBundle::content_fields.html.twig" %}
+
+{% block novaseometas_field %}
+    {% for meta in field.value.metas %}
+        <li class="ez-field meta-value">
+            {% set default_value = nova_ezseo.fieldtype_metas[meta.name] %}
+            <b>{{ default_value.label }}:</b>
+            {{ meta.isEmpty() ? default_value.default_pattern|raw : meta.content }}
+        </li>
+    {% endfor %}
+{% endblock %}

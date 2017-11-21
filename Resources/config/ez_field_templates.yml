@@ -11,3 +11,8 @@ system:
         field_templates:
             -
                 template: "NovaeZSEOBundle:fields:novaseometas.html.twig"
+    admin_group:
+        field_templates:
+            -
+                template: "NovaeZSEOBundle:fields:novaseometas_admin.html.twig"
+                priority: 10

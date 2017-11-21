@@ -10,16 +10,17 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas;
 
-
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use EzSystems\RepositoryForms\Data\Content\FieldData;
 use EzSystems\RepositoryForms\Data\FieldDefinitionData;
 use EzSystems\RepositoryForms\FieldType\FieldDefinitionFormMapperInterface;
 use EzSystems\RepositoryForms\FieldType\FieldValueFormMapperInterface;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Novactive\Bundle\eZSEOBundle\Core\Meta;
+use Novactive\Bundle\eZSEOBundle\Form\Type\MetasFieldType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMapperInterface
 {
@@ -33,7 +34,6 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
     public function __construct(ConfigResolverInterface $configResolver)
     {
         $this->configResolver = $configResolver;
-
     }
 
     /**
@@ -77,7 +77,31 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
      */
     public function mapFieldValueForm(FormInterface $fieldForm, FieldData $data)
     {
-        // TODO: Implement mapFieldValueForm() method.
+        $fieldDefinition = $data->fieldDefinition;
+        $formConfig = $fieldForm->getConfig();
+
+        $metasConfig = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
+
+        if (empty($data->value->metas)) {
+            foreach ($metasConfig as $key => $meta) {
+                $data->value->metas[$key] = new Meta($key, '');
+            }
+        }
+
+        $fieldForm
+            ->add(
+                $formConfig->getFormFactory()->createBuilder()
+                    ->create('value', MetasFieldType::class, [
+                        'required' => $fieldDefinition->isRequired,
+                        'label' => $fieldDefinition->getName($formConfig->getOption('languageCode')),
+                    ])
+                    ->setAutoInitialize(false)
+                    ->getForm()
+            );
     }
 
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefault('translation_domain', 'novaseo_content_type');
+    }
 }
