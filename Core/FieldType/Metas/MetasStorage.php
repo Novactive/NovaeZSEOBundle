@@ -31,6 +31,8 @@ class MetasStorage extends GatewayBasedStorage
      */
     public function storeFieldData( VersionInfo $versionInfo, Field $field, array $context )
     {
+        $this->getGateway( $context )->deleteFieldData($versionInfo, array($field->id));
+
         if ( empty( $field->value->externalData ) )
         {
             return;
