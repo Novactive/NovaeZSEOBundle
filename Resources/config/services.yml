@@ -28,7 +28,7 @@ services:
         arguments:
             - "@ezpublish.spi.persistence.content_type_handler"
             - "@ezpublish.field_type_collection.factory"
-            - "@ezpublish.spi.persistence.cache.contentlanguagehandler"
+            - "@ezpublish.spi.persistence.cache.contentLanguageHandler"
             - "@ezpublish.api.repository"
             - "@ezpublish.translation_helper"
             - "@ezpublish.fieldType.ezobjectrelationlist.nameable_field"
@@ -36,7 +36,7 @@ services:
         calls:
             - [setLanguages, ["$languages$"]]
             - [setRichTextConverter, ["@ezpublish.fieldType.ezrichtext.converter.output.xhtml5"]]
-            - [setImageVariationService, ["@ezpublish.fieldtype.ezimage.variation_service", "@ezpublish.fieldtype.ezimage"]]
+            - [setImageVariationService, ["@ezpublish.fieldType.ezimage.variation_service", "@ezpublish.fieldType.ezimage"]]
 
     novactive.novaseobundle.installer.field:
         class: "%novactive.novaseobundle.installer.field.class%"
