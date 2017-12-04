@@ -31,8 +31,6 @@ class MetasStorage extends GatewayBasedStorage
      */
     public function storeFieldData( VersionInfo $versionInfo, Field $field, array $context )
     {
-        $this->getGateway( $context )->deleteFieldData($versionInfo, array($field->id));
-
         if ( empty( $field->value->externalData ) )
         {
             return;
@@ -40,6 +38,12 @@ class MetasStorage extends GatewayBasedStorage
 
         /** @var LegacyStorage $gateway */
         $gateway = $this->getGateway( $context );
+
+        $metas = $gateway->getFieldData( $versionInfo, $field );
+        if ($metas) {
+            $gateway->deleteFieldData( $versionInfo, array($field->id) );
+        }
+
         $gateway->storeFieldData( $versionInfo, $field );
     }
 
