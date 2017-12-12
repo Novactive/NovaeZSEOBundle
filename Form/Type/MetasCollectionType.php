@@ -10,7 +10,6 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Form\Type;
 
-
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -38,8 +37,8 @@ class MetasCollectionType extends AbstractType
             'entry_type' => MetaType::class,
             'entry_options' => ['required' => false],
             'required' => false,
-            'label' => 'field_definition.novaseometas',
-            'translation_domain' => 'novaseo_content_type',
+            'label' => 'field_definition',
+            'translation_domain' => 'fieldtypes',
         ]);
     }
 

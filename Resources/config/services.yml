@@ -4,7 +4,8 @@ parameters:
     novactive.novaseobundle.installer.field.class: Novactive\Bundle\eZSEOBundle\Installer\Field
     novactive.novaseobundle.addfieldtype.class: Novactive\Bundle\eZSEOBundle\Command\AddNovaSEOMetasFieldTypeCommand
     novactive.novaseobundle.converter.content_types_helper.class: Novactive\Bundle\eZSEOBundle\Converter\ContentTypesHelper
-    novactive.novaseobundle.application_config.provider.seo_metas.class: Novactive\Bundle\eZSEOBundle\ApplicationConfig\Providers\SeoMetas
+    novactive.novaseobundle.application_config.provider.platform_ui.seo_metas.class: Novactive\Bundle\eZSEOBundle\ApplicationConfig\Providers\PlatformUI\SeoMetas
+    novactive.novaseobundle.application_config.provider.admin_ui.seo_metas.class: Novactive\Bundle\eZSEOBundle\ApplicationConfig\Providers\AdminUI\SeoMetas
 
     novactive.novaseobundle.admin_user_id: 14
     novactive.novaseobundle.meta_field_name: Metas
@@ -63,9 +64,30 @@ services:
         arguments:
             - "@ezpublish.api.service.content_type"
 
-    novactive.novaseobundle.application_config.provider.seo_metas:
-      class: "%novactive.novaseobundle.application_config.provider.seo_metas.class%"
+    novactive.novaseobundle.application_config.provider.platformui.seo_metas:
+      class: "%novactive.novaseobundle.application_config.provider.platform_ui.seo_metas.class%"
       arguments:
           - "@ezpublish.config.resolver"
       tags:
           - {name: ezsystems.platformui.application_config_provider, key: 'seoMetas'}
+
+    novactive.novaseobundle.application_config.provider.admin_ui.seo_metas:
+      class: "%novactive.novaseobundle.application_config.provider.admin_ui.seo_metas.class%"
+      arguments:
+          - "@ezpublish.config.resolver"
+      tags:
+          - {name: ezplatform.admin_ui.config_provider, key: 'seoMetas'}
+
+    ezplatform.adminui.novaseobundle.css:
+        parent: EzSystems\EzPlatformAdminUi\Component\LinkComponent
+        arguments:
+            $href: "/bundles/novaezseo/css/views/fields/edit/novaseometas.css"
+        tags:
+            - { name: ezplatform.admin_ui.component, group: 'stylesheet-head' }
+
+    ezplatform.adminui.novaseobundle.css_font:
+        parent: EzSystems\EzPlatformAdminUi\Component\LinkComponent
+        arguments:
+            $href: "/bundles/novaezseo/font/font-awesome.min.css"
+        tags:
+            - { name: ezplatform.admin_ui.component, group: 'stylesheet-head' }

@@ -67,3 +67,11 @@
     color: #F19A22;
     font-weight: bold;
 }
+
+/* EzPlatform Admin UI */
+
+.ez-adminsection-edit .novaseometas-settings {
+    padding-left: 21px;
+    margin-top: 10px;
+    margin-left: -23px;
+}

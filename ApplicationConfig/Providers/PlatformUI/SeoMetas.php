@@ -8,7 +8,7 @@
  * @copyright 2015 Novactive
  * @license   https://github.com/Novactive/NovaeZSEOBundle/blob/master/LICENSE MIT Licence
  */
-namespace Novactive\Bundle\eZSEOBundle\ApplicationConfig\Providers;
+namespace Novactive\Bundle\eZSEOBundle\ApplicationConfig\Providers\PlatformUI;
 
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use EzSystems\PlatformUIBundle\ApplicationConfig\Provider;
