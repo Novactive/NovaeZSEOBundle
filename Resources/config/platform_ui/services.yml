@@ -1,0 +1,10 @@
+parameters:
+    novactive.novaseobundle.application_config.provider.platform_ui.seo_metas.class: Novactive\Bundle\eZSEOBundle\ApplicationConfig\Providers\PlatformUI\SeoMetas
+
+services:
+    novactive.novaseobundle.application_config.provider.platformui.seo_metas:
+      class: "%novactive.novaseobundle.application_config.provider.platform_ui.seo_metas.class%"
+      arguments:
+          - "@ezpublish.config.resolver"
+      tags:
+          - { name: ezsystems.platformui.application_config_provider, key: 'seoMetas' }

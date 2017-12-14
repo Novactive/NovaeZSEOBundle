@@ -44,44 +44,30 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
     {
         $container->prependExtensionConfig('assetic', array('bundles' => array('NovaeZSEOBundle')));
 
-        $config = Yaml::parse(file_get_contents( __DIR__ . '/../Resources/config/ez_field_templates.yml' ));
-        $container->prependExtensionConfig( 'ezpublish', $config );
+        $activatedBundles = array_keys($container->getParameter('kernel.bundles'));
 
-        $config_variations = Yaml::parse(file_get_contents( __DIR__ . '/../Resources/config/variations.yml' ));
-        $container->prependExtensionConfig( 'ezpublish', $config_variations );
-
-        $this->prependYui($container);
-        $this->prependCss($container);
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     */
-    private function prependYui(ContainerBuilder $container)
-    {
-        $container->setParameter(
-            'ezseobundle.public_dir',
-            'bundles/novaezseo'
+        $configs = array(
+            'ez_field_templates.yml' => 'ezpublish',
+            'variations.yml' => 'ezpublish',
         );
-        $yuiConfigFile = __DIR__ . '/../Resources/config/yui.yml';
-        $config = Yaml::parse(file_get_contents($yuiConfigFile));
-        $container->prependExtensionConfig('ez_platformui', $config);
-        $container->addResource(new FileResource($yuiConfigFile));
-    }
 
-    /**
-     * @param ContainerBuilder $container
-     */
-    private function prependCss(ContainerBuilder $container)
-    {
-        $container->setParameter(
-            'ezseobundle.public_dir',
-            'bundles/novaezseo'
-        );
-        $cssConfigFile = __DIR__ . '/../Resources/config/css.yml';
-        $config = Yaml::parse(file_get_contents($cssConfigFile));
-        $container->prependExtensionConfig('ez_platformui', $config);
-        $container->addResource(new FileResource($cssConfigFile));
+        if (in_array('EzSystemsPlatformUIBundle', $activatedBundles, true)) {
+            $container->setParameter('ezseobundle.public_dir', 'bundles/novaezseo');
+
+            $configs['platform_ui/yui.yml'] = 'ez_platformui';
+            $configs['platform_ui/css.yml'] = 'ez_platformui';
+        }
+
+        if (in_array('EzPlatformAdminUiBundle', $activatedBundles, true)) {
+            $configs['admin_ui/ez_field_templates.yml'] = 'ezpublish';
+        }
+
+        foreach ($configs as $fileName => $extensionName) {
+            $configFile = __DIR__ . '/../Resources/config/' . $fileName;
+            $config = Yaml::parse(file_get_contents($configFile));
+            $container->prependExtensionConfig($extensionName, $config);
+            $container->addResource(new FileResource($configFile));
+        }
     }
 
     /**
@@ -89,6 +75,8 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
      */
     public function load( array $configs, ContainerBuilder $container )
     {
+        $activatedBundles = array_keys($container->getParameter('kernel.bundles'));
+
         $configuration = new Configuration();
         $config        = $this->processConfiguration( $configuration, $configs );
 
@@ -96,6 +84,14 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
         $loader->load( 'services.yml' );
         $loader->load( 'fieldtypes.yml' );
         $loader->load( 'default_settings.yml' );
+
+        if (in_array('EzSystemsPlatformUIBundle', $activatedBundles, true)) {
+            $loader->load('platform_ui/services.yml');
+        }
+
+        if (in_array('EzPlatformAdminUiBundle', $activatedBundles, true)) {
+            $loader->load('admin_ui/services.yml');
+        }
 
         $processor = new ConfigurationProcessor( $container, 'nova_ezseo' );
         $processor->mapSetting( 'fieldtype_metas_identifier', $config );
