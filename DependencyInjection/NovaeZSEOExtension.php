@@ -51,7 +51,10 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
             'variations.yml' => 'ezpublish',
         );
 
-        if (in_array('EzSystemsPlatformUIBundle', $activatedBundles, true)) {
+         if (
+            in_array('EzSystemsPlatformUIBundle', $activatedBundles, true) ||
+            in_array('eZPlatformUIBundle', $activatedBundles, true)
+        ) {
             $container->setParameter('ezseobundle.public_dir', 'bundles/novaezseo');
 
             $configs['platform_ui/yui.yml'] = 'ez_platformui';
@@ -85,7 +88,10 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
         $loader->load( 'fieldtypes.yml' );
         $loader->load( 'default_settings.yml' );
 
-        if (in_array('EzSystemsPlatformUIBundle', $activatedBundles, true)) {
+         if (
+            in_array('EzSystemsPlatformUIBundle', $activatedBundles, true) ||
+            in_array('eZPlatformUIBundle', $activatedBundles, true)
+        ) {
             $loader->load('platform_ui/services.yml');
         }
 
