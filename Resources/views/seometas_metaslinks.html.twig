@@ -11,7 +11,7 @@
 
 {% if content is defined and content.fields[novae_zseo.fieldtype_metas_identifier] is not defined %}
     {% if content.contentInfo.mainLocationId is defined %}
-        <link rel="canonical" href="{{ path( 'ez_urlalias', {'locationId': content.contentInfo.mainLocationId} ) }}" />
+        <link rel="canonical" href="{{ url( 'ez_urlalias', {'locationId': content.contentInfo.mainLocationId} ) }}" />
     {% endif %}
 {% endif %}
 
