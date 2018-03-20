@@ -117,6 +117,7 @@ class MetaNameSchema extends NameSchemaService
         $this->fieldTypeRegistry = new FieldTypeRegistry($fieldTypes);
         $settings['limit']       = $this->fieldContentMaxLength;
         $handler                 = new ContentTypeDomainMapper(
+            $contentTypeHandler,
             $languageHandler,
             $this->fieldTypeRegistry
         );
