@@ -84,12 +84,12 @@ class SEOController extends Controller
      */
     public function bingVerifAction()
     {
-        if ( !$this->getConfigResolver()->hasParameter( 'bing_verification', 'novae_zseo' ) )
+        if ( !$this->getConfigResolver()->hasParameter( 'bing_verification', 'nova_ezseo' ) )
         {
             throw new NotFoundHttpException( "Bing Verification Key not found" );
         }
 
-        $key = $this->getConfigResolver()->getParameter( 'bing_verification', 'novae_zseo' );
+        $key = $this->getConfigResolver()->getParameter( 'bing_verification', 'nova_ezseo' );
 
         $xml = new DOMDocument("1.0", "UTF-8");
         $xml->formatOutput = true;
