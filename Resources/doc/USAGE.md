@@ -146,6 +146,16 @@ nova_ezseo:
             google_gatracker: UA-XXXXXXXX-X
 ```
 
+## Google Analyitcs anonymizeIp
+
+You can set GA to anonymize all ip by setting google_anonymizeIp to tue
+
+```yml
+nova_ezseo:
+    system:
+        default:
+            google_anonymizeIp: true
+```
 
 ## Robots.txt file
 
