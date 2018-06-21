@@ -256,7 +256,7 @@ class NovaeZSEOExtension extends \Twig_Extension implements \Twig_Extension_Glob
             "default_metas"              => $metas,
             "default_links"              => $links,
             "google_gatracker"           => $gatracker != "~" ? $gatracker : null,
-            "google_anonymizeIp"         => $anonymizeIp != "~" ? true : null
+            "google_anonymizeIp"         => $anonymizeIp !== "~" ? !!$anonymizeIp : true
         ];
 
         return [ 'nova_ezseo' => $novaeZseo ];

@@ -148,13 +148,13 @@ nova_ezseo:
 
 ## Google Analyitcs anonymizeIp
 
-You can set GA to anonymize all ip by setting google_anonymizeIp to tue
+The default behavior is to set Google Analytics to anonymize all ip, set 'google_anonymizeIp' to false to turn this of.
 
 ```yml
 nova_ezseo:
     system:
         default:
-            google_anonymizeIp: true
+            google_anonymizeIp: false
 ```
 
 ## Robots.txt file
