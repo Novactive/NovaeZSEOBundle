@@ -249,12 +249,14 @@ class NovaeZSEOExtension extends \Twig_Extension implements \Twig_Extension_Glob
         $metas          = $this->configResolver->getParameter( "default_metas", "nova_ezseo" );
         $links          = $this->configResolver->getParameter( "default_links", "nova_ezseo" );
         $gatracker      = $this->configResolver->getParameter( "google_gatracker", "nova_ezseo" );
+        $anonymizeIp    = $this->configResolver->getParameter( "google_anonymizeIp", "nova_ezseo" );
         $novaeZseo      = [
             "fieldtype_metas_identifier" => $identifier,
             "fieldtype_metas"            => $fieldtypeMetas,
             "default_metas"              => $metas,
             "default_links"              => $links,
-            "google_gatracker"           => $gatracker != "~" ? $gatracker : null
+            "google_gatracker"           => $gatracker != "~" ? $gatracker : null,
+            "google_anonymizeIp"         => $anonymizeIp !== "~" ? !!$anonymizeIp : true
         ];
 
         return [ 'nova_ezseo' => $novaeZseo ];

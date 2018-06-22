@@ -146,6 +146,16 @@ nova_ezseo:
             google_gatracker: UA-XXXXXXXX-X
 ```
 
+## Google Analyitcs anonymizeIp
+
+The default behavior is to set Google Analytics to anonymize all ip, set 'google_anonymizeIp' to false to turn this of.
+
+```yml
+nova_ezseo:
+    system:
+        default:
+            google_anonymizeIp: false
+```
 
 ## Robots.txt file
 

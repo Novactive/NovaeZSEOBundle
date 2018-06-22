@@ -31,6 +31,7 @@ class Configuration extends SiteAccessConfiguration
             ->scalarNode( 'custom_fallback_service' )->defaultValue( '~' )->end()
             ->scalarNode( 'google_verification' )->defaultValue( '~' )->end()
             ->scalarNode( 'google_gatracker' )->defaultValue( '~' )->end()
+            ->scalarNode( 'google_anonymizeIp' )->defaultValue( '~' )->end()
             ->scalarNode( 'bing_verification' )->defaultValue( '~' )->end()
             ->scalarNode( 'fieldtype_metas_identifier' )->defaultValue( 'metas' )->end()
             ->arrayNode( 'fieldtype_metas' )
