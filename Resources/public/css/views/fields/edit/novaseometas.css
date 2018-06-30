@@ -1,7 +1,8 @@
-.ez-metas-list{
+.ez-metas-list {
     list-style: none;
 }
-.ez-metas-list li{
+
+.ez-metas-list li {
     padding-bottom: 10px;
 }
 
@@ -10,6 +11,7 @@
     border-left: 3px solid #F4D8B1;
     padding-left: 20px;
 }
+
 .novaseometas-input-ui > div {
     padding-bottom: 10px;
 }
@@ -27,19 +29,35 @@
 .novaseometas-input-ui label {
     float: left;
     width: 12%;
-    padding-top:7px;
+    padding-top: 7px;
     font-weight: bold;
 }
 
 .novaseometas-input-ui input {
     width: 75%;
 }
-.novaseometas-settings{
+
+.novaseometas-settings {
     border-left: 3px solid #F4D8B1;
+    padding-left: 4px;
 }
+
 .novaseometas-settings .pure-control-group input {
     border: 1px solid #F4D8B1;
 }
+
+.novaseometas-settings .pure-control-group label {
+    display: block;
+    width: 25%;
+    float: left;
+}
+
+.novaseometas-settings .pure-control-group input {
+    display: block;
+    width: 70%;
+    float: left;
+}
+
 .nova-signature:before,
 .nova-signature:after {
     content: " ";
@@ -49,14 +67,17 @@
 .nova-signature:after {
     clear: both;
 }
+
 .nova-signature .handcrafted {
     text-align: right;
 }
+
 .nova-signature .handcrafted img,
 .nova-signature .handcrafted span {
     display: block;
-    float:right;
+    float: right;
 }
+
 .nova-signature .handcrafted span {
     text-align: right;
     padding-top: 18px;
@@ -74,4 +95,26 @@
     padding-left: 21px;
     margin-top: 10px;
     margin-left: -23px;
+}
+
+.novaseobundle-preview-field {
+    border-left: 3px solid #F4D8B1;
+    list-style: none;
+    margin-left: 0;
+    padding-left: 10px;
+}
+
+.ez-field-edit--novaseometas .ez-data-source__input-wrapper .ez-data-source__label-wrapper {
+    display: block;
+    border-left: 3px solid #F4D8B1;
+    padding-left: 10px;
+    width: 25%;
+    float: left;
+}
+
+.ez-field-edit--novaseometas .ez-data-source__input-wrapper .ez-data-source__input-wrapper {
+    display: block;
+    width: 70%;
+    float: left;
+    clear: right;
 }
