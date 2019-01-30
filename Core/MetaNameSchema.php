@@ -22,6 +22,7 @@ use eZ\Publish\Core\FieldType\RichText\Value as RichTextValue;
 use eZ\Publish\Core\FieldType\Relation\Value as RelationValue;
 use eZ\Publish\Core\FieldType\RelationList\Value as RelationListValue;
 use eZ\Publish\Core\FieldType\Image\Value as ImageValue;
+use eZ\Publish\Core\FieldType\ImageAsset\Value as ImageAssetValue;
 use eZ\Publish\SPI\Persistence\Content\Type as SPIContentType;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentType;
 use eZ\Publish\SPI\Persistence\Content\Type\Handler as ContentTypeHandler;
@@ -260,6 +261,16 @@ class MetaNameSchema extends NameSchemaService
                     continue;
                 }
 
+                // eZ Image asset
+                if ($fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof ImageAssetValue) {
+                    $fieldTitles[$fieldDefinitionIdentifier] = $this->handleImageAssetValue(
+                        $fieldMap[$fieldDefinitionIdentifier][$languageCode],
+                        $fieldDefinitionIdentifier,
+                        $languageCode
+                    );
+                    continue;
+                }
+
                 $fieldType = $this->fieldTypeRegistry->getFieldType($fieldDefinition->fieldTypeIdentifier);
                 $fieldTitles[$fieldDefinitionIdentifier] = $fieldType->getName(
                     $fieldMap[$fieldDefinitionIdentifier][$languageCode],
@@ -359,5 +370,31 @@ class MetaNameSchema extends NameSchemaService
             $languageCode,
             "social_network_image"
         );
+    }
+
+    /**
+     * Handle a Image Asset attribute
+     *
+     * @param ImageAssetValue $value
+     * @param string     $fieldDefinitionIdentifier
+     * @param string     $languageCode
+     *
+     * @return string
+     */
+    protected function handleImageAssetValue(ImageAssetValue $value, $fieldDefinitionIdentifier, $languageCode)
+    {
+        if (!$value->destinationContentId) {
+            return '';
+        }
+
+        $content = $this->repository->getContentService()->loadContent($value->destinationContentId);
+
+        foreach ($content->getFields() as $field) {
+            if ($field->value instanceof ImageValue) {
+                return $this->handleImageValue($field->value, $fieldDefinitionIdentifier, $languageCode);
+            }
+        }
+
+        return  '';
     }
 }
