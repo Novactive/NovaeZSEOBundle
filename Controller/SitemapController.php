@@ -49,6 +49,7 @@ class SitemapController extends Controller
         $excludes        = $this->getConfigResolver()->getParameter( 'sitemap_excludes', 'nova_ezseo' );
         $query           = new Query();
         $criterion[]     = new Criterion\Visibility( Criterion\Visibility::VISIBLE );
+        $criterion[]     = new Criterion\Subtree( $this->getRootLocation()->pathString );
         foreach ( $excludes['contentTypeIdentifiers'] as $contentTypeIdentifier )
         {
             $criterion[] = new Criterion\LogicalNot( new Criterion\ContentTypeIdentifier( $contentTypeIdentifier ) );
