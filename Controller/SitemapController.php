@@ -46,10 +46,13 @@ class SitemapController extends Controller
     protected function getQuery()
     {
         $locationService = $this->get( "ezpublish.api.repository" )->getLocationService();
+        $isSitemapMultiRootLocation = $this->getConfigResolver()->getParameter( 'is_sitemap_multi_rootlocation', 'nova_ezseo' );
         $excludes        = $this->getConfigResolver()->getParameter( 'sitemap_excludes', 'nova_ezseo' );
         $query           = new Query();
         $criterion[]     = new Criterion\Visibility( Criterion\Visibility::VISIBLE );
-        $criterion[]     = new Criterion\Subtree( $this->getRootLocation()->pathString );
+        if ( true === $isSitemapMultiRootLocation ) {
+            $criterion[]     = new Criterion\Subtree( $this->getRootLocation()->pathString );
+        }
         foreach ( $excludes['contentTypeIdentifiers'] as $contentTypeIdentifier )
         {
             $criterion[] = new Criterion\LogicalNot( new Criterion\ContentTypeIdentifier( $contentTypeIdentifier ) );
