@@ -46,11 +46,11 @@ class SitemapController extends Controller
     protected function getQuery()
     {
         $locationService = $this->get( "ezpublish.api.repository" )->getLocationService();
-        $isSitemapMultiRootLocation = $this->getConfigResolver()->getParameter( 'is_sitemap_multi_rootlocation', 'nova_ezseo' );
+        $limitToRootLocation = $this->getConfigResolver()->getParameter( 'limit_to_rootlocation', 'nova_ezseo' );
         $excludes        = $this->getConfigResolver()->getParameter( 'sitemap_excludes', 'nova_ezseo' );
         $query           = new Query();
         $criterion[]     = new Criterion\Visibility( Criterion\Visibility::VISIBLE );
-        if ( true === $isSitemapMultiRootLocation ) {
+        if ( true === $limitToRootLocation ) {
             $criterion[]     = new Criterion\Subtree( $this->getRootLocation()->pathString );
         }
         foreach ( $excludes['contentTypeIdentifiers'] as $contentTypeIdentifier )
@@ -61,10 +61,17 @@ class SitemapController extends Controller
         {
             $excludedLocation = $this->getRepository()->sudo(
                 function () use ($locationService, $locationId) {
-                    return $locationService->loadLocation($locationId);
+                    try
+                    {
+                        return $locationService->loadLocation( $locationId );
+                    } catch (\Exception $e) {
+                        return false;
+                    }
                 }
             );
-            $criterion[]      = new Criterion\LogicalNot( new Criterion\Subtree( $excludedLocation->pathString ) );
+            if ($excludedLocation) {
+                $criterion[]      = new Criterion\LogicalNot( new Criterion\Subtree( $excludedLocation->pathString ) );
+            }
         }
         foreach ( $excludes['locations'] as $locationId )
         {
