@@ -36,7 +36,7 @@ services:
             - [setLanguages, ["$languages$"]]
             - [setRichTextConverter, ["@ezpublish.fieldType.ezrichtext.converter.output.xhtml5"]]
             # Note: injecting lower layer Variation Handler (AliasGenerator) as a workaround for missing Public API objects context
-            - [setImageVariationService, ["@ezpublish.image_alias.imagine.variation.imagine_alias_generator", "@ezpublish.fieldType.ezimage"]]
+            - [setImageVariationService, ["@ezpublish.image_alias.imagine.alias_generator", "@ezpublish.fieldType.ezimage"]]
 
     novactive.novaseobundle.installer.field:
         class: "%novactive.novaseobundle.installer.field.class%"
