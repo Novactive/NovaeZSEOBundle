@@ -1,0 +1,32 @@
+menu.main_menu.header: 'Redirect manager'
+
+info:
+    back: "Back"
+
+nova:
+  redirect:
+    root:
+      menu:
+        label: "Redirect manager"
+    list:
+      menu:
+        label: "Alias d'URL avec caractères joker (total %total%)"
+      title: "List of URL (total %total%)"
+      source: "Source"
+      destination: "Destination"
+      type: "Type"
+      forward: "Redirection"
+      direct: "Direct"
+      undined: "Undefined"
+    button:
+      delete: "Delete selection"
+      create: "create"
+    create:
+      title: "Create a new redirect URL"
+      type: "Redirection 301"
+      source: "URL Alias Source :"
+      destination: "Destination"
+      info:  "The URL has been created"
+      warnning: "Enter the text in the field to create a new alias."
+    delete:
+      info: "The selected aliases have been removed."

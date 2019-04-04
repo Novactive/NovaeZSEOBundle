@@ -1,0 +1,53 @@
+{% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
+
+{% trans_default_domain 'redirect' %}
+
+{% block title %}
+        {{ 'menu.main_menu.header'|trans }}
+{% endblock %}
+
+{% block content %}
+    <section class="container mt-4 px-5">
+        <!-- template pagination -->
+        {{ include("NovaeZSEOBundle:commun:paginator.html.twig") }}
+        <!-- template pagination end -->
+        <div class="ez-table-header">
+            <div class="ez-table-header__headline">{{ 'nova.redirect.list.menu.label'|trans({"%total%": pager.nbResults}) }}</div>
+        </div>
+        {{ form_start(formDelete, {'attr': {'class': ''}}) }}
+            <table class="table table-striped mb-3">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>{{ 'nova.redirect.list.source'|trans }}</th>
+                    <th>{{ 'nova.redirect.list.destination'|trans }}</th>
+                    <th>{{ 'nova.redirect.list.type'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for data in pager.currentPageResults %}
+                    <tr>
+                        <td><input type="checkbox" name="WildcardIDList[]" value="{{ data.id }}"></td>
+                        <td>{{ data.sourceUrl }}</td>
+                        <td>{{ data.destinationUrl }}</td>
+                        <td> {% if data.forward == 1 %} {{ 'nova.redirect.list.forward'|trans }} {% else %} {{ 'nova.redirect.list.direct'|trans }} {% endif %}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% if pager.currentPageResults is empty %}
+            {{ form_widget(formDelete.delete, {'label': 'nova.redirect.button.delete'|trans, 'attr': {'class': 'btn btn-primary', 'disabled': 'disabled'} }) }}
+        {% else %}
+            {{ form_widget(formDelete.delete, {'label': 'nova.redirect.button.delete'|trans, 'attr': {'class': 'btn btn-primary'} }) }}
+        {% endif %}
+
+        {{ form_rest(formDelete) }}
+        {{ form_end(formDelete) }}
+        <!-- template pagination -->
+        {{ include("NovaeZSEOBundle:commun:paginator.html.twig") }}
+        <!-- template pagination end -->
+        <!-- form create a redirect -->
+        {{ include("NovaeZSEOBundle:platform_admin:create_url_wildcard.html.twig") }}
+        <!-- form create a redirect end -->
+    </section>
+{% endblock %}
