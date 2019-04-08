@@ -10,7 +10,7 @@ nova:
         label: "Redirect manager"
     list:
       menu:
-        label: "Alias d'URL avec caractères joker (total %total%)"
+        label: "URL aliases with wildcard characters (total% total%) "
       title: "List of URL (total %total%)"
       source: "Source"
       destination: "Destination"
@@ -20,12 +20,12 @@ nova:
       undined: "Undefined"
     button:
       delete: "Delete selection"
-      create: "create"
+      create: "Create"
     create:
       title: "Create a new redirect URL"
       type: "Redirection 301"
       source: "URL Alias Source :"
-      destination: "Destination"
+      destination: "Destination :"
       info:  "The URL has been created"
       warnning: "Enter the text in the field to create a new alias."
     delete:
