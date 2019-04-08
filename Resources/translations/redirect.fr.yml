@@ -28,5 +28,6 @@ nova:
       destination: "Destination :"
       info:  "L'URL a été créé"
       warnning: "Entrez le texte dans le champ pour créer un nouvel alias."
+      exists: "L'alias URL (URL) existe déjà en tant qu'URL source."
     delete:
       info: "Les alias sélectionnés ont été supprimés."

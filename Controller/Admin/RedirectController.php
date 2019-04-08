@@ -47,15 +47,16 @@ class RedirectController extends Controller
     }
 
     /**
-    * @Route("/urlwildcards", name="novactive_platform_admin_ui.list")
-    *
-    * @param Request $request
-    * @return \Symfony\Component\HttpFoundation\Response
-    */
+     * @Route("/urlwildcards", name="novactive_platform_admin_ui.list")
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function listAction(Request $request)
     {
-        $errors   = [];
-        $messages = [];
+        $errors    = [];
+        $messages  = [];
+        $urlExists = null;
         // create form (add and delete)
         $form = $this->createForm(RedirectType::class);
         $form->handleRequest($request);
@@ -70,8 +71,16 @@ class RedirectController extends Controller
             $destination = trim($form->getData()["destination"]);
             $type        = trim($form->getData()["type"]);
 
-            if ($source != "" || $destination != "") {
-                // save data in table ezurlwildcard
+            // verify if URL destination exists in source URL
+            try {
+                $urlExists = $this->urlWildCardService->translate($destination);
+                $errors[] = $this->translator->trans('nova.redirect.create.exists', ['url' => $destination], 'redirect');
+            } catch (\Exception $e) {
+                // TODO
+            }
+
+            if (($source != "" || $destination != "") && ($source != $destination) && ($urlExists === null)) {
+                // try to save data in table ezurlwildcard
                 try {
                     $result = $this->urlWildCardService->create($source, $destination, $type);
 
@@ -90,9 +99,12 @@ class RedirectController extends Controller
 
         // submit form delete
         if ($formDelete->isValid()) {
-            $response = $this->forward('NovaeZSEOBundle:Admin/Redirect:delete', [
-               'request'    => $request,
-           ]);
+            $response = $this->forward(
+                'NovaeZSEOBundle:Admin/Redirect:delete',
+                [
+                'request'    => $request,
+                ]
+            );
 
             if ($response->getStatusCode() == Response::HTTP_CREATED) {
                 $messages[] = $this->translator->trans('nova.redirect.delete.info', [], 'redirect');
@@ -108,19 +120,22 @@ class RedirectController extends Controller
         $pagerfanta->setMaxPerPage(self::URL_LIMIT);
         $pagerfanta->setCurrentPage(min($page, $pagerfanta->getNbPages()));
 
-        return $this->render('NovaeZSEOBundle::platform_admin/list_url_wildcard.html.twig', [
+        return $this->render(
+            'NovaeZSEOBundle::platform_admin/list_url_wildcard.html.twig',
+            [
             'pager'         => $pagerfanta,
             'form'          => $form->createView(),
             'errors'        => $errors,
             'messages'      => $messages,
             'formDelete'    => $formDelete->createView(),
-        ]);
+            ]
+        );
     }
 
     /**
      * delete a urlwildcard
      *
-     * @param Request $request
+     * @param  Request $request
      * @return Response
      */
     public function deleteAction(Request $request)
