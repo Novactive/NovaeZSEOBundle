@@ -12,17 +12,17 @@ Presentation and documentation available here : [http://novactive.github.io/Nova
 
 ## Features
 
-[Implemented](Resources/doc/FEATURES.md)
+[Implemented](documentation/FEATURES.md)
 
 ## Usage and installation instructions
 
-[Usage](Resources/doc/USAGE.md)
+[Usage](documentation/USAGE.md)
 
-[Installation](Resources/doc/INSTALL.md)
+[Installation](documentation/INSTALL.md)
 
 Change and License
 ------------------
 
-[Changelog](Resources/doc/CHANGELOG.md)
+[Changelog](documentation/CHANGELOG.md)
 
 [License](LICENSE)

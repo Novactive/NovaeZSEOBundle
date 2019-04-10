@@ -1,0 +1,72 @@
+parameters:
+    novactive.novaseobundle.admin_user_id: 14
+    novactive.novaseobundle.meta_field_name: Metas
+    novactive.novaseobundle.meta_field_description: Metas for Search Engine Optimizations
+    novactive.novaseobundle.meta_field_group: novaseo
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+
+    # FIELD TYPE
+    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Type:
+        parent: ezpublish.fieldType
+        tags:
+            - { name: ezpublish.fieldType, alias: novaseometas }
+
+    # Marking fieldtype as unindexable for ez platform solr bundle to stop errors
+    novactive.novaseobundle.field_type.novaseometas.indexable.unindexed:
+        class: "%ezpublish.fieldType.indexable.unindexed.class%"
+        tags:
+            - { name: ezpublish.fieldType.indexable, alias: novaseometas }
+
+    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage:
+        tags:
+            - { name: ezpublish.fieldType.externalStorageHandler, alias: novaseometas }
+
+    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\LegacyStorage:
+        tags:
+            - { name: ezpublish.fieldType.externalStorageHandler.gateway, alias: novaseometas, identifier: LegacyStorage }
+
+    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Converter:
+        tags:
+            - { name: ezpublish.storageEngine.legacy.converter, alias: novaseometas, lazy: true, callback: '::create' }
+
+    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\FormMapper:
+        tags:
+            - { name: ez.fieldFormMapper.definition, fieldType: novaseometas }
+            - { name: ez.fieldFormMapper.value, fieldType: novaseometas }
+
+    # OTHER SERVICES
+
+    Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension: ~
+
+    Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema:
+        calls:
+            - [setLanguages, ["$languages$"]]
+            - [setRichTextConverter, ["@ezpublish.fieldType.ezrichtext.converter.output.xhtml5"]]
+            # Note: injecting lower layer Variation Handler (AliasGenerator) as a workaround for missing Public API objects context
+            - [setImageVariationService, ["@ezpublish.image_alias.imagine.alias_generator", "@ezpublish.fieldType.ezimage"]]
+
+    Novactive\Bundle\eZSEOBundle\Core\Installer\Field:
+        arguments:
+            $metaFieldName: "%novactive.novaseobundle.meta_field_name%"
+            $metaFieldDescription: "%novactive.novaseobundle.meta_field_description%"
+            $$metaFieldGroup: "%novactive.novaseobundle.meta_field_group%"
+
+    Novactive\Bundle\eZSEOBundle\Command\AddNovaSEOMetasFieldTypeCommand:
+        arguments:
+            -$adminUserId: "%novactive.novaseobundle.admin_user_id%"
+
+    Novactive\Bundle\eZSEOBundle\Core\Converter\ContentTypesHelper: ~
+
+    Novactive\Bundle\eZSEOBundle\Core\UrlWildcardRouter:
+        tags:
+            - { name: router, priority: 2000 }
+
+    Novactive\Bundle\eZSEOBundle\Listener\AdminTopMenu:
+        tags:
+            - { name: kernel.event_listener, event: "ezplatform_admin_ui.menu_configure.main_menu", method: "onMenuConfigure",  priority: -100 }

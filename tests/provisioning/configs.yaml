@@ -1,0 +1,14 @@
+nova_ezseo:
+    system:
+        default:
+            fieldtype_metas_identifier: "metas"
+            fieldtype_metas:
+                title:
+                    label: 'Title'
+                    default_pattern: "<title|name>"
+                description:
+                    label: 'Description'
+                    default_pattern: "<description|short_description|title|name>"
+                keywords:
+                    label: 'Keywords'
+                    default_pattern: ~

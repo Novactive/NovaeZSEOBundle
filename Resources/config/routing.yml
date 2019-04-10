@@ -1,3 +1,0 @@
-novactive_platform_admin_ui:
-    resource: "@NovaeZSEOBundle/Controller/Admin"
-    type:     annotation
