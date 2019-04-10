@@ -3,7 +3,9 @@
 
 ## Implemented
 
-* 2.0.0: Admin UI.
+* 4.x: eZ Platform 2.x clean and revamp, Redirect Manager
+* 3.x: Admin UI and double compatibility, bugfixes etc..
+* 2.x: Platform UI.
 * 1.1.0: NEW CustomFallback system that allows you too have a last level of Fallback if something is empty.
 * Powerful **novaseometas** Field Type with its fallback system based on an extended Object/Url Pattern feature
 * Default **&lt;meta&gt;** management configuration

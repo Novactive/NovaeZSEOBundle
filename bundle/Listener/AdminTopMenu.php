@@ -10,12 +10,12 @@
  * @license   https://github.com/Novactive/NovaeZSEOBundle/blob/master/LICENSE MIT Licence
  */
 
-namespace Novactive\Bundle\eZSEOBundle\PlatformAdminUi\EventListener;
+namespace Novactive\Bundle\eZSEOBundle\Listener;
 
 use EzSystems\EzPlatformAdminUi\Menu\Event\ConfigureMenuEvent;
 use EzSystems\EzPlatformAdminUi\Menu\MainMenuBuilder;
 
-class AdminTopMenu implements EventSubscriberInterface
+class AdminTopMenu
 {
     public function onMenuConfigure(ConfigureMenuEvent $event): void
     {
@@ -30,7 +30,5 @@ class AdminTopMenu implements EventSubscriberInterface
             )
             ->setLabel('menu.main_menu.header')
             ->setExtra('translation_domain', 'redirect');
-
-        return $menu;
     }
 }

@@ -8,7 +8,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Controller\Admin;
 
-use eZ\Publish\Core\Repository\URLWildcardService;
+use eZ\Publish\Core\SignalSlot\URLWildcardService;
 use EzSystems\EzPlatformAdminUiBundle\Controller\Controller;
 use Novactive\Bundle\eZSEOBundle\Form\Type\DeleteUrlType;
 use Novactive\Bundle\eZSEOBundle\Form\Type\RedirectType;
@@ -42,11 +42,11 @@ class RedirectController extends Controller
     private $translator;
 
     public function __construct(
-        URLWildcardService $urlWildCardService,
+        URLWildcardService $urlWildcardService,
         TranslatorInterface $translator,
         LoggerInterface $logger
     ) {
-        $this->urlWildCardService = $urlWildCardService;
+        $this->urlWildCardService = $urlWildcardService;
         $this->translator         = $translator;
         $this->logger             = $logger;
     }

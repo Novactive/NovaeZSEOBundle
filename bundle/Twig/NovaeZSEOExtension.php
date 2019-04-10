@@ -146,7 +146,7 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
      */
     protected function innerComputeMetas(
         Content $content,
-        string $fieldDefIdentifier,
+        $fieldDefIdentifier,
         ContentType $contentType,
         &$needFallback = false
     ): array {

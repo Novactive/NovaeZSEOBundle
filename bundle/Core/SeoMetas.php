@@ -10,19 +10,18 @@
  * @license   https://github.com/Novactive/NovaeZSEOBundle/blob/master/LICENSE MIT Licence
  */
 
-namespace Novactive\Bundle\eZSEOBundle\ApplicationConfig\Providers\AdminUI;
+namespace Novactive\Bundle\eZSEOBundle\Core;
 
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use EzSystems\EzPlatformAdminUi\UI\Config\ProviderInterface;
 
 class SeoMetas implements ProviderInterface
 {
-    /** @var ConfigResolverInterface */
+    /**
+     * @var ConfigResolverInterface
+     */
     protected $configResolver;
 
-    /**
-     * NovaEzSEOMetas constructor.
-     */
     public function __construct(ConfigResolverInterface $configResolver)
     {
         $this->configResolver = $configResolver;

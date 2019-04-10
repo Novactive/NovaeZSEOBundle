@@ -243,7 +243,7 @@ No more limits!
 A command is provided to simply add the FieldType, you can always do it by the Administration Inferface
 
 ```bash
-$ php ezpublish/console nova_ezseo:addnovaseometasfieldtype -h
+$ php bin/console nova_ezseo:addnovaseometasfieldtype -h
 Usage:
  nova_ezseo:addnovaseometasfieldtype [--identifier="..."] [--identifiers="..."] [--group_identifier="..."]
 

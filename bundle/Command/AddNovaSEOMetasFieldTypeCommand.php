@@ -120,22 +120,25 @@ EOT
         $fieldName = $this->configResolver->getParameter('fieldtype_metas_identifier', 'nova_ezseo');
 
         foreach ($contentTypes as $contentType) {
-            if (!$this->fieldInstaller->fieldExists($fieldName, $contentType)) {
-                if (!$this->fieldInstaller->addToContentType($fieldName, $contentType)) {
-                    $io->error(
-                        sprintf(
-                            'There were errors when adding new field to <info>%s</info> ContentType: <error>%s</error>',
-                            $contentType->getName($contentType->mainLanguageCode),
-                            $this->fieldInstaller->getErrorMessage()
-                        )
-                    );
-
-                    return 1;
-                }
-                $io->writeln('FieldType added.');
+            $io->section("Doing {$contentType->getName()}");
+            if ($this->fieldInstaller->fieldExists($fieldName, $contentType)) {
+                $io->block('Field exists');
+                continue;
             }
-            $io->warning('FieldType already exists');
+            if (!$this->fieldInstaller->addToContentType($fieldName, $contentType)) {
+                $io->error(
+                    sprintf(
+                        'There were errors when adding new field to <info>%s</info> ContentType: <error>%s</error>',
+                        $contentType->getName($contentType->mainLanguageCode),
+                        $this->fieldInstaller->getErrorMessage()
+                    )
+                );
+                continue;
+            }
+            $io->block('FieldType added.');
         }
+
+        $io->success('Done.');
 
         return 0;
     }

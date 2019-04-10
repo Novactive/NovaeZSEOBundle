@@ -10,13 +10,6 @@ services:
         autoconfigure: true
         public: false
 
-
-    # FIELD TYPE
-    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Type:
-        parent: ezpublish.fieldType
-        tags:
-            - { name: ezpublish.fieldType, alias: novaseometas }
-
     # Marking fieldtype as unindexable for ez platform solr bundle to stop errors
     novactive.novaseobundle.field_type.novaseometas.indexable.unindexed:
         class: "%ezpublish.fieldType.indexable.unindexed.class%"
@@ -24,6 +17,7 @@ services:
             - { name: ezpublish.fieldType.indexable, alias: novaseometas }
 
     Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage:
+        public: true
         tags:
             - { name: ezpublish.fieldType.externalStorageHandler, alias: novaseometas }
 
@@ -41,10 +35,19 @@ services:
             - { name: ez.fieldFormMapper.value, fieldType: novaseometas }
 
     # OTHER SERVICES
+    Novactive\Bundle\eZSEOBundle\Controller\Admin\RedirectController:
+        arguments:
+            $urlWildcardService: "@ezpublish.api.service.url_wildcard"
+        tags: ['controller.service_arguments']
+
 
     Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension: ~
+    Novactive\Bundle\eZSEOBundle\Core\DummyCustomFallback: ~
 
     Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema:
+        arguments:
+            $contentTypeHandler: "@ezpublish.spi.persistence.content_type_handler"
+            $languageHandler: "@ezpublish.spi.persistence.cache.contentLanguageHandler"
         calls:
             - [setLanguages, ["$languages$"]]
             - [setRichTextConverter, ["@ezpublish.fieldType.ezrichtext.converter.output.xhtml5"]]
@@ -55,15 +58,17 @@ services:
         arguments:
             $metaFieldName: "%novactive.novaseobundle.meta_field_name%"
             $metaFieldDescription: "%novactive.novaseobundle.meta_field_description%"
-            $$metaFieldGroup: "%novactive.novaseobundle.meta_field_group%"
+            $metaFieldGroup: "%novactive.novaseobundle.meta_field_group%"
 
     Novactive\Bundle\eZSEOBundle\Command\AddNovaSEOMetasFieldTypeCommand:
         arguments:
-            -$adminUserId: "%novactive.novaseobundle.admin_user_id%"
+            $adminUserId: "%novactive.novaseobundle.admin_user_id%"
 
     Novactive\Bundle\eZSEOBundle\Core\Converter\ContentTypesHelper: ~
 
     Novactive\Bundle\eZSEOBundle\Core\UrlWildcardRouter:
+        arguments:
+            $urlWildcardService: "@ezpublish.api.service.url_wildcard"
         tags:
             - { name: router, priority: 2000 }
 

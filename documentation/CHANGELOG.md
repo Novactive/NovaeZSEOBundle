@@ -1,5 +1,23 @@
 # <i class="fa fa-3x fa-file"></i><br />Changelog
 
+## 4.0.0
+
+* Compatibility with 2.x
+* Redirect Module to manage your 301 in the Admin UI directly (under the Content Tab)
+* Limit the Sitemap to the Root Location of the Site Access
+* Allow 
+* Revamp of the directory architecture to make it more "Symfony clean like"
+* Auto wiring
+* PHP 7
+* Asset package support
+
+Thank you to all the contributors! Past, current and future! 
+https://github.com/Novactive/NovaeZSEOBundle/graphs/contributors
+
+## 3.x
+
+Many small things, bug fixes, compatibility with eZ 1.x and 2.x
+
 ## 2.1.0
 
 * add Bing Verification Controller and Config

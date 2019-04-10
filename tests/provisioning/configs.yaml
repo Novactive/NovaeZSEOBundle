@@ -2,6 +2,11 @@ nova_ezseo:
     system:
         default:
             fieldtype_metas_identifier: "metas"
+            default_metas:
+                author: "eZ Community Bundle Nova eZ SEO Bundle"
+                copyright: ~
+                generator: "eZ Platform"
+                MSSmartTagsPreventParsing: "TRUE"
             fieldtype_metas:
                 title:
                     label: 'Title'

@@ -3,8 +3,8 @@
 
 ## Requirements
 
-* eZ Platform
-* PHP 5.6+
+* eZ Platform 2.x
+* PHP PHP 7.1
 
 
 ## <i class="fa fa-3x fa-spinner"></i><br /> Installation steps
@@ -25,10 +25,10 @@ Add the following to your composer.json and run `php composer.phar update novact
 
 ### Register the bundle
 
-Activate the bundle in `ezpublish\EzPublishKernel.php` file.
+Activate the bundle in `app\AppKernel.php` file.
 
 ```php
-// ezpublish\EzPublishKernel.php
+// app\AppKernel.php
 
 public function registerBundles()
 {
@@ -48,12 +48,11 @@ public function registerBundles()
 Make sure you add this route to your routing:
 
 ```yml
-# ezpublish/config/routing.yml
+# app/config/routing.yml
 
-_novaezseoRoutes:
-    resource: "@NovaeZSEOBundle/Controller/"
-    type:     annotation
-    prefix:   /
+_novaezseo_routes:
+    resource: '@NovaeZSEOBundle/Resources/config/routing/main.yaml'
+
 ```
 
 ### Create the table
