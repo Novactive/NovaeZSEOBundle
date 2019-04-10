@@ -1,5 +1,11 @@
 parameters:
     nova_ezseo.default.robots_disallow: []
+    nova_ezseo.default.robots:
+        sitemap:
+#            - { route : '_novaseo_sitemap_index' }
+#            - { url : 'https://www.google.fr/sitemap.xml' }
+        allow: []
+        disallow: []
     nova_ezseo.default.google_gatracker: ~
     nova_ezseo.default.google_verification: 1234567890
     nova_ezseo.default.google_anonymizeIp: ~

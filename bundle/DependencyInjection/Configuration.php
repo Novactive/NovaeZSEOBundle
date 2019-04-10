@@ -86,10 +86,28 @@ class Configuration extends SAConfiguration
                     ->end()
                 ->end()
             ->end()
+            ->arrayNode('robots')
+                ->children()
+                    ->arrayNode('sitemap')
+                        ->prototype('array')
+                            ->children()
+                                ->scalarNode('url')->end()
+                                ->scalarNode('route')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                    ->arrayNode('allow')
+                        ->prototype('scalar')->end()
+                    ->end()
+                    ->arrayNode('disallow')
+                        ->prototype('scalar')->end()
+                    ->end()
+                ->end()
+            ->end()
             ->arrayNode('robots_disallow')
                 ->prototype('scalar')
             ->end()
-            ->end();
+        ->end();
 
         return $treeBuilder;
     }

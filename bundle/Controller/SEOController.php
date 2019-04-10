@@ -16,6 +16,7 @@ use eZ\Bundle\EzPublishCoreBundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SEOController extends Controller
 {
@@ -28,15 +29,43 @@ class SEOController extends Controller
         $response->setSharedMaxAge(86400);
         $robots = ['User-agent: *'];
 
+        $robotsRules             = $this->getConfigResolver()->getParameter('robots', 'nova_ezseo');
+        $backwardCompatibleRules = $this->getConfigResolver()->getParameter('robots_disallow', 'nova_ezseo');
+
+        if (\is_array($robotsRules['sitemap'])) {
+            foreach ($robotsRules['sitemap'] as $sitemapRules) {
+                foreach ($sitemapRules as $key => $value) {
+                    if ('route' === $key) {
+                        $url      = $this->generateUrl($value, [], UrlGeneratorInterface::ABSOLUTE_URL);
+                        $robots[] = "Sitemap: {$url}";
+                    }
+                    if ('url' === $key) {
+                        $robots[] = "Sitemap: {$value}";
+                    }
+                }
+            }
+        }
+        if (\is_array($robotsRules['allow'])) {
+            foreach ($robotsRules['allow'] as $rule) {
+                $robots[] = "Allow: {$rule}";
+            }
+        }
         if ('prod' !== $this->get('kernel')->getEnvironment()) {
             $robots[] = 'Disallow: /';
         }
-        $rules = $this->getConfigResolver()->getParameter('robots_disallow', 'nova_ezseo');
-        if (\is_array($rules)) {
-            foreach ($rules as $rule) {
+
+        if (\is_array($robotsRules['disallow'])) {
+            foreach ($robotsRules['disallow'] as $rule) {
                 $robots[] = "Disallow: {$rule}";
             }
         }
+
+        if (\is_array($backwardCompatibleRules)) {
+            foreach ($backwardCompatibleRules as $rule) {
+                $robots[] = "Disallow: {$rule}";
+            }
+        }
+
         $response->setContent(implode("\n", $robots));
         $response->headers->set('Content-Type', 'text/plain');
 

@@ -28,7 +28,7 @@
     <rule ref="rulesets/codesize.xml/NPathComplexity">
         <priority>1</priority>
         <properties>
-            <property name="minimum" value="301"/>
+            <property name="minimum" value="401"/>
         </properties>
     </rule>
     <rule ref="rulesets/codesize.xml/TooManyMethods">
