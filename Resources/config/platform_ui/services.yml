@@ -1,5 +1,6 @@
 parameters:
     novactive.novaseobundle.application_config.provider.platform_ui.seo_metas.class: Novactive\Bundle\eZSEOBundle\ApplicationConfig\Providers\PlatformUI\SeoMetas
+    novactive.novaseobundle.platform_admin_ui.event_listener.main_menu_builder.class: Novactive\Bundle\eZSEOBundle\PlatformAdminUi\EventListener\MenuListener
 
 services:
     novactive.novaseobundle.application_config.provider.platformui.seo_metas:
@@ -8,3 +9,19 @@ services:
           - "@ezpublish.config.resolver"
       tags:
           - { name: ezsystems.platformui.application_config_provider, key: 'seoMetas' }
+
+    novactive.novaseobundle.platform_admin_ui.event_listener.main_menu_builder:
+        class: "%novactive.novaseobundle.platform_admin_ui.event_listener.main_menu_builder.class%"
+        public: false
+        arguments:
+            - "@security.authorization_checker"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    Novactive\Bundle\eZSEOBundle\Controller\Admin\:
+        resource: "../../../Controller/Admin/*"
+        autowire: true
+        autoconfigure: true
+        public: false
+        tags:
+            - { name: controller.service_arguments }

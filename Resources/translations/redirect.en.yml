@@ -1,0 +1,33 @@
+menu.main_menu.header: 'Redirect manager'
+
+info:
+    back: "Back"
+
+nova:
+  redirect:
+    root:
+      menu:
+        label: "Redirect manager"
+    list:
+      menu:
+        label: "URL aliases with wildcard characters (total %total%) "
+      title: "List of URL (total %total%)"
+      source: "Source"
+      destination: "Destination"
+      type: "Type"
+      forward: "Redirection"
+      direct: "Direct"
+      undined: "Undefined"
+    button:
+      delete: "Delete selection"
+      create: "Create"
+    create:
+      title: "Create a new redirect URL"
+      type: "Redirection 301"
+      source: "URL Alias Source :"
+      destination: "Destination :"
+      info:  "The URL has been created"
+      warnning: "Enter the text in the field to create a new alias."
+      exists: "The URL alias (url) already exists as a Source URL."
+    delete:
+      info: "The selected aliases have been removed."

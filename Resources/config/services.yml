@@ -62,3 +62,9 @@ services:
         class: "%novactive.novaseobundle.converter.content_types_helper.class%"
         arguments:
             - "@ezpublish.api.service.content_type"
+
+    Novactive\Bundle\eZSEOBundle\Routing\UrlWildcardRouter:
+        arguments:
+            $urlWildcardService: '@ezpublish.api.service.url_wildcard'
+        tags:
+            - {name: router, priority: 2000}
