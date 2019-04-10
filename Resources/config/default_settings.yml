@@ -26,7 +26,7 @@ parameters:
 #            href: { route: 'search_route_name' }
 #            title: 'Search'
         'Shortcut icon':
-            href: { asset: '/bundles/sitebundle/images/favicon.ico' }
+            href: { asset: { path: '/bundles/sitebundle/images/favicon.ico' } }
             type: 'image/x-icon'
 #        Alternate:
 #            href: { route: 'rss_feed_route_name' }

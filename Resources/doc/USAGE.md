@@ -73,6 +73,9 @@ nova_ezseo:
                     href: { route: 'yourproject_rss_feed_route' }
                     title: 'RSS'
                     type: 'application/rss+xml'
+                'Other package asset':
+                    href: { asset: { path: 'images/favicon.ico', package: 'ezdesign' } }
+                    type: 'image/x-icon'
 ```
 
 > You can add your own <link> here

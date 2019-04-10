@@ -23,7 +23,11 @@
         {% elseif href.route is defined %}
             {% set href = path( href.route ) %}
         {% elseif href.asset is defined %}
-            {% set href = asset( href.asset ) %}
+            {% if href.asset.package is defined %}
+                {% set href = asset( href.asset.path, href.asset.package ) %}
+            {% else %}
+                {% set href = asset( href.asset.path ) %}
+            {% endif %}
         {% endif %}
         <link rel="{{ rel }}"{% if attrs.type is defined %} type="{{ attrs.type }}"{% endif %}{% if attrs.title is defined %} title="{{ attrs.title }}"{% endif %} {% if not href is iterable %}href="{{ href }}"{% endif %}/>
     {% endif %}
