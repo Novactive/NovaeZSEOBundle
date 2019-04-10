@@ -10,7 +10,7 @@ nova:
         label: "Redirect manager"
     list:
       menu:
-        label: "URL aliases with wildcard characters (total% total%) "
+        label: "URL aliases with wildcard characters (total %total%) "
       title: "List of URL (total %total%)"
       source: "Source"
       destination: "Destination"
