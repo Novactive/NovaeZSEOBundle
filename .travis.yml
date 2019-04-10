@@ -1,0 +1,18 @@
+language: php
+dist: xenial
+php:
+    - '7.2'
+
+before_install:
+    - phpenv config-rm xdebug.ini
+
+install:
+    - composer install
+
+script:
+    - ./vendor/bin/phpcs --standard=.cs/cs_ruleset.xml --extensions=php bundle tests
+    - ./vendor/bin/phpmd bundle,tests text .cs/md_ruleset.xml
+
+
+notifications:
+    email: false
