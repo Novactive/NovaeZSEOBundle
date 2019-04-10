@@ -19,6 +19,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use eZ\Publish\Core\Repository\URLWildcardService;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+
 
 class RedirectController extends Controller
 {
@@ -54,6 +56,10 @@ class RedirectController extends Controller
      */
     public function listAction(Request $request)
     {
+        if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            throw new AccessDeniedException('Limited access !!!');
+        }
+
         $errors    = [];
         $messages  = [];
         $urlExists = null;
@@ -140,6 +146,10 @@ class RedirectController extends Controller
      */
     public function deleteAction(Request $request)
     {
+        if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            throw new AccessDeniedException('Limited access !!!');
+        }
+        
         $urlWildCardChoice = $request->get("WildcardIDList");
 
         // delete a wildcard url
