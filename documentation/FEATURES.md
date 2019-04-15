@@ -13,7 +13,7 @@
 * **Robots.txt** management configuration
 * **Google Verification** management configuration
 * **Sitemap** generation (basic system)
-* **Google Analytics ** ntegration
+* **Google Analytics ** integration
 
 
 ## Field Type edition
