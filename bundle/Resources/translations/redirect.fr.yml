@@ -1,4 +1,7 @@
-menu.main_menu.header: 'Redirect manager'
+menu.main_menu.header: 'Gestionnaire De Redirection'
+menu.main_menu.list: 'URL De Redirection'
+menu.main_menu.import: 'Import Urls'
+menu.main_menu.history.import: "Historique Des Urls Importés"
 
 info:
     back: "Retour"
@@ -31,3 +34,34 @@ nova:
       exists: "L'alias URL (URL) existe déjà en tant qu'URL source."
     delete:
       info: "Les alias sélectionnés ont été supprimés."
+  import:
+    root:
+      menu:
+        label: "Import Urls"
+      form:
+        label: "Fichier*:"
+        upload_file_message: "Glissez et déposez vos fichiers dans la fenêtre du navigateur ou téléchargez-les."
+        upload_file_button: "Upload file"
+        button: "import"
+        error:
+          invalid_type: "type de fichier invalide"
+          invalid_file: "Contenu du fichier invalide"
+    list:
+      menu:
+        label: "Nombre total d'URL importées (%totalImported% / %totalUrls%)"
+      table:
+        source: "Source"
+        destination: "Destination"
+        message: "Message"
+        status: "Statut"
+        info: "L'URL a été créé"
+        exists: "L'alias URL (URL) existe déjà en tant qu'URL source."
+  history:
+    list:
+      menu:
+        label: "Historique des fichiers importés"
+      table:
+        name: "Nom"
+        date: "Date"
+        link: "Lien de fichier log"
+        link_file: "Télécharger le fichier journal"
