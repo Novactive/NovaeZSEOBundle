@@ -20,15 +20,41 @@ class AdminTopMenu
     public function onMenuConfigure(ConfigureMenuEvent $event): void
     {
         $menu        = $event->getMenu();
-        $contentMenu = $menu[MainMenuBuilder::ITEM_CONTENT];
+        $menu->addChild(
+            'nova_create_redirect'
+        )
+            ->setLabel('menu.main_menu.header')
+            ->setExtra('translation_domain', 'redirect');
+        $contentMenu = $menu['nova_create_redirect'];
+
         $contentMenu
             ->addChild(
-                'nova_create_redirect',
+                'nova_create_redirect_list',
                 [
                     'route' => 'novactive_platform_admin_ui.list',
                 ]
             )
-            ->setLabel('menu.main_menu.header')
+            ->setLabel('menu.main_menu.list')
             ->setExtra('translation_domain', 'redirect');
+
+        $contentMenu
+            ->addChild(
+              'nova_import_redirect_url',
+                [
+                  'route' => 'novactive_platform_admin_ui.import-redirect-url'
+                ]
+            )
+            ->setLabel('menu.main_menu.import')
+            ->setExtra('translation_domain', 'redirect');
+
+        $contentMenu->addChild(
+                'nova_history_import_redirect_url',
+                [
+                    'route' => 'novactive_platform_admin_ui.history-import-redirect-url'
+                ]
+            )
+            ->setLabel('menu.main_menu.history.import')
+            ->setExtra('translation_domain', 'redirect')
+        ;
     }
 }

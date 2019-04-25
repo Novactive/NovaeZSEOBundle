@@ -75,3 +75,11 @@ services:
     Novactive\Bundle\eZSEOBundle\Listener\AdminTopMenu:
         tags:
             - { name: kernel.event_listener, event: "ezplatform_admin_ui.menu_configure.main_menu", method: "onMenuConfigure",  priority: -100 }
+
+    novactive_ezseobundle_importurls_helper:
+        class: Novactive\Bundle\eZSEOBundle\Helper\ImportUrlsHelper
+        arguments:
+            $urlWildcardService: "@ezpublish.api.service.url_wildcard"
+            $entityManager: "@doctrine.orm.entity_manager"
+            $webDirectory: '%kernel.project_dir%/web/'
+        tags: ['controller.service_arguments']

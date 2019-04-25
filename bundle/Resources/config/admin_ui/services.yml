@@ -25,3 +25,20 @@ services:
             $href: "/bundles/novaezseo/font/font-awesome.min.css"
         tags:
             - { name: ezplatform.admin_ui.component, group: 'stylesheet-head' }
+
+    ezplatform.adminui.novaseobundle.css_page:
+        parent: EzSystems\EzPlatformAdminUi\Component\LinkComponent
+        arguments:
+            $href: "/bundles/novaezseo/css/style.css"
+        tags:
+            - { name: ezplatform.admin_ui.component, group: 'stylesheet-head' }
+
+    ezplatform.adminui.novaseobundle.js:
+        parent: EzSystems\EzPlatformAdminUi\Component\ScriptComponent
+        autowire: true
+        autoconfigure: false
+        public: false
+        arguments:
+            $src: "/bundles/novaezseo/js/script.js"
+        tags:
+            - { name: ezplatform.admin_ui.component, group: 'script-body' }
