@@ -232,7 +232,7 @@ class MetaNameSchema extends NameSchemaService
     }
 
     protected function getVariation(
-        string $value,
+        ImageValue $value,
         string $identifier,
         string $languageCode,
         string $variationName
