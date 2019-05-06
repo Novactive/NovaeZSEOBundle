@@ -1,19 +1,25 @@
 <?php
-
-namespace Novactive\Bundle\eZSEOBundle\Helper;
+/**
+ * NovaeZSEOBundle ImportUrlsHelper.
+ *
+ * @package   Novactive\Bundle\eZSEOBundle
+ *
+ * @author    Novactive <m.bouchaala@novactive.com>
+ * @copyright 2015 Novactive
+ * @license   https://github.com/Novactive/NovaeZSEOBundle/blob/master/LICENSE MIT Licence
+ */
+namespace Novactive\Bundle\eZSEOBundle\Core\Helper;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use eZ\Publish\Core\SignalSlot\URLWildcardService;
 use Novactive\Bundle\eZSEOBundle\Entity\RedirectImportHistory;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
-
-/**
- * Helper for import url.
- */
 class ImportUrlsHelper
 {
     /**
@@ -47,33 +53,28 @@ class ImportUrlsHelper
      * ImportUrlsHelper constructor.
      * @param URLWildcardService $urlWildcardService
      * @param EntityManagerInterface $entityManager
-     * @param $webDirectory
      * @param TranslatorInterface $translator
      * @param LoggerInterface $logger
      * @param Filesystem $fileSystem
+     * @param ContainerInterface $container
      */
     public function __construct(
         URLWildcardService $urlWildcardService,
         EntityManagerInterface $entityManager,
-        $webDirectory,
         TranslatorInterface $translator,
         LoggerInterface $logger,
-        Filesystem $fileSystem
+        Filesystem $fileSystem,
+        ContainerInterface $container
     ) {
         $this->urlWildCardService = $urlWildcardService;
         $this->entityManager = $entityManager;
-        $this->webDirectory = $webDirectory;
+        $this->webDirectory = $container->getParameter('kernel.project_dir')."/web/";
         $this->translator = $translator;
         $this->logger = $logger;
         $this->fs = $fileSystem;
-
     }
 
-    /**
-     * @param $filePath
-     * @return array
-     */
-    public function importUrlRedirection($filePath)
+    public function importUrlRedirection(String $filePath):array
     {
         $counter = 0;
         $params = $return = [];
@@ -142,13 +143,10 @@ class ImportUrlsHelper
         return $params;
     }
 
-    /**
-     * @param $destination
-     * @return \eZ\Publish\API\Repository\Values\Content\URLWildcardTranslationResult|null
-     */
-    public function checkUrlDestinationExist($destination)
+
+    public function checkUrlDestinationExist(string $destination):bool
     {
-        $urlExists = null;
+        $urlExists = false;
 
         try {
             $urlExists = $this->urlWildCardService->translate($destination);
@@ -160,12 +158,7 @@ class ImportUrlsHelper
         return $urlExists;
     }
 
-    /**
-     * @param $source
-     * @param $destination
-     * @return array
-     */
-    public function saveUrls($source, $destination)
+    public function saveUrls(string $source, string $destination):array
     {
         $return = $errors = [];
         try {
@@ -204,11 +197,7 @@ class ImportUrlsHelper
         return $return;
     }
 
-    /**
-     * @param $fileToImport
-     * @param $fileLog
-     */
-    public function saveFileHistory($fileToImport, $fileLog)
+    public function saveFileHistory(File $fileToImport, string $fileLog)
     {
         try {
             $redirectImportHistory = new RedirectImportHistory();
@@ -222,27 +211,17 @@ class ImportUrlsHelper
         }
     }
 
-    /**
-     * @return array|RedirectImportHistory[]
-     */
-    public function getLogsHistory()
+    public function getLogsHistory():array
     {
         return $this->entityManager->getRepository("NovaeZSEOBundle:RedirectImportHistory")->findAll();
     }
 
-    /**
-     * @param $error
-     */
-    public function log($error)
+    public function log(string $error)
     {
         $this->logger->log(LogLevel::ERROR, $error);
     }
 
-    /**
-     * @param $msg
-     * @return string
-     */
-    public function trans($msg)
+    public function trans(string $msg):string
     {
         return $this->translator->trans($msg, [], 'redirect');
     }

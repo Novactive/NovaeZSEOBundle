@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * NovaeZSEOBundle ImportUrlsController.
+ *
+ * @package   Novactive\Bundle\eZSEOBundle
+ *
+ * @author    Novactive <m.bouchaala@novactive.com>
+ * @copyright 2015 Novactive
+ * @license   https://github.com/Novactive/NovaeZSEOBundle/blob/master/LICENSE MIT Licence
+ */
 namespace Novactive\Bundle\eZSEOBundle\Controller\Admin;
 
 use EzSystems\EzPlatformAdminUiBundle\Controller\Controller;
@@ -13,24 +21,31 @@ use Symfony\Component\Routing\Annotation\Route;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper;
 
 class ImportUrlsController extends Controller
 {
     const URL_LIMIT = 10;
 
+    private $importUrlHelper;
+
+    function __construct(ImportUrlsHelper $importUrlHelper)
+    {
+        $this->importUrlHelper = $importUrlHelper;
+    }
+
     /**
-     * @param Request $request
      * @Route("/url-redirect-import", name="novactive_platform_admin_ui.import-redirect-url")
-     * @return Response
+     * @Template("NovaeZSEOBundle::platform_admin/import_urls.html.twig")
      */
-    public function importAction(Request $request)
+    public function importAction(Request $request): array
     {
         if (!$this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             throw new AccessDeniedException('Limited access !!!');
         }
 
         $params = $message = [];
-        $importUrlHelper = $this->container->get('novactive_ezseobundle_importurls_helper');
         $session = $request->getSession();
 
         $form = $this->createForm(ImportUrlsType::class);
@@ -42,7 +57,7 @@ class ImportUrlsController extends Controller
                 $filePath = $file->getRealPath();
                 if ($file->getMimeType() == 'text/plain') {
                     try {
-                        $resultUrlsImported = $importUrlHelper->importUrlRedirection($filePath);
+                        $resultUrlsImported =  $this->importUrlHelper->importUrlRedirection($filePath);
 
                         if (isset($resultUrlsImported['errorType'])) {
                             $params['errors'][] = $resultUrlsImported['errorType'];
@@ -50,15 +65,15 @@ class ImportUrlsController extends Controller
                             $fileName = $file->getClientOriginalName();
                             $fileToImport = $file->move('redirectUrls/upload', $fileName);
                             $fileLog = $resultUrlsImported['fileLog'];
-                            $importUrlHelper->saveFileHistory($fileToImport, $fileLog);
+                            $this->importUrlHelper->saveFileHistory($fileToImport, $fileLog);
                             $session->set('IMPORT_URL', $resultUrlsImported);
 
                         }
                     } catch (\Exception $e) {
-                        $importUrlHelper->log($e->getMessage());
+                        $this->importUrlHelper->log($e->getMessage());
                     }
                 } else {
-                    $params['errors'][] = $importUrlHelper->trans('nova.import.root.form.error.invalid_type');
+                    $params['errors'][] = $this->importUrlHelper->trans('nova.import.root.form.error.invalid_type');
                 }
             }
         }
@@ -84,21 +99,16 @@ class ImportUrlsController extends Controller
             'form' => $form->createView(),
         ];
 
-        return $this->render(
-            'NovaeZSEOBundle::platform_admin/import_urls.html.twig',
-            $params
-        );
+        return $params;
     }
 
     /**
-     * @param Request $request
      * @Route("/history-import-redirect-url", name="novactive_platform_admin_ui.history-import-redirect-url")
-     * @return Response
+     * @Template("NovaeZSEOBundle::platform_admin/history_urls_imported.html.twig")
      */
-    public function hisroryUrlsImported(Request $request)
+    public function hisroryUrlsImported(Request $request): array
     {
-        $importUrlHelper = $this->container->get('novactive_ezseobundle_importurls_helper');
-        $result = $importUrlHelper->getLogsHistory();
+        $result = $this->importUrlHelper->getLogsHistory();
         $params = [];
         if (count($result) > 0) {
             $page = $request->query->get('page') ?? 1;
@@ -115,18 +125,13 @@ class ImportUrlsController extends Controller
             ];
         }
 
-
-        return $this->render(
-            'NovaeZSEOBundle::platform_admin/history_urls_imported.html.twig',
-            $params
-        );
+        return $params;
     }
 
     /**
      * @Route("/download-log-redirect-url/{id}", name="novactive_platform_admin_ui.download-log-redirect-url")
-     * @return Response
      */
-    public function downloadAction($id)
+    public function downloadAction($id): Response
     {
         $log = $this->getDoctrine()->getRepository("NovaeZSEOBundle:RedirectImportHistory")->find($id);
         if ($log) {

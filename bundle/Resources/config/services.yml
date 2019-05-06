@@ -36,10 +36,10 @@ services:
 
     # OTHER SERVICES
     Novactive\Bundle\eZSEOBundle\Controller\Admin\RedirectController:
-        arguments:
-            $urlWildcardService: "@ezpublish.api.service.url_wildcard"
         tags: ['controller.service_arguments']
 
+    Novactive\Bundle\eZSEOBundle\Controller\Admin\ImportUrlsController:
+        tags: ['controller.service_arguments']
 
     Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension: ~
     Novactive\Bundle\eZSEOBundle\Core\DummyCustomFallback: ~
@@ -76,10 +76,4 @@ services:
         tags:
             - { name: kernel.event_listener, event: "ezplatform_admin_ui.menu_configure.main_menu", method: "onMenuConfigure",  priority: -100 }
 
-    novactive_ezseobundle_importurls_helper:
-        class: Novactive\Bundle\eZSEOBundle\Helper\ImportUrlsHelper
-        arguments:
-            $urlWildcardService: "@ezpublish.api.service.url_wildcard"
-            $entityManager: "@doctrine.orm.entity_manager"
-            $webDirectory: '%kernel.project_dir%/web/'
-        tags: ['controller.service_arguments']
+    Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper: ~

@@ -1,12 +1,20 @@
 <?php
+/**
+ * NovaeZSEOBundle RedirectImportHistory.
+ *
+ * @package   Novactive\Bundle\eZSEOBundle
+ *
+ * @author    Novactive <m.bouchaala@novactive.com>
+ * @copyright 2015 Novactive
+ * @license   https://github.com/Novactive/NovaeZSEOBundle/blob/master/LICENSE MIT Licence
+ */
 
 namespace Novactive\Bundle\eZSEOBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use DateTime;
 
 /**
- * Class RedirectImportHistory.
- *
  * @ORM\Table(name="redirect_import_history", options={"collate"="utf8_general_ci"})
  * @ORM\Entity()
  */
@@ -43,65 +51,41 @@ class RedirectImportHistory
     protected $path;
 
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
     public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
     public function getNameFile(): string
     {
         return $this->nameFile;
     }
 
-    /**
-     * @param string $nameFile
-     */
     public function setNameFile(string $nameFile): void
     {
         $this->nameFile = $nameFile;
     }
 
-    /**
-     * @return \DateTime
-     */
-    public function getDate(): \DateTime
+    public function getDate(): DateTime
     {
         return $this->date;
     }
 
-    /**
-     * @param \DateTime $date
-     */
-    public function setDate(\DateTime $date): void
+    public function setDate(DateTime $date): void
     {
         $this->date = $date;
     }
 
-    /**
-     * @return string
-     */
     public function getPath(): string
     {
         return $this->path;
     }
 
-    /**
-     * @param string $path
-     */
     public function setPath(string $path): void
     {
         $this->path = $path;
