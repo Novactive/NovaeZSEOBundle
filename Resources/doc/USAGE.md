@@ -119,6 +119,19 @@ nova_ezseo:
                 contentTypeIdentifiers: ['footer','something']
 ```
 
+Set "limit_to_rootlocation" to true to automatically generate sitemap.xml per rootlocation.
+
+```yml
+nova_ezseo:
+    system:
+        default:
+            limit_to_rootlocation: true
+            sitemap_excludes:
+                subtrees: [45,89,343]
+                contentTypeIdentifiers: ['footer','something']
+```
+
+
 
 
 ## Google Site Verification file
