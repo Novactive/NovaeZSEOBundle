@@ -1,0 +1,6 @@
+services:
+
+    ezseo_importurls.ezpublish.core.io_service:
+        parent: ezpublish.core.io.service
+        calls:
+        - [ setPrefix, [ "novaezseo" ] ]

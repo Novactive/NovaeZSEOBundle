@@ -19,7 +19,7 @@ class AdminTopMenu
 {
     public function onMenuConfigure(ConfigureMenuEvent $event): void
     {
-        $menu        = $event->getMenu();
+        $menu = $event->getMenu();
         $menu->addChild(
             'nova_create_redirect'
         )
@@ -39,7 +39,7 @@ class AdminTopMenu
 
         $contentMenu
             ->addChild(
-              'nova_import_redirect_url',
+                'nova_import_redirect_url',
                 [
                   'route' => 'novactive_platform_admin_ui.import-redirect-url'
                 ]
@@ -47,7 +47,8 @@ class AdminTopMenu
             ->setLabel('menu.main_menu.import')
             ->setExtra('translation_domain', 'redirect');
 
-        $contentMenu->addChild(
+        $contentMenu
+            ->addChild(
                 'nova_history_import_redirect_url',
                 [
                     'route' => 'novactive_platform_admin_ui.history-import-redirect-url'

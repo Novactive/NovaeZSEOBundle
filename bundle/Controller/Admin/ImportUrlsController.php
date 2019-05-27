@@ -12,8 +12,8 @@ namespace Novactive\Bundle\eZSEOBundle\Controller\Admin;
 
 use EzSystems\EzPlatformAdminUiBundle\Controller\Controller;
 use Novactive\Bundle\eZSEOBundle\Form\Type\ImportUrlsType;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\Stream;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -23,16 +23,32 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class ImportUrlsController extends Controller
 {
     const URL_LIMIT = 10;
 
+    /**
+     * @var ImportUrlsHelper
+     */
     private $importUrlHelper;
 
-    function __construct(ImportUrlsHelper $importUrlHelper)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    public function __construct(ImportUrlsHelper $importUrlHelper, TranslatorInterface $translator, LoggerInterface $logger)
     {
         $this->importUrlHelper = $importUrlHelper;
+        $this->translator = $translator;
+        $this->logger = $logger;
     }
 
     /**
@@ -45,7 +61,7 @@ class ImportUrlsController extends Controller
             throw new AccessDeniedException('Limited access !!!');
         }
 
-        $params = $message = [];
+        $params  = $message = [];
         $session = $request->getSession();
 
         $form = $this->createForm(ImportUrlsType::class);
@@ -62,18 +78,17 @@ class ImportUrlsController extends Controller
                         if (isset($resultUrlsImported['errorType'])) {
                             $params['errors'][] = $resultUrlsImported['errorType'];
                         } else {
-                            $fileName = $file->getClientOriginalName();
+                            $fileName     = $file->getClientOriginalName();
                             $fileToImport = $file->move('redirectUrls/upload', $fileName);
-                            $fileLog = $resultUrlsImported['fileLog'];
+                            $fileLog      = $resultUrlsImported['fileLog'];
                             $this->importUrlHelper->saveFileHistory($fileToImport, $fileLog);
                             $session->set('IMPORT_URL', $resultUrlsImported);
-
                         }
                     } catch (\Exception $e) {
-                        $this->importUrlHelper->log($e->getMessage());
+                        $this->logger->log(LogLevel::ERROR, $e->getMessage());
                     }
                 } else {
-                    $params['errors'][] = $this->importUrlHelper->trans('nova.import.root.form.error.invalid_type');
+                    $params['errors'][] = $this->translator->trans('nova.import.root.form.error.invalid_type', [], 'redirect');
                 }
             }
         }
@@ -89,10 +104,9 @@ class ImportUrlsController extends Controller
 
             $pagerfanta->setMaxPerPage(self::URL_LIMIT);
             $pagerfanta->setCurrentPage(min($page, $pagerfanta->getNbPages()));
-            $params['pager'] = $pagerfanta;
+            $params['pager']         = $pagerfanta;
             $params['totalImported'] = $lastUrlImported['totalImported'];
-            $params['totalUrls'] = $lastUrlImported['totalUrls'];
-
+            $params['totalUrls']     = $lastUrlImported['totalUrls'];
         }
 
         $params += [
@@ -135,15 +149,21 @@ class ImportUrlsController extends Controller
     {
         $log = $this->getDoctrine()->getRepository("NovaeZSEOBundle:RedirectImportHistory")->find($id);
         if ($log) {
-            $stream = new Stream($log->getPath());
-            $response = new BinaryFileResponse($stream);
-            $response->headers->set('Content-Type', 'text/plain');
-            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $stream->getFilename());
+            $fileContent = $this->importUrlHelper->downloadFile($log);
+            if($fileContent){
+                $response    = new Response($fileContent);
+                $disposition = $response->headers->makeDisposition(
+                    ResponseHeaderBag::DISPOSITION_INLINE,
+                    $log->getNameFile()
+                );
+                $response->headers->set('Content-Disposition', $disposition);
+                $response->headers->set('Cache-Control', 'private');
+                $response->headers->set('Content-type', 'application/octet-stream');
 
-            return $response;
+                return $response;
+            }
         }
 
         return $this->redirectToRoute('novactive_platform_admin_ui.history-import-redirect-url');
-
     }
 }

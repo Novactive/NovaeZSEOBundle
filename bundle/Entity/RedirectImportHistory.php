@@ -90,5 +90,4 @@ class RedirectImportHistory
     {
         $this->path = $path;
     }
-
 }

@@ -76,4 +76,5 @@ services:
         tags:
             - { name: kernel.event_listener, event: "ezplatform_admin_ui.menu_configure.main_menu", method: "onMenuConfigure",  priority: -100 }
 
-    Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper: ~
+    Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper:
+        arguments: ['@ezseo_importurls.ezpublish.core.io_service']

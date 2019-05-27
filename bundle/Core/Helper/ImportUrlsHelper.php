@@ -11,6 +11,7 @@
 namespace Novactive\Bundle\eZSEOBundle\Core\Helper;
 
 use Doctrine\ORM\EntityManagerInterface;
+use eZ\Publish\Core\IO\IOService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use eZ\Publish\Core\SignalSlot\URLWildcardService;
 use Novactive\Bundle\eZSEOBundle\Entity\RedirectImportHistory;
@@ -47,18 +48,13 @@ class ImportUrlsHelper
      */
     private $fs;
 
+    /** @var IOService */
+    private $ioService;
+
     private $webDirectory;
 
-    /**
-     * ImportUrlsHelper constructor.
-     * @param URLWildcardService $urlWildcardService
-     * @param EntityManagerInterface $entityManager
-     * @param TranslatorInterface $translator
-     * @param LoggerInterface $logger
-     * @param Filesystem $fileSystem
-     * @param ContainerInterface $container
-     */
     public function __construct(
+        IOService $ioService,
         URLWildcardService $urlWildcardService,
         EntityManagerInterface $entityManager,
         TranslatorInterface $translator,
@@ -67,24 +63,34 @@ class ImportUrlsHelper
         ContainerInterface $container
     ) {
         $this->urlWildCardService = $urlWildcardService;
-        $this->entityManager = $entityManager;
-        $this->webDirectory = $container->getParameter('kernel.project_dir')."/web/";
-        $this->translator = $translator;
-        $this->logger = $logger;
-        $this->fs = $fileSystem;
+        $this->entityManager      = $entityManager;
+        $this->webDirectory       = $container->getParameter('kernel.project_dir')."/web/";
+        $this->translator         = $translator;
+        $this->logger             = $logger;
+        $this->fs                 = $fileSystem;
+        $this->ioService          = $ioService;
     }
 
+    /**
+     * @param String $filePath
+     * @return array
+     * @throws \eZ\Publish\Core\Base\Exceptions\InvalidArgumentException
+     * @throws \eZ\Publish\Core\Base\Exceptions\InvalidArgumentValue
+     */
     public function importUrlRedirection(String $filePath):array
     {
         $counter = 0;
-        $params = $return = [];
+        $params  = $return = [];
 
         if (($fileToImport = fopen($filePath, 'r')) !== false) {
             $totalImported = 0;
             $totalUrls     = 0;
             //create file log
+            $filename = "redirectUrls/report/redirect_import_urls-".date('d-m-Y-H-i-s').".csv";
+            $filePath = $this->webDirectory.$filename;
+
             $this->fs->dumpFile(
-                $this->webDirectory."redirectUrls/logs/redirect_import_urls-".date('d-m-Y').".csv",
+                $filePath,
                 "Source;Destination;Message;Status\n"
             );
 
@@ -94,23 +100,24 @@ class ImportUrlsHelper
                     continue;
                 } else {
                     if (isset($data[0]) and isset($data[1])) {
-                        $source = $data[0]; // source
+                        $source      = $data[0]; // source
                         $destination = $data[1]; // destination
                         $totalUrls++;
                         // verify if URL destination exists in source URL
                         $verifResult = $this->checkUrlDestinationExist($destination);
 
-                        if (('' != $source || '' != $destination) && ($source != $destination) && (null === $verifResult['urlExists'])) {
+                        if (('' != $source || '' != $destination)
+                            && ($source != $destination)
+                            && (null === $verifResult['urlExists'])) {
                             // try to save data in table ezurlwildcard
-                            $saveResult = $this->saveUrls($source, $destination);
+                            $saveResult = $this->saveUrls($filePath, $source, $destination);
                             if ($saveResult['imported'] == 'OK') {
                                 $totalImported++;
                             }
                             $return[] = $saveResult;
                         } else {
-
-                            $msg = $this->translator->trans('nova.import.list.table.exists', [], 'redirect');
-                            $status = 'KO';
+                            $msg      = $this->translator->trans('nova.import.list.table.exists', [], 'redirect');
+                            $status   = 'KO';
                             $return[] = [
                                 'source' => $source,
                                 'destination' => $destination,
@@ -118,7 +125,7 @@ class ImportUrlsHelper
                                 'imported' => $status,
                             ];
                             $this->fs->appendToFile(
-                                $this->webDirectory."redirectUrls/logs/redirect_import_urls-".date('d-m-Y').".csv",
+                                $filePath,
                                 "$source;$destination;$msg;$status\n"
                             );
                         }
@@ -131,13 +138,24 @@ class ImportUrlsHelper
                     }
                 }
             }
+
+            if(!isset($params['errorType'])) {
+                try {
+                    $uploadedFileStruct     = $this->ioService->newBinaryCreateStructFromLocalFile($filePath);
+                    $uploadedFileStruct->id = $filename;
+                    $this->ioService->createBinaryFile($uploadedFileStruct);
+                    $this->fs->remove($filePath);
+                } catch (\Exception $e) {
+                    $this->logger->log(LogLevel::ERROR, $e->getMessage());
+                }
+            }
+
             $params += [
                 'totalImported' => $totalImported,
                 'totalUrls' => $totalUrls,
                 'return' => $return,
-                'fileLog' => $this->webDirectory."redirectUrls/logs/redirect_import_urls-".date('d-m-Y').".csv",
+                'fileLog' => $filename,
             ];
-
         }
 
         return $params;
@@ -150,7 +168,6 @@ class ImportUrlsHelper
 
         try {
             $urlExists = $this->urlWildCardService->translate($destination);
-
         } catch (\Exception $e) {
             $this->logger->log(LogLevel::ERROR, $e->getMessage());
         }
@@ -158,7 +175,7 @@ class ImportUrlsHelper
         return $urlExists;
     }
 
-    public function saveUrls(string $source, string $destination):array
+    public function saveUrls(string $filePath, string $source, string $destination):array
     {
         $return = $errors = [];
         try {
@@ -171,10 +188,10 @@ class ImportUrlsHelper
                     'imported' => 'OK',
                 ];
 
-                $msg = $return['msg'];
+                $msg    = $return['msg'];
                 $status = $return['imported'];
                 $this->fs->appendToFile(
-                    $this->webDirectory."redirectUrls/logs/redirect_import_urls-".date('d-m-Y').".csv",
+                    $filePath,
                     "$source;$destination;$msg;$status\n"
                 );
             }
@@ -185,10 +202,10 @@ class ImportUrlsHelper
                 'msg' => $e->getMessage(),
                 'imported' => 'KO',
             ];
-            $msg = $return['msg'];
+            $msg    = $return['msg'];
             $status = $return['imported'];
             $this->fs->appendToFile(
-                $this->webDirectory."redirectUrls/logs/redirect_import_urls-".date('d-m-Y').".csv",
+                $filePath,
                 "$source;$destination;$msg;$status\n"
             );
             $this->logger->log(LogLevel::ERROR, $e->getMessage());
@@ -211,19 +228,21 @@ class ImportUrlsHelper
         }
     }
 
+    public function downloadFile(RedirectImportHistory $log):string
+    {
+        try {
+            $file = $this->ioService->loadBinaryFile($log->getPath());
+
+            return $this->ioService->getFileContents($file);
+        } catch (\Exception $e) {
+            $this->logger->log(LogLevel::ERROR, $e->getMessage());
+        }
+
+        return null;
+    }
+
     public function getLogsHistory():array
     {
         return $this->entityManager->getRepository("NovaeZSEOBundle:RedirectImportHistory")->findAll();
     }
-
-    public function log(string $error)
-    {
-        $this->logger->log(LogLevel::ERROR, $error);
-    }
-
-    public function trans(string $msg):string
-    {
-        return $this->translator->trans($msg, [], 'redirect');
-    }
-
 }

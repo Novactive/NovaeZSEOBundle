@@ -53,6 +53,7 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+        $loader->load('services_nonautowired.yml');
         $loader->load('default_settings.yml');
         $loader->load('admin_ui/services.yml');
 
