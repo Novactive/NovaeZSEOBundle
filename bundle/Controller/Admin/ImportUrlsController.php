@@ -48,8 +48,7 @@ class ImportUrlsController extends Controller
         ImportUrlsHelper $importUrlHelper,
         TranslatorInterface $translator,
         LoggerInterface $logger
-    )
-    {
+    ) {
         $this->importUrlHelper = $importUrlHelper;
         $this->translator      = $translator;
         $this->logger          = $logger;
