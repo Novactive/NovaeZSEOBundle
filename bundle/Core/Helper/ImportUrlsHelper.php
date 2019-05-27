@@ -139,7 +139,7 @@ class ImportUrlsHelper
                 }
             }
 
-            if(!isset($params['errorType'])) {
+            if (!isset($params['errorType'])) {
                 try {
                     $uploadedFileStruct     = $this->ioService->newBinaryCreateStructFromLocalFile($filePath);
                     $uploadedFileStruct->id = $filename;

@@ -44,11 +44,14 @@ class ImportUrlsController extends Controller
      */
     private $translator;
 
-    public function __construct(ImportUrlsHelper $importUrlHelper, TranslatorInterface $translator, LoggerInterface $logger)
+    public function __construct(
+        ImportUrlsHelper $importUrlHelper,
+        TranslatorInterface $translator,
+        LoggerInterface $logger)
     {
         $this->importUrlHelper = $importUrlHelper;
-        $this->translator = $translator;
-        $this->logger = $logger;
+        $this->translator      = $translator;
+        $this->logger          = $logger;
     }
 
     /**
@@ -88,7 +91,10 @@ class ImportUrlsController extends Controller
                         $this->logger->log(LogLevel::ERROR, $e->getMessage());
                     }
                 } else {
-                    $params['errors'][] = $this->translator->trans('nova.import.root.form.error.invalid_type', [], 'redirect');
+                    $params['errors'][] = $this->translator->trans(
+                        'nova.import.root.form.error.invalid_type',
+                        [],
+                        'redirect');
                 }
             }
         }
@@ -150,7 +156,7 @@ class ImportUrlsController extends Controller
         $log = $this->getDoctrine()->getRepository("NovaeZSEOBundle:RedirectImportHistory")->find($id);
         if ($log) {
             $fileContent = $this->importUrlHelper->downloadFile($log);
-            if($fileContent){
+            if ($fileContent) {
                 $response    = new Response($fileContent);
                 $disposition = $response->headers->makeDisposition(
                     ResponseHeaderBag::DISPOSITION_INLINE,
