@@ -47,7 +47,8 @@ class ImportUrlsController extends Controller
     public function __construct(
         ImportUrlsHelper $importUrlHelper,
         TranslatorInterface $translator,
-        LoggerInterface $logger)
+        LoggerInterface $logger
+    )
     {
         $this->importUrlHelper = $importUrlHelper;
         $this->translator      = $translator;
@@ -64,7 +65,7 @@ class ImportUrlsController extends Controller
             throw new AccessDeniedException('Limited access !!!');
         }
 
-        $params  = $message = [];
+        $params  = [];
         $session = $request->getSession();
 
         $form = $this->createForm(ImportUrlsType::class);
@@ -94,7 +95,8 @@ class ImportUrlsController extends Controller
                     $params['errors'][] = $this->translator->trans(
                         'nova.import.root.form.error.invalid_type',
                         [],
-                        'redirect');
+                        'redirect'
+                    );
                 }
             }
         }

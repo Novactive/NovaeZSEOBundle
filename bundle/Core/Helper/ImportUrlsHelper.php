@@ -177,7 +177,7 @@ class ImportUrlsHelper
 
     public function saveUrls(string $filePath, string $source, string $destination):array
     {
-        $return = $errors = [];
+        $return = [];
         try {
             $result = $this->urlWildCardService->create($source, $destination, 'Redirection');
             if ($result) {
