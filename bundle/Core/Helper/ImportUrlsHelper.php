@@ -17,9 +17,7 @@ use eZ\Publish\Core\SignalSlot\URLWildcardService;
 use Novactive\Bundle\eZSEOBundle\Entity\RedirectImportHistory;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class ImportUrlsHelper
@@ -66,21 +64,17 @@ class ImportUrlsHelper
         TranslatorInterface $translator,
         LoggerInterface $logger,
         Filesystem $fileSystem,
-        ContainerInterface $container
+        string $cacheDirectory
     ) {
         $this->urlWildCardService = $urlWildcardService;
         $this->entityManager      = $entityManager;
-        $this->cacheDirectory     = $container->getParameter('kernel.cache_dir');
+        $this->cacheDirectory     = $cacheDirectory;
         $this->translator         = $translator;
         $this->logger             = $logger;
         $this->fs                 = $fileSystem;
         $this->ioService          = $ioService;
     }
 
-    /**
-     * @throws \eZ\Publish\Core\Base\Exceptions\InvalidArgumentException
-     * @throws \eZ\Publish\Core\Base\Exceptions\InvalidArgumentValue
-     */
     public function importUrlRedirection(String $filePath): array
     {
         $counter = 0;
@@ -89,14 +83,9 @@ class ImportUrlsHelper
         if (false !== ($fileToImport = fopen($filePath, 'r'))) {
             $totalImported = 0;
             $totalUrls     = 0;
-            //create file log
-            $filename = 'redirectUrls/report/redirect_import_urls-'.date('d-m-Y-H-i-s').'.csv';
-            $filePath = $this->cacheDirectory.$filename;
-
-            $this->fs->dumpFile(
-                $filePath,
-                "Source;Destination;Message;Status\n"
-            );
+            $filename      = 'redirectUrls/report/redirect_import_urls-'.date('d-m-Y-H-i-s').'.csv';
+            $filePath      = $this->cacheDirectory.$filename;
+            $this->fs->dumpFile($filePath, "Source;Destination;Message;Status\n");
 
             while (false !== ($data = fgetcsv($fileToImport, 1000, ';'))) {
                 if (0 == $counter) {
