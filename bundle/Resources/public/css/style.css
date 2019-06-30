@@ -1,0 +1,80 @@
+.novaseo-box {
+    width: 100%;
+    display: inline-block;
+    background: #fff;
+    padding: 0 20px 20px;
+    margin-bottom: 20px;
+}
+.novaseo-upload {
+    margin: 1rem 0;
+}
+.novaseo-upload-label legend {
+    font-size: inherit;
+    line-height: 1.5;
+}
+.novaseo-upload-box {
+    border-radius: 0.25rem;
+    border: 2px dashed #dbdbdb;
+    padding: 1rem;
+    text-align: center;
+    position: relative;
+    background-color: #f5f5f5;
+}
+.novaseo-upload-message {
+    box-sizing: border-box;
+    cursor: auto;
+    line-height: 60px;
+    margin: 0;
+}
+.novaseo-upload-btn {
+    display: inline-flex;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.25rem;
+    text-align: center;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    border: 1px solid #f15a10;
+    background-color: #f15a10;
+    transition: background 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    align-items: center;
+}
+.novaseo-upload-btn .ez-icon {
+    margin-top: -2px;
+    margin-right: 0.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.novaseo-upload-btn svg {
+    fill: #fff;
+    height: 1rem;
+    width: 1rem;
+}
+.novaseo-upload-file {
+    opacity: 0;
+    height: 1px;
+    display: block;
+    width: 100%;
+}
+.novaseo-upload-preview {
+    display: none;
+    flex: 1 1 auto;
+    margin-bottom: 10px;
+}
+.novaseo-upload-preview-icon {
+    flex: 0 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.novaseo-upload-preview-svg {
+    fill: #555;
+    height: 2rem;
+    width: 2rem;
+}
+.novaseo-upload-preview-filname {
+    max-width: 100%;
+    padding-left: 1.25rem;
+}
