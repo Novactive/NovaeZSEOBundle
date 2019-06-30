@@ -12,6 +12,7 @@
 namespace Novactive\Bundle\eZSEOBundle;
 
 use Novactive\Bundle\eZSEOBundle\DependencyInjection\Compiler\CustomFallbackPass;
+use Novactive\Bundle\eZSEOBundle\DependencyInjection\Security\PolicyProvider\PolicyProvider;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -23,6 +24,8 @@ class NovaeZSEOBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new CustomFallbackPass());
+        $eZExtension = $container->getExtension('ezpublish');
+        $eZExtension->addPolicyProvider(new PolicyProvider());
     }
 
     public function getContainerExtension()
