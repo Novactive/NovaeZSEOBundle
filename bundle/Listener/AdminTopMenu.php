@@ -13,7 +13,6 @@
 namespace Novactive\Bundle\eZSEOBundle\Listener;
 
 use EzSystems\EzPlatformAdminUi\Menu\Event\ConfigureMenuEvent;
-use EzSystems\EzPlatformAdminUi\Menu\MainMenuBuilder;
 
 class AdminTopMenu
 {
@@ -31,7 +30,7 @@ class AdminTopMenu
             ->addChild(
                 'nova_create_redirect_list',
                 [
-                    'route' => 'novactive_platform_admin_ui.list',
+                    'route' => 'novaseo_redirect_list',
                 ]
             )
             ->setLabel('menu.main_menu.list')
@@ -41,7 +40,7 @@ class AdminTopMenu
             ->addChild(
                 'nova_import_redirect_url',
                 [
-                  'route' => 'novactive_platform_admin_ui.import-redirect-url'
+                  'route' => 'novactive_platform_admin_ui.import-redirect-url',
                 ]
             )
             ->setLabel('menu.main_menu.import')
@@ -51,7 +50,7 @@ class AdminTopMenu
             ->addChild(
                 'nova_history_import_redirect_url',
                 [
-                    'route' => 'novactive_platform_admin_ui.history-import-redirect-url'
+                    'route' => 'novactive_platform_admin_ui.history-import-redirect-url',
                 ]
             )
             ->setLabel('menu.main_menu.history.import')

@@ -11,11 +11,11 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use DateTime;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="redirect_import_history", options={"collate"="utf8_general_ci"})
+ * @ORM\Table(name="novaseo_redirect_import_history")
  * @ORM\Entity()
  */
 class RedirectImportHistory
@@ -23,7 +23,7 @@ class RedirectImportHistory
     /**
      * @var int
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
@@ -32,24 +32,23 @@ class RedirectImportHistory
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string")
+     * @ORM\Column(type="string")
      */
     protected $nameFile;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="date", type="datetime")
+     * @ORM\Column(type="datetime")
      */
     protected $date;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="path", type="string")
+     * @ORM\Column(type="string")
      */
     protected $path;
-
 
     public function getId(): int
     {

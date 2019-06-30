@@ -9,6 +9,8 @@ services:
         autowire: true
         autoconfigure: true
         public: false
+        bind:
+            $entityManager: "@novaezmailing.doctrine.entity_manager"
 
     # Marking fieldtype as unindexable for ez platform solr bundle to stop errors
     novactive.novaseobundle.field_type.novaseometas.indexable.unindexed:
@@ -36,9 +38,6 @@ services:
 
     # OTHER SERVICES
     Novactive\Bundle\eZSEOBundle\Controller\Admin\RedirectController:
-        tags: ['controller.service_arguments']
-
-    Novactive\Bundle\eZSEOBundle\Controller\Admin\ImportUrlsController:
         tags: ['controller.service_arguments']
 
     Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension: ~
@@ -78,3 +77,11 @@ services:
 
     Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper:
         arguments: ['@ezseo_importurls.ezpublish.core.io_service']
+
+
+    Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory:
+        $settings: { debug: "%kernel.debug%", cache_dir: "%kernel.cache_dir%" }
+
+    novaezmailing.doctrine.entity_manager:
+        class: Doctrine\ORM\EntityManagerInterface
+        factory: 'Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory:get'
