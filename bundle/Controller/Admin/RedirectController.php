@@ -150,7 +150,6 @@ class RedirectController extends Controller
         }
         $urlWildCardChoice = $request->get('WildcardIDList');
 
-        // delete a wildcard url
         try {
             if ($urlWildCardChoice) {
                 foreach ($urlWildCardChoice as $item) {
@@ -158,7 +157,6 @@ class RedirectController extends Controller
                     $urlWildcardService->remove($urlWildCard);
                 }
 
-                // return custom response
                 return new Response(null, 201);
             }
         } catch (\Exception $e) {
@@ -196,14 +194,13 @@ class RedirectController extends Controller
                 if ('text/plain' === $file->getMimeType()) {
                     try {
                         $resultUrlsImported = $importUrlsHelper->importUrlRedirection($filePath);
-
                         if (isset($resultUrlsImported['errorType'])) {
                             $params['errors'][] = $resultUrlsImported['errorType'];
                         } else {
-                            $fileName     = $file->getClientOriginalName();
-                            $fileToImport = $file->move('redirectUrls/upload', $fileName);
-                            $fileLog      = $resultUrlsImported['fileLog'];
-                            $importUrlsHelper->saveFileHistory($fileToImport, $fileLog);
+                            $importUrlsHelper->saveFileHistory(
+                                $file->getClientOriginalName(),
+                                $resultUrlsImported['fileLog']
+                            );
                             $session->set('IMPORT_URL', $resultUrlsImported);
                         }
                     } catch (\Exception $e) {

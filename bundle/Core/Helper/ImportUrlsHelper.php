@@ -49,10 +49,15 @@ class ImportUrlsHelper
      */
     private $fs;
 
-    /** @var IOService */
+    /**
+     * @var IOService
+     */
     private $ioService;
 
-    private $webDirectory;
+    /**
+     * @var string
+     */
+    private $cacheDirectory;
 
     public function __construct(
         IOService $ioService,
@@ -65,7 +70,7 @@ class ImportUrlsHelper
     ) {
         $this->urlWildCardService = $urlWildcardService;
         $this->entityManager      = $entityManager;
-        $this->webDirectory       = $container->getParameter('kernel.project_dir').'/web/';
+        $this->cacheDirectory     = $container->getParameter('kernel.cache_dir');
         $this->translator         = $translator;
         $this->logger             = $logger;
         $this->fs                 = $fileSystem;
@@ -86,7 +91,7 @@ class ImportUrlsHelper
             $totalUrls     = 0;
             //create file log
             $filename = 'redirectUrls/report/redirect_import_urls-'.date('d-m-Y-H-i-s').'.csv';
-            $filePath = $this->webDirectory.$filename;
+            $filePath = $this->cacheDirectory.$filename;
 
             $this->fs->dumpFile(
                 $filePath,
@@ -212,11 +217,11 @@ class ImportUrlsHelper
         return $return;
     }
 
-    public function saveFileHistory(File $fileToImport, string $fileLog): void
+    public function saveFileHistory(string $originalFileName, string $fileLog): void
     {
         try {
             $redirectImportHistory = new RedirectImportHistory();
-            $redirectImportHistory->setNameFile($fileToImport->getFilename());
+            $redirectImportHistory->setNameFile($originalFileName);
             $redirectImportHistory->setDate(new \DateTime());
             $redirectImportHistory->setPath($fileLog);
             $this->entityManager->persist($redirectImportHistory);
