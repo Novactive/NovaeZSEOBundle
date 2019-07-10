@@ -152,7 +152,15 @@ class SitemapController extends Controller
              * @var Location  $location
              */
             $location = $searchHit->valueObject;
-            $url      = $this->generateUrl($location, [], UrlGeneratorInterface::ABSOLUTE_URL);
+            try {
+                $url = $this->generateUrl($location, [], UrlGeneratorInterface::ABSOLUTE_URL);
+            } catch (\Exception $exception) {
+                if ($this->has('logger')) {
+                    $this->get('logger')->error('NovaeZSEO: '.$exception->getMessage());
+                }
+                continue;
+            }
+
             $modified = $location->contentInfo->modificationDate->format('c');
             $loc      = $sitemap->createElement('loc', $url);
             $lastmod  = $sitemap->createElement('lastmod', $modified);
@@ -170,12 +178,21 @@ class SitemapController extends Controller
     {
         $numberOfPage = (int) ceil($numberOfResults / static::PACKET_MAX);
         for ($sitemapNumber = 1; $sitemapNumber <= $numberOfPage; ++$sitemapNumber) {
-            $sitemapElt       = $sitemap->createElement('sitemap');
-            $locUrl           = $this->generateUrl(
-                '_novaseo_sitemap_page',
-                ['page' => $sitemapNumber],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
+            $sitemapElt = $sitemap->createElement('sitemap');
+
+            try {
+                $locUrl = $this->generateUrl(
+                    '_novaseo_sitemap_page',
+                    ['page' => $sitemapNumber],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            } catch (\Exception $exception) {
+                if ($this->has('logger')) {
+                    $this->get('logger')->error('NovaeZSEO: '.$exception->getMessage());
+                }
+                continue;
+            }
+
             $loc              = $sitemap->createElement('loc', $locUrl);
             $date             = new DateTime();
             $modificationDate = $date->format('c');
