@@ -167,6 +167,7 @@ class SitemapController extends Controller
      */
     protected function fillSitemap( $sitemap, $root, SearchResult $results )
     {
+        $logger = $this->has('logger') ? $this->get('logger') : null;
         foreach ( $results->searchHits as $searchHit )
         {
             /**
@@ -175,7 +176,16 @@ class SitemapController extends Controller
              *
              */
             $location = $searchHit->valueObject;
-            $url      = $this->generateUrl( $location, [ ], UrlGeneratorInterface::ABSOLUTE_URL );
+
+            try {
+                $url = $this->generateUrl($location, [], UrlGeneratorInterface::ABSOLUTE_URL);
+            } catch (\Exception $exception) {
+                if ($logger) {
+                    $logger->error('NovaeZSEO: ' . $exception->getMessage());
+                }
+                continue;
+            }
+
             $modified = $location->contentInfo->modificationDate->format( "c" );
             $loc      = $sitemap->createElement( "loc", $url );
             $lastmod  = $sitemap->createElement( "lastmod", $modified );
@@ -195,11 +205,20 @@ class SitemapController extends Controller
      */
     protected function fillSitemapIndex( $sitemap, $numberOfResults, $root )
     {
+        $logger = $this->has('logger') ? $this->get('logger') : null;
         $numberOfPage = (int)ceil( $numberOfResults / static::PACKET_MAX );
         for ( $sitemapNumber = 1; $sitemapNumber <= $numberOfPage; $sitemapNumber++ )
         {
+            try {
+                $locUrl = $this->generateUrl("_novaseo_sitemap_page", ["page" => $sitemapNumber], UrlGeneratorInterface::ABSOLUTE_URL);
+            } catch (\Exception $exception) {
+                if ($logger) {
+                    $logger->error('NovaeZSEO: ' . $exception->getMessage());
+                }
+                continue;
+            }
+
             $sitemapElt       = $sitemap->createElement( "sitemap" );
-            $locUrl           = $this->generateUrl( "_novaseo_sitemap_page", [ "page" => $sitemapNumber ], UrlGeneratorInterface::ABSOLUTE_URL );
             $loc              = $sitemap->createElement( "loc", $locUrl );
             $date             = new DateTime();
             $modificationDate = $date->format( 'c' );
