@@ -12,7 +12,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core;
 
-use Doctrine\Bundle\DoctrineBundle\Mapping\ContainerAwareEntityListenerResolver;
+use Doctrine\Bundle\DoctrineBundle\Mapping\ContainerEntityListenerResolver;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\ORM\Configuration;
@@ -45,7 +45,7 @@ class SiteAccessAwareEntityManagerFactory
     public function __construct(
         Registry $registry,
         RepositoryConfigurationProvider $repositoryConfigurationProvider,
-        ContainerAwareEntityListenerResolver $resolver,
+        ContainerEntityListenerResolver $resolver,
         array $settings
     ) {
         $this->registry                        = $registry;
