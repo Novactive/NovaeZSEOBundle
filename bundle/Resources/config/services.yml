@@ -77,7 +77,7 @@ services:
 
     Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper:
         $ioService: '@ezseo_importurls.ezpublish.core.io_service'
-        $cacheDirectory: '%kernel.cache_dir'
+        $cacheDirectory: '%kernel.cache_dir%'
 
     Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory:
         $settings: { debug: "%kernel.debug%", cache_dir: "%kernel.cache_dir%" }
