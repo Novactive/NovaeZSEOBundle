@@ -7,7 +7,7 @@ before_install:
     - phpenv config-rm xdebug.ini
 
 install:
-    - COMPOSER_MEMORY_LIMIT=-1 travis_retry
+    - COMPOSER_MEMORY_LIMIT=-1 travis_retry composer install
 
 script:
     - ./vendor/bin/phpcs --standard=.cs/cs_ruleset.xml --extensions=php bundle tests
