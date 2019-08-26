@@ -38,15 +38,8 @@ class ContentTypesHelper
 
     public function getContentTypesByGroup(string $identifier): array
     {
-        $contentTypesCollection = [];
+        $contentTypeGroup = $this->contentTypeService->loadContentTypeGroupByIdentifier($identifier);
 
-        if ($contentTypeGroupIdentifier = $identifier) {
-            $contentTypeGroup       = $this->contentTypeService->loadContentTypeGroupByIdentifier(
-                $contentTypeGroupIdentifier
-            );
-            $contentTypesCollection = $this->contentTypeService->loadContentTypes($contentTypeGroup);
-        }
-
-        return $contentTypesCollection;
+        return $this->contentTypeService->loadContentTypes($contentTypeGroup);
     }
 }

@@ -11,6 +11,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle;
 
+use LogicException;
 use Novactive\Bundle\eZSEOBundle\DependencyInjection\Compiler\CustomFallbackPass;
 use Novactive\Bundle\eZSEOBundle\DependencyInjection\Security\PolicyProvider\PolicyProvider;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -35,7 +36,7 @@ class NovaeZSEOBundle extends Bundle
 
             if (null !== $extension) {
                 if (!$extension instanceof ExtensionInterface) {
-                    throw new \LogicException(
+                    throw new LogicException(
                         sprintf(
                             'Extension %s must implement %s.',
                             \get_class($extension),

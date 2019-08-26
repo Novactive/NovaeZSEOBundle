@@ -15,6 +15,7 @@ use Exception;
 use eZ\Publish\API\Repository\URLWildcardService;
 use eZ\Publish\API\Repository\Values\Content\URLWildcard;
 use eZ\Publish\API\Repository\Values\Content\URLWildcardTranslationResult;
+use RuntimeException;
 use Symfony\Cmf\Component\Routing\ChainedRouterInterface;
 use Symfony\Cmf\Component\Routing\RouteObjectInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,7 +66,7 @@ class UrlWildcardRouter implements RequestMatcherInterface, ChainedRouterInterfa
 
     public function match($pathinfo)
     {
-        throw new \RuntimeException(
+        throw new RuntimeException(
             "The UrlWildcardRouter doesn't support the match() method. Please use matchRequest() instead."
         );
     }

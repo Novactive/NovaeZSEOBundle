@@ -11,6 +11,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core\Helper;
 
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use eZ\Publish\Core\IO\IOService;
 use eZ\Publish\Core\SignalSlot\URLWildcardService;
@@ -75,12 +76,13 @@ class ImportUrlsHelper
         $this->ioService          = $ioService;
     }
 
-    public function importUrlRedirection(String $filePath): array
+    public function importUrlRedirection(string $filePath): array
     {
         $counter = 0;
         $params  = $return = [];
 
-        if (false !== ($fileToImport = fopen($filePath, 'r'))) {
+        $fileToImport = fopen($filePath, 'r');
+        if (false !== $fileToImport) {
             $totalImported = 0;
             $totalUrls     = 0;
             $filename      = 'redirectUrls/report/redirect_import_urls-'.date('d-m-Y-H-i-s').'.csv';
@@ -211,7 +213,7 @@ class ImportUrlsHelper
         try {
             $redirectImportHistory = new RedirectImportHistory();
             $redirectImportHistory->setNameFile($originalFileName);
-            $redirectImportHistory->setDate(new \DateTime());
+            $redirectImportHistory->setDate(new DateTime());
             $redirectImportHistory->setPath($fileLog);
             $this->entityManager->persist($redirectImportHistory);
             $this->entityManager->flush();
