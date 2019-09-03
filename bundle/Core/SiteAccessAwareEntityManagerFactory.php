@@ -19,6 +19,7 @@ use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use eZ\Bundle\EzPublishCoreBundle\ApiLoader\RepositoryConfigurationProvider;
+use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
 
 class SiteAccessAwareEntityManagerFactory
 {
@@ -82,6 +83,7 @@ class SiteAccessAwareEntityManagerFactory
         $config->setProxyNamespace('eZSEOBundle\Proxies');
         $config->setAutoGenerateProxyClasses($this->settings['debug']);
         $config->setEntityListenerResolver($this->resolver);
+        $config->setNamingStrategy(new UnderscoreNamingStrategy());
 
         return EntityManager::create($connection, $config);
     }
