@@ -259,7 +259,7 @@ class RedirectController extends Controller
         if (!$permissionResolver->hasAccess('novaseobundle.redirects', 'import')) {
             throw new AccessDeniedException('Limited access !!!');
         }
-        $log = $entityManager->getRepository('NovaeZSEOBundle:RedirectImportHistory')->find($id);
+        $log = $entityManager->getRepository('Novactive\Bundle\eZSEOBundle\Entity\RedirectImportHistory')->find($id);
         if ($log instanceof RedirectImportHistory) {
             $fileContent = $importUrlsHelper->downloadFile($log);
             if ($fileContent) {
