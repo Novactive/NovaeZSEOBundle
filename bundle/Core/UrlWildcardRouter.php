@@ -101,15 +101,15 @@ class UrlWildcardRouter implements RequestMatcherInterface, ChainedRouterInterfa
 
             // In URLAlias terms, "forward" means "redirect".
             if ($urlWildcard->forward) {
-                $params += [
-                    'semanticPathinfo' => '/'.trim($urlWildcard->uri, '/'),
-                    'needsRedirect'    => true,
-                ];
+                $params += [ 'needsRedirect' => true ];
             } else {
-                $params += [
-                    'semanticPathinfo' => '/'.trim($urlWildcard->uri, '/'),
-                    'needsForward'     => true,
-                ];
+                $params += [ 'needsForward' => true ];
+            }
+
+            if (substr($urlWildcard->uri, 0, 7) === "http://" || substr($urlWildcard->uri, 0, 8) === "https://") {
+                $params += [ 'semanticPathinfo' => trim($urlWildcard->uri, '/') ];
+            } else {
+                $params += [ 'semanticPathinfo' => '/'.trim($urlWildcard->uri, '/') ];
             }
 
             return $params;
