@@ -237,6 +237,6 @@ class ImportUrlsHelper
 
     public function getLogsHistory(): array
     {
-        return $this->entityManager->getRepository('NovaeZSEOBundle:RedirectImportHistory')->findAll();
+        return $this->entityManager->getRepository('Novactive\Bundle\eZSEOBundle\Entity\RedirectImportHistory')->findAll();
     }
 }
