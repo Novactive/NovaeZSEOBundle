@@ -14,7 +14,7 @@ namespace Novactive\Bundle\eZSEOBundle\Controller\Admin;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use eZ\Publish\API\Repository\PermissionResolver;
-use eZ\Publish\Core\SignalSlot\URLWildcardService;
+use eZ\Publish\Core\Event\URLWildcardService;
 use EzSystems\EzPlatformAdminUiBundle\Controller\Controller;
 use Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper;
 use Novactive\Bundle\eZSEOBundle\Entity\RedirectImportHistory;
