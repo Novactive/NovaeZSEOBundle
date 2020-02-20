@@ -1,4 +1,4 @@
-{% extends 'EzPlatformAdminUiBundle::layout.html.twig' %}
+{% extends '@ezdesign/ui/layout.html.twig' %}
 
 {% trans_default_domain 'redirect' %}
 
@@ -9,7 +9,7 @@
 {% block content %}
     <section class="container mt-4 px-5">
         <!-- template pagination -->
-        {{ include("NovaeZSEOBundle:commun:paginator.html.twig") }}
+        {{ include("@NovaeZSEO/commun/paginator.html.twig") }}
         <!-- template pagination end -->
         <div class="ez-table-header">
             <div class="ez-table-header__headline">{{ 'nova.redirect.list.menu.label'|trans({"%total%": pager.nbResults}) }}</div>
@@ -44,10 +44,10 @@
         {{ form_rest(formDelete) }}
         {{ form_end(formDelete) }}
         <!-- template pagination -->
-        {{ include("NovaeZSEOBundle:commun:paginator.html.twig") }}
+        {{ include("@NovaeZSEO/commun/paginator.html.twig") }}
         <!-- template pagination end -->
         <!-- form create a redirect -->
-        {{ include("NovaeZSEOBundle:platform_admin:create_url_wildcard.html.twig") }}
+        {{ include("@NovaeZSEO/platform_admin/create_url_wildcard.html.twig") }}
         <!-- form create a redirect end -->
     </section>
 {% endblock %}
