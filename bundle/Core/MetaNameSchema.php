@@ -33,7 +33,6 @@ use eZ\Publish\SPI\Variation\VariationHandler;
 use EzSystems\EzPlatformRichText\eZ\FieldType\RichText\Value as RichTextValue;
 use EzSystems\EzPlatformRichText\eZ\RichText\Converter as RichTextConverterInterface;
 
-
 class MetaNameSchema extends NameSchemaService
 {
     /**
@@ -85,8 +84,8 @@ class MetaNameSchema extends NameSchemaService
         array $settings = []
     ) {
         $this->fieldTypeRegistry = $fieldTypeRegistry;
-        $settings['limit'] = $this->fieldContentMaxLength;
-        $handler = new ContentTypeDomainMapper(
+        $settings['limit']       = $this->fieldContentMaxLength;
+        $handler                 = new ContentTypeDomainMapper(
             $contentTypeHandler,
             $languageHandler,
             $this->fieldTypeRegistry
@@ -94,7 +93,7 @@ class MetaNameSchema extends NameSchemaService
 
         parent::__construct($contentTypeHandler, $handler, $fieldTypeRegistry, $settings);
 
-        $this->repository = $repository;
+        $this->repository        = $repository;
         $this->translationHelper = $translationHelper;
         $this->relationListField = $this->fieldTypeRegistry->getFieldType('ezobjectrelationlist');
     }
