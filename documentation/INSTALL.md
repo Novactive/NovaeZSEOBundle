@@ -4,7 +4,7 @@
 ## Requirements
 
 * eZ Platform 3.x
-* PHP PHP 7.4
+* PHP 7.3
 
 
 ## <i class="fa fa-3x fa-spinner"></i><br /> Installation steps
