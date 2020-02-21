@@ -3,8 +3,8 @@
 
 ## Requirements
 
-* eZ Platform 2.x
-* PHP PHP 7.1
+* eZ Platform 3.x
+* PHP PHP 7.4
 
 
 ## <i class="fa fa-3x fa-spinner"></i><br /> Installation steps
@@ -25,21 +25,18 @@ Add the following to your composer.json and run `php composer.phar update novact
 
 ### Register the bundle
 
-Activate the bundle in `app\AppKernel.php` file.
+Activate the bundle in `config\bundles.php` file.
 
 ```php
-// app\AppKernel.php
+// config\bundles.php
 
-public function registerBundles()
-{
-   ...
-   $bundles = array(
-       new FrameworkBundle(),
-       ...
-       new Novactive\Bundle\eZSEOBundle\NovaeZSEOBundle(),
-   );
-   ...
-}
+<?php
+
+return [
+    Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
+    ...
+    Novactive\Bundle\eZSEOBundle\NovaeZSEOBundle::class => ['all' => true],
+];
 ```
 
 
@@ -48,7 +45,7 @@ public function registerBundles()
 Make sure you add this route to your routing:
 
 ```yml
-# app/config/routing.yml
+# config/routes.yaml
 
 _novaezseo_routes:
     resource: '@NovaeZSEOBundle/Resources/config/routing/main.yaml'
