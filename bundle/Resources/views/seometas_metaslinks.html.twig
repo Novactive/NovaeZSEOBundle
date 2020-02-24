@@ -33,10 +33,10 @@
     {% endif %}
 {% endfor %}
 
-{% if  ezpublish.availableLanguages|length > 1 %}
-    {% for lang in ezpublish.availableLanguages %}
+{% if ezplatform.availableLanguages|length > 1 %}
+    {% for lang in ezplatform.availableLanguages %}
         {% if location is defined and not location.isDraft %}
-            <link rel="alternate" data-sa="{{ ezpublish.translationSiteAccess( lang ) }}" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( location, {"siteaccess": ezpublish.translationSiteAccess( lang ) } ) }}" />
+            <link rel="alternate" data-sa="{{ ezplatform.translationSiteAccess( lang ) }}" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( location, {"siteaccess": ezplatform.translationSiteAccess( lang ) } ) }}" />
         {% else %}
             {% set route = ez_route( params={"language": lang} ) %}
             {# we can't do the diff with 404 #}
