@@ -96,17 +96,15 @@ class SitemapController extends Controller
             $sitemap->appendChild($root);
 
             $this->fillSitemapIndex($sitemap, $resultCount, $root);
-
-            return new Response($sitemap->saveXML(), 200, ['Content-type' => 'text/xml']);
+        } else {
+            // if we are less or equal than the PACKET_SIZE, redo the search with no limit and list directly the urlmap
+            $query->limit = $resultCount;
+            $results      = $searchService->findLocations($query);
+            $root         = $sitemap->createElement('urlset');
+            $root->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+            $this->fillSitemap($sitemap, $root, $results);
+            $sitemap->appendChild($root);
         }
-
-        // if we are less or equal than the PACKET_SIZE, redo the search with no limit and list directly the urlmap
-        $query->limit = $resultCount;
-        $results      = $searchService->findLocations($query);
-        $root         = $sitemap->createElement('urlset');
-        $root->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
-        $this->fillSitemap($sitemap, $root, $results);
-        $sitemap->appendChild($root);
 
         $response = new Response($sitemap->saveXML(), 200, ['Content-type' => 'text/xml']);
         $response->setSharedMaxAge(86400);
