@@ -18,7 +18,7 @@ Add the following to your composer.json and run `php composer.phar update novact
 # composer.json
 
 "require": {
-    "novactive/ezseobundle": "^4.0",
+    "novactive/ezseobundle": "^5.0",
 }
 ```
 
@@ -54,7 +54,7 @@ _novaezseo_routes:
 
 ### Create the table
 
-See the file `bundle/Resources/sql/shema.sql`
+See the file `bundle/Resources/sql/schema.sql`
 
 
 ### Remove the Robots.txt (native RewriteRules )
