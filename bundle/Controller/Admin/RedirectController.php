@@ -14,7 +14,7 @@ namespace Novactive\Bundle\eZSEOBundle\Controller\Admin;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use eZ\Publish\API\Repository\PermissionResolver;
-use eZ\Publish\Core\SignalSlot\URLWildcardService;
+use eZ\Publish\Core\Event\URLWildcardService;
 use EzSystems\EzPlatformAdminUiBundle\Controller\Controller;
 use Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper;
 use Novactive\Bundle\eZSEOBundle\Entity\RedirectImportHistory;
@@ -65,7 +65,7 @@ class RedirectController extends Controller
         $formDelete = $this->createForm(DeleteUrlType::class);
         $formDelete->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $source      = trim($form->getData()['source']);
             $destination = trim($form->getData()['destination']);
             $type        = trim($form->getData()['type']);
@@ -98,7 +98,7 @@ class RedirectController extends Controller
             }
         }
 
-        if ($formDelete->isValid()) {
+        if ($formDelete->isSubmitted() && $formDelete->isValid()) {
             $response = $this->forward('NovaeZSEOBundle:Admin/Redirect:delete', ['request' => $request]);
             if (Response::HTTP_CREATED == $response->getStatusCode()) {
                 $messages[] = $translator->trans('nova.redirect.delete.info', [], 'redirect');
@@ -112,7 +112,7 @@ class RedirectController extends Controller
         $pagerfanta->setCurrentPage(min($page, $pagerfanta->getNbPages()));
 
         return $this->render(
-            'NovaeZSEOBundle::platform_admin/list_url_wildcard.html.twig',
+            '@NovaeZSEO/platform_admin/list_url_wildcard.html.twig',
             [
                 'pager'      => $pagerfanta,
                 'form'       => $form->createView(),
@@ -152,7 +152,7 @@ class RedirectController extends Controller
 
     /**
      * @Route("/url-redirect-import", name="novactive_platform_admin_ui.import-redirect-url")
-     * @Template("NovaeZSEOBundle::platform_admin/import_urls.html.twig")
+     * @Template("@NovaeZSEO/platform_admin/import_urls.html.twig")
      */
     public function importAction(
         Request $request,
@@ -171,7 +171,7 @@ class RedirectController extends Controller
         $form = $this->createForm(ImportUrlsType::class);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $file = $request->files->get('novaseo_import_urls')['file'];
             if ($file instanceof UploadedFile) {
                 $filePath = $file->getRealPath();
@@ -222,7 +222,7 @@ class RedirectController extends Controller
 
     /**
      * @Route("/history-import-redirect-url", name="novactive_platform_admin_ui.history-import-redirect-url")
-     * @Template("NovaeZSEOBundle::platform_admin/history_urls_imported.html.twig")
+     * @Template("@NovaeZSEO/platform_admin/history_urls_imported.html.twig")
      */
     public function hisroryUrlsImported(
         Request $request,

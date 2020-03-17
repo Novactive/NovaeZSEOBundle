@@ -39,7 +39,7 @@ class SiteAccessAwareEntityManagerFactory
     private $settings;
 
     /**
-     * @var ContainerAwareEntityListenerResolver
+     * @var ContainerEntityListenerResolver
      */
     private $resolver;
 

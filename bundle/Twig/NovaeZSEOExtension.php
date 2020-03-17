@@ -17,7 +17,7 @@ use eZ\Publish\API\Repository\Values\Content\ContentInfo;
 use eZ\Publish\API\Repository\Values\Content\Field;
 use eZ\Publish\API\Repository\Values\ContentType\ContentType;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
-use eZ\Publish\Core\MVC\Symfony\Locale\LocaleConverter;
+use eZ\Publish\Core\MVC\Symfony\Locale\LocaleConverterInterface as LocaleConverter;
 use Novactive\Bundle\eZSEOBundle\Core\CustomFallbackInterface;
 use Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Value as MetasFieldValue;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;

@@ -31,7 +31,7 @@
         "ext-dom": "*",
         "ext-pdo": "*",
         "ext-json": "*",
-        "ezsystems/ezpublish-kernel": "^7.1"
+        "ezsystems/ezpublish-kernel": "^8.0"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.3",
