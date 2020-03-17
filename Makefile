@@ -21,8 +21,8 @@ list:
 
 .PHONY: installez
 installez: ## Install eZ as the local project
-	@docker run -d -p 3364:3306 --name ezdbnovaezseocontainer -e MYSQL_ROOT_PASSWORD=ezplatform mariadb:10.2
-	@composer create-project ezsystems/ezplatform --prefer-dist --no-progress --no-interaction --no-scripts $(EZ_DIR)
+	@docker run -d -p 3364:3306 --name ezdbnovaezseocontainer -e MYSQL_ROOT_PASSWORD=ezplatform mariadb:10.3
+	@composer create-project ezsystems/ezplatform:dev-master --prefer-dist --no-progress --no-interaction --no-scripts $(EZ_DIR)
 	@curl -o tests/provisioning/wrap.php https://raw.githubusercontent.com/Plopix/symfony-bundle-app-wrapper/master/wrap-bundle.php
 	@WRAP_APP_DIR=./ezplatform WRAP_BUNDLE_DIR=./ php tests/provisioning/wrap.php
 	@rm tests/provisioning/wrap.php
