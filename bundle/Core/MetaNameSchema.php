@@ -23,8 +23,8 @@ use eZ\Publish\Core\FieldType\Relation\Value as RelationValue;
 use eZ\Publish\Core\FieldType\RelationList\Type as RelationListType;
 use eZ\Publish\Core\FieldType\RelationList\Value as RelationListValue;
 use eZ\Publish\Core\Helper\TranslationHelper;
-use eZ\Publish\Core\Repository\Helper\ContentTypeDomainMapper;
 use eZ\Publish\Core\Repository\Helper\NameSchemaService;
+use eZ\Publish\Core\Repository\Mapper\ContentTypeDomainMapper;
 use eZ\Publish\Core\Repository\Values\Content\VersionInfo;
 use eZ\Publish\SPI\Persistence\Content\Language\Handler as ContentLanguageHandler;
 use eZ\Publish\SPI\Persistence\Content\Type as SPIContentType;
@@ -215,9 +215,8 @@ class MetaNameSchema extends NameSchemaService
                     continue;
                 }
 
-                $fieldType                               = $this->fieldTypeRegistry->getFieldType(
-                    $fieldDefinition->fieldTypeIdentifier
-                );
+                $fieldType = $this->fieldTypeRegistry->getFieldType($fieldDefinition->fieldTypeIdentifier);
+
                 $fieldTitles[$fieldDefinitionIdentifier] = $fieldType->getName(
                     $fieldMap[$fieldDefinitionIdentifier][$languageCode],
                     $fieldDefinition,
@@ -235,13 +234,14 @@ class MetaNameSchema extends NameSchemaService
         string $languageCode,
         string $variationName
     ): string {
-        $field     = new Field(
+        $field = new Field(
             [
                 'value'              => $value,
                 'fieldDefIdentifier' => $identifier,
                 'languageCode'       => $languageCode,
             ]
         );
+
         $variation = $this->imageVariationService->getVariation($field, new VersionInfo(), $variationName);
 
         return $variation->uri;

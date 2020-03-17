@@ -56,6 +56,11 @@ _novaezseo_routes:
 
 See the file `bundle/Resources/sql/schema.sql`
 
+If on eZ Platform 3x, you need to run:
+
+```bash
+php bin/console ezplatform:graphql:generate-schema
+```
 
 ### Remove the Robots.txt (native RewriteRules )
 

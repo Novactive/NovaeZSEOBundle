@@ -30,6 +30,7 @@ class Value extends BaseValue
      */
     public function __construct($metas = null)
     {
+        parent::__construct();
         if (\is_array($metas)) {
             $this->metas = [];
             foreach ($metas as $meta) {

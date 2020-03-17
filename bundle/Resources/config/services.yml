@@ -68,7 +68,12 @@ services:
 
     Novactive\Bundle\eZSEOBundle\Core\UrlWildcardRouter:
         arguments:
-            $urlWildcardService: "@ezpublish.api.service.url_wildcard"
+            - '@ezpublish.api.service.url_wildcard'
+            - '@ezpublish.urlalias_generator'
+            - '@router.request_context'
+        calls:
+            - [setLogger, ['@?logger']]
+            - [setWildcardService, ['@ezpublish.api.service.url_wildcard']]
         tags:
             - { name: router, priority: 2000 }
 

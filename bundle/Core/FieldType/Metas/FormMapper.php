@@ -12,8 +12,8 @@
 namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas;
 
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
-use EzSystems\EzPlatformContentForms\Data\Content\FieldData;
 use EzSystems\EzPlatformAdminUi\Form\Data\FieldDefinitionData;
+use EzSystems\EzPlatformContentForms\Data\Content\FieldData;
 use EzSystems\RepositoryForms\FieldType\FieldDefinitionFormMapperInterface;
 use EzSystems\RepositoryForms\FieldType\FieldValueFormMapperInterface;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;

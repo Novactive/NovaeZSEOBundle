@@ -20,11 +20,8 @@ class MetasStorage extends GatewayBasedStorage
 {
     /**
      * Stores value for $field in an external data source.
-     *
-     *
-     * @return mixed null|true
      */
-    public function storeFieldData(VersionInfo $versionInfo, Field $field, array $context)
+    public function storeFieldData(VersionInfo $versionInfo, Field $field, array $context): void
     {
         if (empty($field->value->externalData)) {
             return;
@@ -44,7 +41,7 @@ class MetasStorage extends GatewayBasedStorage
     /**
      * Populates $field value property based on the external data.
      */
-    public function getFieldData(VersionInfo $versionInfo, Field $field, array $context)
+    public function getFieldData(VersionInfo $versionInfo, Field $field, array $context): void
     {
         /** @var LegacyStorage $gateway */
         $gateway = $this->getGateway($context);
@@ -54,11 +51,8 @@ class MetasStorage extends GatewayBasedStorage
     /**
      * Deletes field data for all $fieldIds in the version identified by
      * $versionInfo.
-     *
-     *
-     * @return bool
      */
-    public function deleteFieldData(VersionInfo $versionInfo, array $fieldIds, array $context)
+    public function deleteFieldData(VersionInfo $versionInfo, array $fieldIds, array $context): void
     {
         /** @var LegacyStorage $gateway */
         $gateway = $this->getGateway($context);
@@ -67,21 +61,16 @@ class MetasStorage extends GatewayBasedStorage
 
     /**
      * Checks if field type has external data to deal with.
-     *
-     * @return bool
      */
-    public function hasFieldData()
+    public function hasFieldData(): bool
     {
         return true;
     }
 
     /**
      * Get index data for external data for search backend.
-     *
-     *
-     * @return bool
      */
-    public function getIndexData(VersionInfo $versionInfo, Field $field, array $context)
+    public function getIndexData(VersionInfo $versionInfo, Field $field, array $context): bool
     {
         return false;
     }

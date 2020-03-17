@@ -36,18 +36,15 @@ class Type extends FieldType
 
     /**
      * Validates the fieldSettings of a FieldDefinitionCreateStruct or FieldDefinitionUpdateStruct.
-     *
-     *
-     * @return \eZ\Publish\SPI\FieldType\ValidationError[]
      */
-    public function validateFieldSettings($fieldSettings)
+    public function validateFieldSettings($fieldSettings): array
     {
         $validationErrors = [];
 
         foreach ($fieldSettings as $settingKey => $settingValue) {
             switch ($settingKey) {
                 case 'configuration':
-                    if (!is_array($settingValue)) {
+                    if (!\is_array($settingValue)) {
                         $validationErrors[] = new ValidationError(
                             "FieldType '%fieldType%' expects setting '%setting%' to be of type '%type%'",
                             null,
@@ -77,23 +74,18 @@ class Type extends FieldType
 
     /**
      * Return the FieldType identifier ( Legacy DataTypeString ).
-     *
-     * @return string
      */
-    public function getFieldTypeIdentifier()
+    public function getFieldTypeIdentifier(): string
     {
         return self::IDENTIFIER;
     }
 
     /**
      * Inspects given $inputValue and potentially converts it into a dedicated value object.
-     *
-     *
-     * @return Value the potentially converted and structurally plausible value
      */
-    protected function createValueFromInput($inputValue)
+    protected function createValueFromInput($inputValue): Value
     {
-        if (is_array($inputValue)) {
+        if (\is_array($inputValue)) {
             foreach ($inputValue as $index => $inputValueItem) {
                 if (!$inputValueItem instanceof Meta) {
                     throw new InvalidArgumentType(
@@ -116,7 +108,7 @@ class Type extends FieldType
      */
     protected function checkValueStructure(CoreValue $value)
     {
-        if (!is_array($value->metas)) {
+        if (!\is_array($value->metas)) {
             throw new InvalidArgumentType(
                 '$value->metas',
                 'array',
@@ -137,22 +129,14 @@ class Type extends FieldType
 
     /**
      * Returns the empty value for this field type.
-     *
-     * @return Value
      */
-    public function getEmptyValue()
+    public function getEmptyValue(): Value
     {
         return new Value();
     }
 
     /**
      * Returns a human readable string representation from the given $value.
-     *
-     * @param \eZ\Publish\SPI\FieldType\Value $value
-     * @param \eZ\Publish\API\Repository\Values\ContentType\FieldDefinition $fieldDefinition
-     * @param string $languageCode
-     *
-     * @return string
      */
     public function getName(SPIValue $value, FieldDefinition $fieldDefinition, string $languageCode): string
     {
@@ -161,30 +145,23 @@ class Type extends FieldType
 
     /**
      * Returns information for FieldValue->$sortKey relevant to the field type.
-     *
-     * @param Value $value
-     *
-     * @return bool
      */
-    protected function getSortInfo(CoreValue $value)
+    protected function getSortInfo(CoreValue $value): bool
     {
         return false;
     }
 
     /**
      * Converts an $hash to the Value defined by the field type.
-     *
-     *
-     * @return Value
      */
-    public function fromHash($hash)
+    public function fromHash($hash): Value
     {
-        if (!is_array($hash)) {
+        if (!\is_array($hash)) {
             return new Value([]);
         }
         $metas = [];
         foreach ($hash as $hashItem) {
-            if (!is_array($hashItem)) {
+            if (!\is_array($hashItem)) {
                 continue;
             }
             $meta = new Meta();
@@ -198,18 +175,15 @@ class Type extends FieldType
 
     /**
      * Converts the given $value into a plain hash format.
-     *
-     * @param Value $value
-     *
-     * @return array
      */
-    public function toHash(SPIValue $value)
+    public function toHash(SPIValue $value): array
     {
         $hash = [];
         foreach ($value->metas as $meta) {
             /* @var Meta $meta */
-            $hash[$meta->getName()] = [
-                'meta_name'    => $meta->getName(),
+            $name        = $meta->getName();
+            $hash[$name] = [
+                'meta_name'    => $name,
                 'meta_content' => $meta->getContent(),
             ];
         }
@@ -219,12 +193,8 @@ class Type extends FieldType
 
     /**
      * Converts a $value to a persistence value.
-     *
-     * @param Value $value
-     *
-     * @return FieldValue
      */
-    public function toPersistenceValue(SPIValue $value)
+    public function toPersistenceValue(SPIValue $value): FieldValue
     {
         return new FieldValue(
             [
@@ -237,23 +207,16 @@ class Type extends FieldType
 
     /**
      * Converts a persistence $fieldValue to a Value.
-     *
-     *
-     * @return Value
      */
-    public function fromPersistenceValue(FieldValue $fieldValue)
+    public function fromPersistenceValue(FieldValue $fieldValue): Value
     {
         return $this->fromHash($fieldValue->externalData);
     }
 
     /**
      * Returns if the given $value is considered empty by the field type.
-     *
-     * @param Value $value
-     *
-     * @return bool
      */
-    public function isEmptyValue(SPIValue $value)
+    public function isEmptyValue(SPIValue $value): bool
     {
         return null === $value || $value->metas == $this->getEmptyValue()->metas;
     }

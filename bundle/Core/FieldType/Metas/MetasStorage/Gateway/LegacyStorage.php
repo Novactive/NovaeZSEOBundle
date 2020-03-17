@@ -59,12 +59,8 @@ class LegacyStorage extends Gateway
 
     /**
      * Returns the active connection.
-     *
-     * @throws RuntimeException if no connection has been set, yet
-     *
-     * @return DatabaseHandler
      */
-    protected function getConnection()
+    protected function getConnection(): DatabaseHandler
     {
         if (null === $this->connection) {
             throw new RuntimeException('Missing database connection.');
@@ -76,7 +72,7 @@ class LegacyStorage extends Gateway
     /**
      * Stores the metas in the database based on the given field data.
      */
-    public function storeFieldData(VersionInfo $versionInfo, Field $field)
+    public function storeFieldData(VersionInfo $versionInfo, Field $field): void
     {
         $connection = $this->getConnection();
         foreach ($field->value->externalData as $meta) {
@@ -103,7 +99,7 @@ class LegacyStorage extends Gateway
     /**
      * Gets the metas stored in the field.
      */
-    public function getFieldData(VersionInfo $versionInfo, Field $field)
+    public function getFieldData(VersionInfo $versionInfo, Field $field): void
     {
         $field->value->externalData = $this->loadFieldData($versionInfo, $field);
     }
@@ -112,7 +108,7 @@ class LegacyStorage extends Gateway
      * Deletes field data for all $fieldIds in the version identified by
      * $versionInfo.
      */
-    public function deleteFieldData(VersionInfo $versionInfo, array $fieldIds)
+    public function deleteFieldData(VersionInfo $versionInfo, array $fieldIds): void
     {
         $connection = $this->getConnection();
 
@@ -137,10 +133,8 @@ class LegacyStorage extends Gateway
 
     /**
      * Returns the data for the given $field and $version.
-     *
-     * @return array
      */
-    public function loadFieldData(VersionInfo $versionInfo, Field $field)
+    public function loadFieldData(VersionInfo $versionInfo, Field $field): array
     {
         $connection = $this->getConnection();
 
