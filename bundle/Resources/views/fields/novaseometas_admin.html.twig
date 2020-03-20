@@ -3,13 +3,13 @@
 {% block novaseometas_field %}
     <ul class="novaseobundle-preview-field">
     {% for meta in field.value.metas %}
-        <li class="ez-field meta-value">
-            {% if nova_ezseo.fieldtype_metas[meta.name] is defined %}
+        {% if nova_ezseo.fieldtype_metas[meta.name] is defined %}
+            <li class="ez-field meta-value">
                 {% set default_value = nova_ezseo.fieldtype_metas[meta.name] %}
                 <b>{{ default_value.label }}:</b>
-                {{ meta.isEmpty() ? default_value.default_pattern|raw : meta.content }}
-            {% endif %}
-        </li>
+                {{ meta.isEmpty() ? default_value.default_pattern|raw|escape : meta.content }}
+            </li>
+        {% endif %}
     {% endfor %}
     </ul>
     <div class="nova-signature">
