@@ -82,8 +82,10 @@ class LegacyStorage extends Gateway
     public function storeFieldData(VersionInfo $versionInfo, Field $field): void
     {
         foreach ($field->value->externalData as $meta) {
-            $query = $this->connection->createQueryBuilder();
-            $query
+
+            $queryBuilder = $this->connection->createQueryBuilder();
+
+            $queryBuilder
                 ->insert(self::TABLE)
                 ->setValue(self::COLUMN_ID, '?')
                 ->setValue(self::COLUMN_NAME, '?')
@@ -93,9 +95,9 @@ class LegacyStorage extends Gateway
                 ->setParameter(1, $meta['meta_name'])
                 ->setParameter(2, $meta['meta_content'])
                 ->setParameter(3, $versionInfo->versionNo);
-            $query->execute();
-        }
 
+            $queryBuilder->execute();
+        }
     }
 
     /**
@@ -112,52 +114,34 @@ class LegacyStorage extends Gateway
      */
     public function deleteFieldData(VersionInfo $versionInfo, array $fieldIds): void
     {
+        $queryBuilder = $this->connection->createQueryBuilder();
 
-/*
-        $connection = $this->connection;
-
-        $query = $connection->createDeleteQuery();
-        $query
-            ->deleteFrom($connection->quoteTable(self::TABLE))
+        $queryBuilder
+            ->delete(self::TABLE)
             ->where(
-                $query->expr->lAnd(
-                    $query->expr->in(
-                        $connection->quoteColumn('objectattribute_id'),
-                        $fieldIds
-                    ),
-                    $query->expr->eq(
-                        $connection->quoteColumn('objectattribute_version'),
-                        $query->bindValue($versionInfo->versionNo, null, PDO::PARAM_INT)
-                    )
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->in('objectattribute_id', $fieldIds),
+                    $queryBuilder->expr()->eq('objectattribute_version', $versionInfo->versionNo)
                 )
             );
 
-        $query->prepare()->execute();
-*/
-
+        $results = $queryBuilder->execute();
     }
-
-
 
     /**
      * Returns the data for the given $field and $version.
      */
     public function loadFieldData(VersionInfo $versionInfo, Field $field): array
     {
+        $queryBuilder = $this->connection->createQueryBuilder();
 
-        $query = $this->connection
-            ->createQueryBuilder()
+        $queryBuilder
             ->select($this->getSelectColumns())
             ->where('objectattribute_id = ' . $field->id)
             ->where('objectattribute_version = ' . $versionInfo->versionNo)
             ->from(self::TABLE, 'metadata');
 
-        $results = $query->execute()->fetchAll(FetchMode::COLUMN);
-
-        dump($results);
-
-        return $results;
-
+        return $queryBuilder->execute()->fetchAll(FetchMode::ASSOCIATIVE);
     }
 
     private function getSelectColumns(): array
