@@ -18,7 +18,9 @@ use Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway;
 use PDO;
 use RuntimeException;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\FetchMode;
 use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\ParameterType;
 
 /**
  * Class LegacyStorage.
@@ -26,6 +28,11 @@ use Doctrine\DBAL\Query\QueryBuilder;
 class LegacyStorage extends Gateway
 {
     const TABLE = 'novaseo_meta';
+
+    const COLUMN_ID = 'objectattribute_id';
+    const COLUMN_NAME = 'meta_name';
+    const COLUMN_CONTENT = 'meta_content';
+    const COLUMN_VERSION = 'objectattribute_version';
 
     /** @var \Doctrine\DBAL\Connection */
     protected $connection;
@@ -74,29 +81,20 @@ class LegacyStorage extends Gateway
      */
     public function storeFieldData(VersionInfo $versionInfo, Field $field): void
     {
-        /*
-
-        $connection = $this->connection;
         foreach ($field->value->externalData as $meta) {
-            $insertQuery = $connection->createInsertQuery();
-            $insertQuery
-                ->insertInto($connection->quoteTable(self::TABLE))
-                ->set(
-                    $connection->quoteColumn('meta_name'),
-                    $insertQuery->bindValue($meta['meta_name'], null, PDO::PARAM_STR)
-                )->set(
-                    $connection->quoteColumn('meta_content'),
-                    $insertQuery->bindValue($meta['meta_content'], null, PDO::PARAM_STR)
-                )->set(
-                    $connection->quoteColumn('objectattribute_id'),
-                    $insertQuery->bindValue($field->id, null, PDO::PARAM_INT)
-                )->set(
-                    $connection->quoteColumn('objectattribute_version'),
-                    $insertQuery->bindValue($versionInfo->versionNo, null, PDO::PARAM_INT)
-                );
-            $insertQuery->prepare()->execute();
+            $query = $this->connection->createQueryBuilder();
+            $query
+                ->insert(self::TABLE)
+                ->setValue(self::COLUMN_ID, '?')
+                ->setValue(self::COLUMN_NAME, '?')
+                ->setValue(self::COLUMN_CONTENT, '?')
+                ->setValue(self::COLUMN_VERSION, '?')
+                ->setParameter(0, $field->id)
+                ->setParameter(1, $meta['meta_name'])
+                ->setParameter(2, $meta['meta_content'])
+                ->setParameter(3, $versionInfo->versionNo);
+            $query->execute();
         }
-        */
 
     }
 
@@ -147,64 +145,28 @@ class LegacyStorage extends Gateway
     public function loadFieldData(VersionInfo $versionInfo, Field $field): array
     {
 
-        /*
-        $connection = $this->connection;
-
-        $query = $connection->createSelectQuery();
-        $query
-            ->selectDistinct('*')
-            ->from($connection->quoteTable(self::TABLE))
-            ->where(
-                $query->expr->lAnd(
-                    $query->expr->eq(
-                        $connection->quoteColumn('objectattribute_id'),
-                        $query->bindValue($field->id, null, PDO::PARAM_INT)
-                    ),
-                    $query->expr->eq(
-                        $connection->quoteColumn('objectattribute_version'),
-                        $query->bindValue($versionInfo->versionNo, null, PDO::PARAM_INT)
-                    )
-                )
-            );
-        $statement = $query->prepare();
-        $statement->execute();
-
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
-
-        */
-
-        return [];
-    }
-
-    /**
-     * Creates a Url find query.
-     */
-    protected function createSelectQuery(): QueryBuilder
-    {
-        return $this->connection
+        $query = $this->connection
             ->createQueryBuilder()
             ->select($this->getSelectColumns())
-            ->from(self::TABLE, 'url');
-    }
+            ->where('objectattribute_id = ' . $field->id)
+            ->where('objectattribute_version = ' . $versionInfo->versionNo)
+            ->from(self::TABLE, 'metadata');
 
-    private function createSelectDistinctQuery(): QueryBuilder
-    {
-        return $this->connection
-            ->createQueryBuilder()
-            ->select(sprintf('DISTINCT %s', implode(', ', $this->getSelectColumns())))
-            ->from(self::TABLE, 'url');
+        $results = $query->execute()->fetchAll(FetchMode::COLUMN);
+
+        dump($results);
+
+        return $results;
+
     }
 
     private function getSelectColumns(): array
     {
         return [
-            sprintf('url.%s', self::COLUMN_ID),
-            sprintf('url.%s', self::COLUMN_URL),
-            sprintf('url.%s', self::COLUMN_ORIGINAL_URL_MD5),
-            sprintf('url.%s', self::COLUMN_IS_VALID),
-            sprintf('url.%s', self::COLUMN_LAST_CHECKED),
-            sprintf('url.%s', self::COLUMN_CREATED),
-            sprintf('url.%s', self::COLUMN_MODIFIED),
+            sprintf('metadata.%s', self::COLUMN_ID),
+            sprintf('metadata.%s', self::COLUMN_NAME),
+            sprintf('metadata.%s', self::COLUMN_CONTENT),
+            sprintf('metadata.%s', self::COLUMN_VERSION),
         ];
     }
 
