@@ -17,23 +17,23 @@ use eZ\Publish\SPI\Persistence\Content\VersionInfo;
 use Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway;
 use PDO;
 use RuntimeException;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 /**
  * Class LegacyStorage.
  */
 class LegacyStorage extends Gateway
 {
-    /**
-     * Table.
-     */
     const TABLE = 'novaseo_meta';
 
-    /**
-     * Connection.
-     *
-     * @var DatabaseHandler
-     */
+    /** @var \Doctrine\DBAL\Connection */
     protected $connection;
+
+    public function __construct(Connection $connection)
+    {
+        $this->connection = $connection;
+    }
 
     /**
      * Sets the data storage connection to use.
@@ -74,7 +74,9 @@ class LegacyStorage extends Gateway
      */
     public function storeFieldData(VersionInfo $versionInfo, Field $field): void
     {
-        $connection = $this->getConnection();
+        /*
+
+        $connection = $this->connection;
         foreach ($field->value->externalData as $meta) {
             $insertQuery = $connection->createInsertQuery();
             $insertQuery
@@ -94,6 +96,8 @@ class LegacyStorage extends Gateway
                 );
             $insertQuery->prepare()->execute();
         }
+        */
+
     }
 
     /**
@@ -110,7 +114,9 @@ class LegacyStorage extends Gateway
      */
     public function deleteFieldData(VersionInfo $versionInfo, array $fieldIds): void
     {
-        $connection = $this->getConnection();
+
+/*
+        $connection = $this->connection;
 
         $query = $connection->createDeleteQuery();
         $query
@@ -129,14 +135,20 @@ class LegacyStorage extends Gateway
             );
 
         $query->prepare()->execute();
+*/
+
     }
+
+
 
     /**
      * Returns the data for the given $field and $version.
      */
     public function loadFieldData(VersionInfo $versionInfo, Field $field): array
     {
-        $connection = $this->getConnection();
+
+        /*
+        $connection = $this->connection;
 
         $query = $connection->createSelectQuery();
         $query
@@ -158,5 +170,42 @@ class LegacyStorage extends Gateway
         $statement->execute();
 
         return $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        */
+
+        return [];
     }
+
+    /**
+     * Creates a Url find query.
+     */
+    protected function createSelectQuery(): QueryBuilder
+    {
+        return $this->connection
+            ->createQueryBuilder()
+            ->select($this->getSelectColumns())
+            ->from(self::TABLE, 'url');
+    }
+
+    private function createSelectDistinctQuery(): QueryBuilder
+    {
+        return $this->connection
+            ->createQueryBuilder()
+            ->select(sprintf('DISTINCT %s', implode(', ', $this->getSelectColumns())))
+            ->from(self::TABLE, 'url');
+    }
+
+    private function getSelectColumns(): array
+    {
+        return [
+            sprintf('url.%s', self::COLUMN_ID),
+            sprintf('url.%s', self::COLUMN_URL),
+            sprintf('url.%s', self::COLUMN_ORIGINAL_URL_MD5),
+            sprintf('url.%s', self::COLUMN_IS_VALID),
+            sprintf('url.%s', self::COLUMN_LAST_CHECKED),
+            sprintf('url.%s', self::COLUMN_CREATED),
+            sprintf('url.%s', self::COLUMN_MODIFIED),
+        ];
+    }
+
 }

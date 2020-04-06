@@ -20,6 +20,8 @@ services:
 
     Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage:
         public: true
+#        arguments:
+#            $gateway: 'Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\LegacyStorage'
         tags:
             - { name: ezpublish.fieldType.externalStorageHandler, alias: novaseometas }
 
