@@ -137,8 +137,12 @@ class LegacyStorage extends Gateway
 
         $queryBuilder
             ->select($this->getSelectColumns())
-            ->where('objectattribute_id = ' . $field->id)
-            ->where('objectattribute_version = ' . $versionInfo->versionNo)
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq('objectattribute_id', $field->id),
+                    $queryBuilder->expr()->eq('objectattribute_version', $versionInfo->versionNo)
+                )
+            )
             ->from(self::TABLE, 'metadata');
 
         return $queryBuilder->execute()->fetchAll(FetchMode::ASSOCIATIVE);
