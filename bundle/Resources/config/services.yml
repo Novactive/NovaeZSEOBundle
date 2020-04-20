@@ -74,17 +74,6 @@ services:
 
     Novactive\Bundle\eZSEOBundle\Core\Converter\ContentTypesHelper: ~
 
-    Novactive\Bundle\eZSEOBundle\Core\UrlWildcardRouter:
-        arguments:
-            - '@ezpublish.api.service.url_wildcard'
-            - '@ezpublish.urlalias_generator'
-            - '@router.request_context'
-        calls:
-            - [setLogger, ['@?logger']]
-            - [setWildcardService, ['@ezpublish.api.service.url_wildcard']]
-        tags:
-            - { name: router, priority: 2000 }
-
     Novactive\Bundle\eZSEOBundle\Listener\AdminTopMenu:
         tags:
             - { name: kernel.event_listener, event: "ezplatform_admin_ui.menu_configure.main_menu", method: "onMenuConfigure",  priority: -100 }
