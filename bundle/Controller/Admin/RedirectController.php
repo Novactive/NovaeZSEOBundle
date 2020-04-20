@@ -99,7 +99,7 @@ class RedirectController extends Controller
         }
 
         if ($formDelete->isSubmitted() && $formDelete->isValid()) {
-            $response = $this->forward('NovaeZSEOBundle:Admin/Redirect:delete', ['request' => $request]);
+            $response = $this->forward('Novactive\Bundle\eZSEOBundle\Controller\Admin\RedirectController::deleteAction', ['request' => $request]);
             if (Response::HTTP_CREATED == $response->getStatusCode()) {
                 $messages[] = $translator->trans('nova.redirect.delete.info', [], 'redirect');
             }
