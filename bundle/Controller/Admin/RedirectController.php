@@ -224,7 +224,7 @@ class RedirectController extends Controller
      * @Route("/history-import-redirect-url", name="novactive_platform_admin_ui.history-import-redirect-url")
      * @Template("@NovaeZSEO/platform_admin/history_urls_imported.html.twig")
      */
-    public function hisroryUrlsImported(
+    public function historyUrlsImported(
         Request $request,
         ImportUrlsHelper $importUrlsHelper,
         PermissionResolver $permissionResolver
