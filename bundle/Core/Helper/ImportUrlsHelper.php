@@ -19,7 +19,7 @@ use Novactive\Bundle\eZSEOBundle\Entity\RedirectImportHistory;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ImportUrlsHelper
 {

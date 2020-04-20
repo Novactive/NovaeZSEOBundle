@@ -93,4 +93,4 @@ services:
 
     novaezmailing.doctrine.entity_manager:
         class: Doctrine\ORM\EntityManagerInterface
-        factory: ['Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory', 'get']
+        factory: ['@Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory', 'get']
