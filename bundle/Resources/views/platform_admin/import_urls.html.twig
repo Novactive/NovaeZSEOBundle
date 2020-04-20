@@ -69,7 +69,7 @@
                         {% for key,elt in data %}
                             <td>
                                 {% if key == "source" or key == "destination" %}
-                                    <span title="{{ elt }}">{{ elt|truncate(70) }}</span>
+                                    <span title="{{ elt }}">{{ elt|u.truncate(70) }}</span>
                                 {% else %}
                                     <span>{{ elt }}</span>
                                 {% endif %}
