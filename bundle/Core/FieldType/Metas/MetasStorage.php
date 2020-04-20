@@ -11,13 +11,17 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas;
 
-use eZ\Publish\Core\FieldType\GatewayBasedStorage;
+use eZ\Publish\SPI\FieldType\GatewayBasedStorage;
 use eZ\Publish\SPI\Persistence\Content\Field;
 use eZ\Publish\SPI\Persistence\Content\VersionInfo;
-use Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\LegacyStorage;
 
 class MetasStorage extends GatewayBasedStorage
 {
+    /**
+     * @var \Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway
+     */
+    protected $gateway;
+
     /**
      * Stores value for $field in an external data source.
      */
@@ -27,15 +31,12 @@ class MetasStorage extends GatewayBasedStorage
             return;
         }
 
-        /** @var LegacyStorage $gateway */
-        $gateway = $this->getGateway($context);
-
-        $metas = $gateway->loadFieldData($versionInfo, $field);
+        $metas = $this->gateway->loadFieldData($versionInfo, $field);
         if ($metas) {
-            $gateway->deleteFieldData($versionInfo, [$field->id]);
+            $this->gateway->deleteFieldData($versionInfo, [$field->id]);
         }
 
-        $gateway->storeFieldData($versionInfo, $field);
+        $this->gateway->storeFieldData($versionInfo, $field);
     }
 
     /**
@@ -43,9 +44,7 @@ class MetasStorage extends GatewayBasedStorage
      */
     public function getFieldData(VersionInfo $versionInfo, Field $field, array $context): void
     {
-        /** @var LegacyStorage $gateway */
-        $gateway = $this->getGateway($context);
-        $gateway->getFieldData($versionInfo, $field);
+        $this->gateway->getFieldData($versionInfo, $field);
     }
 
     /**
@@ -54,9 +53,7 @@ class MetasStorage extends GatewayBasedStorage
      */
     public function deleteFieldData(VersionInfo $versionInfo, array $fieldIds, array $context): void
     {
-        /** @var LegacyStorage $gateway */
-        $gateway = $this->getGateway($context);
-        $gateway->deleteFieldData($versionInfo, $fieldIds);
+        $this->gateway->deleteFieldData($versionInfo, $fieldIds);
     }
 
     /**

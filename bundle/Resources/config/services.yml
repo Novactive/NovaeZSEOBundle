@@ -19,13 +19,21 @@ services:
             - { name: ezpublish.fieldType.indexable, alias: novaseometas }
 
     Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage:
+        arguments:
+            $gateway: '@Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\DoctrineStorage'
         public: true
         tags:
             - { name: ezpublish.fieldType.externalStorageHandler, alias: novaseometas }
 
-    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\LegacyStorage:
+    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\DoctrineStorage:
+        arguments:
+            $connection: "@ezpublish.api.storage_engine.legacy.connection"
         tags:
-            - { name: ezpublish.fieldType.externalStorageHandler.gateway, alias: novaseometas, identifier: LegacyStorage }
+          - { name: ezpublish.fieldType.externalStorageHandler.gateway, alias: novaseometas, identifier: LegacyStorage }
+
+#    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\LegacyStorage:
+#        tags:
+#            - { name: ezpublish.fieldType.externalStorageHandler.gateway, alias: novaseometas, identifier: LegacyStorage }
 
     Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Converter:
         tags:
