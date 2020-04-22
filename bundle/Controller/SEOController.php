@@ -13,13 +13,29 @@ namespace Novactive\Bundle\eZSEOBundle\Controller;
 
 use DOMDocument;
 use eZ\Bundle\EzPublishCoreBundle\Controller;
+use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SEOController extends Controller
 {
+
+    private $kernel;
+    private $configResolver;
+
+    public function __construct (
+        KernelInterface $kernel,
+        ConfigResolverInterface $configResolver
+    )
+    {
+        $this->kernel = $kernel;
+        $this->configResolver = $configResolver;
+    }
+
     /**
      * @Route("/robots.txt", methods={"GET"})
      */
@@ -29,8 +45,8 @@ class SEOController extends Controller
         $response->setSharedMaxAge(86400);
         $robots = ['User-agent: *'];
 
-        $robotsRules             = $this->getConfigResolver()->getParameter('robots', 'nova_ezseo');
-        $backwardCompatibleRules = $this->getConfigResolver()->getParameter('robots_disallow', 'nova_ezseo');
+        $robotsRules             = $this->configResolver->getParameter('robots', 'nova_ezseo');
+        $backwardCompatibleRules = $this->configResolver->getParameter('robots_disallow', 'nova_ezseo');
 
         if (\is_array($robotsRules['sitemap'])) {
             foreach ($robotsRules['sitemap'] as $sitemapRules) {
@@ -50,7 +66,7 @@ class SEOController extends Controller
                 $robots[] = "Allow: {$rule}";
             }
         }
-        if ('prod' !== $this->get('kernel')->getEnvironment()) {
+        if ('prod' !== $this->kernel->getEnvironment()) {
             $robots[] = 'Disallow: /';
         }
 
@@ -77,7 +93,7 @@ class SEOController extends Controller
      */
     public function googleVerifAction(string $key): Response
     {
-        if ($this->getConfigResolver()->getParameter('google_verification', 'nova_ezseo') !== $key) {
+        if ($this->getParameter('google_verification', 'nova_ezseo') !== $key) {
             throw new NotFoundHttpException('Google Verification Key not found');
         }
         $response = new Response();
@@ -92,11 +108,11 @@ class SEOController extends Controller
      */
     public function bingVerifAction(): Response
     {
-        if (!$this->getConfigResolver()->hasParameter('bing_verification', 'nova_ezseo')) {
+        if (!$this->configResolver->hasParameter('bing_verification', 'nova_ezseo')) {
             throw new NotFoundHttpException('Bing Verification Key not found');
         }
 
-        $key = $this->getConfigResolver()->getParameter('bing_verification', 'nova_ezseo');
+        $key = $this->configResolver->getParameter('bing_verification', 'nova_ezseo');
 
         $xml               = new DOMDocument('1.0', 'UTF-8');
         $xml->formatOutput = true;

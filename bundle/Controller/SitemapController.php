@@ -22,7 +22,9 @@ use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 use eZ\Publish\API\Repository\Values\Content\Query\SortClause;
 use eZ\Publish\API\Repository\Values\Content\Search\SearchHit;
 use eZ\Publish\API\Repository\Values\Content\Search\SearchResult;
+use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -34,6 +36,18 @@ class SitemapController extends Controller
      * @var int
      */
     const PACKET_MAX = 1000;
+
+    private $kernel;
+    private $configResolver;
+
+    public function __construct (
+        KernelInterface $kernel,
+        ConfigResolverInterface $configResolver
+    )
+    {
+        $this->kernel = $kernel;
+        $this->configResolver = $configResolver;
+    }
 
     /**
      * Get the common Query.
@@ -151,7 +165,7 @@ class SitemapController extends Controller
              */
             $location = $searchHit->valueObject;
             try {
-                $url = $this->generateUrl($location, [], UrlGeneratorInterface::ABSOLUTE_URL);
+                $url = $this->generateUrl('ez_urlalias', ['locationId' => $location->id], UrlGeneratorInterface::ABSOLUTE_URL);
             } catch (\Exception $exception) {
                 if ($this->has('logger')) {
                     $this->get('logger')->error('NovaeZSEO: '.$exception->getMessage());
