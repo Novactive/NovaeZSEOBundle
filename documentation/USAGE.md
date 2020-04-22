@@ -17,7 +17,7 @@ But you will have to manage yourself. ( we can't do that for you, but we'd simpl
 ```twig
 # in your pagelayout
 {% block seo_metas %}
-    {% include "NovaeZSEOBundle::seometas_head.html.twig" %}
+    {% include "@NovaeZSEO/seometas_metaslinks.html.twig" %}
 {% endblock %}
     
 # in a template which extends the pagelayout (not required, useful when you want to do something special)

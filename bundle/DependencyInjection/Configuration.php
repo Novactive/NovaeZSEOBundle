@@ -18,8 +18,8 @@ class Configuration extends SAConfiguration
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode    = $treeBuilder->root('nova_ezseo');
+        $treeBuilder = new TreeBuilder('nova_ezseo');
+        $rootNode    = $treeBuilder->getRootNode();
         $systemNode  = $this->generateScopeBaseNode($rootNode);
         $systemNode
             ->scalarNode('custom_fallback_service')->defaultValue('~')->end()

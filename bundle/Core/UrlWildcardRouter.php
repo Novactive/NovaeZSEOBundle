@@ -13,113 +13,46 @@ namespace Novactive\Bundle\eZSEOBundle\Core;
 
 use Exception;
 use eZ\Publish\API\Repository\URLWildcardService;
-use eZ\Publish\API\Repository\Values\Content\URLWildcard;
-use eZ\Publish\API\Repository\Values\Content\URLWildcardTranslationResult;
-use RuntimeException;
-use Symfony\Cmf\Component\Routing\ChainedRouterInterface;
-use Symfony\Cmf\Component\Routing\RouteObjectInterface;
+use eZ\Publish\Core\MVC\Symfony\Routing\UrlWildcardRouter as BaseUrlWildcardRouter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\Route as SymfonyRoute;
-use Symfony\Component\Routing\RouteCollection;
 
-class UrlWildcardRouter implements RequestMatcherInterface, ChainedRouterInterface
+class UrlWildcardRouter extends BaseUrlWildcardRouter
 {
-    const URL_WILDCARD_ROUTE_NAME = 'ez_urlwildcard';
+    /** @var URLWildcardService */
+    private $wildcardService;
 
-    /**
-     * @var RequestContext
-     */
-    protected $requestContext;
-
-    /**
-     * @var URLWildcardService
-     */
-    protected $urlWildcardService;
-
-    public function __construct(URLWildcardService $urlWildcardService)
+    public function setWildcardService(URLWildcardService $wildcardService): void
     {
-        $this->urlWildcardService = $urlWildcardService;
+        $this->wildcardService = $wildcardService;
     }
 
-    public function setContext(RequestContext $context): void
-    {
-        $this->requestContext = $context;
-    }
-
-    public function getContext(): RequestContext
-    {
-        return $this->requestContext;
-    }
-
-    public function getRouteCollection(): RouteCollection
-    {
-        return new RouteCollection();
-    }
-
-    public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH): string
-    {
-        return '';
-    }
-
-    public function match($pathinfo)
-    {
-        throw new RuntimeException(
-            "The UrlWildcardRouter doesn't support the match() method. Please use matchRequest() instead."
-        );
-    }
-
-    public function supports($name): bool
-    {
-        return $name instanceof URLWildcard || self::URL_WILDCARD_ROUTE_NAME === $name;
-    }
-
-    public function getRouteDebugMessage($name, array $parameters = []): string
-    {
-        if ($name instanceof RouteObjectInterface) {
-            return 'Route with key '.$name->getRouteKey();
-        }
-
-        if ($name instanceof SymfonyRoute) {
-            return 'Route with pattern '.$name->getPath();
-        }
-
-        return $name;
-    }
-
-    public function matchRequest(Request $request): ?array
+    public function matchRequest(Request $request): array
     {
         try {
             $requestedPath = $request->attributes->get('semanticPathinfo', $request->getPathInfo());
-            $urlWildcard   = $this->getUrlWildcard($requestedPath);
+            $urlWildcard   = $this->wildcardService->translate($requestedPath);
 
             $params = [
-                '_route' => self::URL_WILDCARD_ROUTE_NAME,
+                '_route' => 'ez_urlalias',
             ];
+
+            if (0 === strpos($urlWildcard->uri, 'http://') || 'https://' === substr($urlWildcard->uri, 0, 8)) {
+                $params += ['semanticPathinfo' => trim($urlWildcard->uri, '/')];
+            } else {
+                $params += ['semanticPathinfo' => '/'.trim($urlWildcard->uri, '/')];
+            }
 
             // In URLAlias terms, "forward" means "redirect".
             if ($urlWildcard->forward) {
-                $params += [ 'needsRedirect' => true ];
+                $params += ['needsRedirect' => true];
             } else {
-                $params += [ 'needsForward' => true ];
-            }
-
-            if (substr($urlWildcard->uri, 0, 7) === "http://" || substr($urlWildcard->uri, 0, 8) === "https://") {
-                $params += [ 'semanticPathinfo' => trim($urlWildcard->uri, '/') ];
-            } else {
-                $params += [ 'semanticPathinfo' => '/'.trim($urlWildcard->uri, '/') ];
+                $params += ['needsForward' => true];
             }
 
             return $params;
         } catch (Exception $e) {
             throw new ResourceNotFoundException($e->getMessage(), $e->getCode(), $e);
         }
-    }
-
-    protected function getUrlWildcard($pathinfo): URLWildcardTranslationResult
-    {
-        return $this->urlWildcardService->translate($pathinfo);
     }
 }

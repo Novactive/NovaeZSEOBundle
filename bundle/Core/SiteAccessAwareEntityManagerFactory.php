@@ -13,13 +13,13 @@
 namespace Novactive\Bundle\eZSEOBundle\Core;
 
 use Doctrine\Bundle\DoctrineBundle\Mapping\ContainerEntityListenerResolver;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use eZ\Bundle\EzPublishCoreBundle\ApiLoader\RepositoryConfigurationProvider;
 use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
+use Doctrine\Persistence\ManagerRegistry as Registry;
+use eZ\Bundle\EzPublishCoreBundle\ApiLoader\RepositoryConfigurationProvider;
 
 class SiteAccessAwareEntityManagerFactory
 {
@@ -39,7 +39,7 @@ class SiteAccessAwareEntityManagerFactory
     private $settings;
 
     /**
-     * @var ContainerAwareEntityListenerResolver
+     * @var ContainerEntityListenerResolver
      */
     private $resolver;
 

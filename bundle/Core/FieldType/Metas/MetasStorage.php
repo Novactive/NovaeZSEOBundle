@@ -11,77 +11,63 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas;
 
-use eZ\Publish\Core\FieldType\GatewayBasedStorage;
+use eZ\Publish\SPI\FieldType\GatewayBasedStorage;
 use eZ\Publish\SPI\Persistence\Content\Field;
 use eZ\Publish\SPI\Persistence\Content\VersionInfo;
-use Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\LegacyStorage;
 
 class MetasStorage extends GatewayBasedStorage
 {
     /**
-     * Stores value for $field in an external data source.
-     *
-     *
-     * @return mixed null|true
+     * @var \Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway
      */
-    public function storeFieldData(VersionInfo $versionInfo, Field $field, array $context)
+    protected $gateway;
+
+    /**
+     * Stores value for $field in an external data source.
+     */
+    public function storeFieldData(VersionInfo $versionInfo, Field $field, array $context): void
     {
         if (empty($field->value->externalData)) {
             return;
         }
 
-        /** @var LegacyStorage $gateway */
-        $gateway = $this->getGateway($context);
-
-        $metas = $gateway->loadFieldData($versionInfo, $field);
+        $metas = $this->gateway->loadFieldData($versionInfo, $field);
         if ($metas) {
-            $gateway->deleteFieldData($versionInfo, [$field->id]);
+            $this->gateway->deleteFieldData($versionInfo, [$field->id]);
         }
 
-        $gateway->storeFieldData($versionInfo, $field);
+        $this->gateway->storeFieldData($versionInfo, $field);
     }
 
     /**
      * Populates $field value property based on the external data.
      */
-    public function getFieldData(VersionInfo $versionInfo, Field $field, array $context)
+    public function getFieldData(VersionInfo $versionInfo, Field $field, array $context): void
     {
-        /** @var LegacyStorage $gateway */
-        $gateway = $this->getGateway($context);
-        $gateway->getFieldData($versionInfo, $field);
+        $this->gateway->getFieldData($versionInfo, $field);
     }
 
     /**
      * Deletes field data for all $fieldIds in the version identified by
      * $versionInfo.
-     *
-     *
-     * @return bool
      */
-    public function deleteFieldData(VersionInfo $versionInfo, array $fieldIds, array $context)
+    public function deleteFieldData(VersionInfo $versionInfo, array $fieldIds, array $context): void
     {
-        /** @var LegacyStorage $gateway */
-        $gateway = $this->getGateway($context);
-        $gateway->deleteFieldData($versionInfo, $fieldIds);
+        $this->gateway->deleteFieldData($versionInfo, $fieldIds);
     }
 
     /**
      * Checks if field type has external data to deal with.
-     *
-     * @return bool
      */
-    public function hasFieldData()
+    public function hasFieldData(): bool
     {
         return true;
     }
 
     /**
      * Get index data for external data for search backend.
-     *
-     *
-     * @return bool
      */
-    public function getIndexData(VersionInfo $versionInfo, Field $field, array $context)
+    public function getIndexData(VersionInfo $versionInfo, Field $field, array $context): bool
     {
         return false;
     }

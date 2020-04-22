@@ -36,13 +36,9 @@ class NovaeZSEOBundle extends Bundle
 
             if (null !== $extension) {
                 if (!$extension instanceof ExtensionInterface) {
-                    throw new LogicException(
-                        sprintf(
-                            'Extension %s must implement %s.',
-                            \get_class($extension),
-                            ExtensionInterface::class
-                        )
-                    );
+                    $fqdn    = \get_class($extension);
+                    $message = 'Extension %s must implement %s.';
+                    throw new LogicException(sprintf($message, $fqdn, ExtensionInterface::class));
                 }
                 $this->extension = $extension;
             } else {

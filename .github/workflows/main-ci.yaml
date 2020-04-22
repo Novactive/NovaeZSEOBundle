@@ -1,0 +1,116 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+    lint:
+        name: Coding Standard
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v2
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@master
+                with:
+                    php-version: 7.3
+                id: php
+
+            -   name: Validate composer.json and composer.lock
+                run: composer validate
+
+            -   name: Install dependencies
+                run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+
+            -   name: Check Sources
+                run: php vendor/bin/phpcs --standard=.cs/cs_ruleset.xml --extensions=php bundle/ tests/
+
+            -   name: Check Mess Sources
+                run: php vendor/bin/phpmd bundle,tests text .cs/md_ruleset.xml
+    tests:
+        name: Tests
+        runs-on: ubuntu-latest
+        services:
+            mysql:
+                image: mariadb:10.3
+                env:
+                    MYSQL_ALLOW_EMPTY_PASSWORD: yes
+                    MYSQL_DATABASE: ezplatform
+                ports:
+                    - 3306:3306
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+            redis:
+                image: redis:latest
+                ports:
+                    - 6379:6379
+                options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+        strategy:
+            matrix:
+                php: [7.3]
+        env:
+            CACHE_POOL: cache.redis
+            DATABASE_URL: mysql://root@127.0.0.1:3306/ezplatform
+            CACHE_DSN: 127.0.0.1:6379
+            APP_ENV: dev
+            APP_DEBUG: 1
+            COMPOSER_MEMORY_LIMIT: 4G
+            PANTHER_EXTERNAL_BASE_URI: http://127.0.0.1:8000
+        steps:
+            -   uses: actions/checkout@v2
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@master
+                with:
+                    php-version: ${{ matrix.php }}
+                    extensions: mbstring, intl
+                id: php
+
+            -   name: Get Composer Cache Directory
+                id: composer-cache
+                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+            -   uses: actions/cache@v1
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                    restore-keys: |
+                        ${{ runner.os }}-composer-
+
+            -   name: Install dependencies
+                run: composer install --prefer-dist --no-progress --no-suggest --no-interaction
+
+            -   name: Install Symfony Server
+                run: |
+                    wget https://get.symfony.com/cli/installer -O - | bash
+                    /home/runner/.symfony/bin/symfony local:php:list
+
+            -   name: Install eZ Platform
+                run: |
+                    composer create-project ezsystems/ezplatform --prefer-dist --no-progress --no-interaction --no-scripts ezplatform
+                    cd ezplatform
+                    rm -rf var/cache
+                    composer ezplatform-install
+
+            -   name: Install Bundle on Top of a fresh eZ Installation
+                run: |
+                    curl -o tests/provisioning/wrap.php https://raw.githubusercontent.com/Plopix/symfony-bundle-app-wrapper/master/wrap-bundle.php
+                    WRAP_APP_DIR=./ezplatform WRAP_BUNDLE_DIR=./ php tests/provisioning/wrap.php
+                    rm tests/provisioning/wrap.php
+                    mysql -u root -h 127.0.0.1 ezplatform < bundle/Resources/sql/schema.sql
+                    cd ezplatform
+                    COMPOSER_MEMORY_LIMIT=-1 composer update --lock
+                    bin/console cache:clear
+
+            -   name: Run Webserver
+                run: |
+                    cd ezplatform
+                    /home/runner/.symfony/bin/symfony local:server:start --no-tls -d
+                    /home/runner/.symfony/bin/symfony local:server:list
+
+            -   name: Install Field everywhere
+                run: cd ezplatform && bin/console nova_ezseo:addnovaseometasfieldtype --group_identifier=Content --no-interaction
+
+            -   name: Test Web Server
+                run: curl -I http://127.0.0.1:8000 | grep "HTTP/1.1 200 OK"
+
+            -   name: Finally Run the tests
+                run: php vendor/bin/phpunit ./tests --exclude-group behat

@@ -24,10 +24,8 @@ class Converter implements LegacyConverter
      * Factory for current class.
      *
      * @note Class should instead be configured as service if it gains dependencies.
-     *
-     * @return Converter
      */
-    public static function create()
+    public static function create(): Converter
     {
         return new self();
     }
@@ -35,21 +33,21 @@ class Converter implements LegacyConverter
     /**
      * Converts data from $value to $storageFieldValue.
      */
-    public function toStorageValue(FieldValue $value, StorageFieldValue $storageFieldValue)
+    public function toStorageValue(FieldValue $value, StorageFieldValue $storageFieldValue): void
     {
     }
 
     /**
      * Converts data from $value to $fieldValue.
      */
-    public function toFieldValue(StorageFieldValue $value, FieldValue $fieldValue)
+    public function toFieldValue(StorageFieldValue $value, FieldValue $fieldValue): void
     {
     }
 
     /**
      * Converts field definition data in $fieldDef into $storageFieldDef.
      */
-    public function toStorageFieldDefinition(FieldDefinition $fieldDef, StorageFieldDefinition $storageDef)
+    public function toStorageFieldDefinition(FieldDefinition $fieldDef, StorageFieldDefinition $storageDef): void
     {
         $fieldSettings = $fieldDef->fieldTypeConstraints->fieldSettings;
 
@@ -61,7 +59,7 @@ class Converter implements LegacyConverter
     /**
      * Converts field definition data in $storageDef into $fieldDef.
      */
-    public function toFieldDefinition(StorageFieldDefinition $storageDef, FieldDefinition $fieldDef)
+    public function toFieldDefinition(StorageFieldDefinition $storageDef, FieldDefinition $fieldDef): void
     {
         $fieldDef->fieldTypeConstraints->fieldSettings = new FieldSettings(
             [
@@ -72,10 +70,8 @@ class Converter implements LegacyConverter
 
     /**
      * Returns the name of the index column in the attribute table.
-     *
-     * @return bool
      */
-    public function getIndexColumn()
+    public function getIndexColumn(): bool
     {
         return false;
     }

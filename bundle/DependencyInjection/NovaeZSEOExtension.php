@@ -33,6 +33,7 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
         $container->prependExtensionConfig('assetic', ['bundles' => ['NovaeZSEOBundle']]);
 
         $configs = [
+            'wildcard_routing.yml'            => 'ezpublish',
             'ez_field_templates.yml'          => 'ezpublish',
             'variations.yml'                  => 'ezpublish',
             'admin_ui/ez_field_templates.yml' => 'ezpublish',

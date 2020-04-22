@@ -15,25 +15,23 @@ use eZ\Publish\API\Repository\Repository as RepositoryInterface;
 use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\API\Repository\Values\Content\Field;
 use eZ\Publish\API\Repository\Values\ContentType\ContentType;
-use eZ\Publish\Core\Base\Container\ApiLoader\FieldTypeCollectionFactory;
 use eZ\Publish\Core\Base\Exceptions\InvalidArgumentType;
+use eZ\Publish\Core\FieldType\FieldTypeRegistry;
 use eZ\Publish\Core\FieldType\Image\Value as ImageValue;
 use eZ\Publish\Core\FieldType\ImageAsset\Value as ImageAssetValue;
 use eZ\Publish\Core\FieldType\Relation\Value as RelationValue;
-use eZ\Publish\Core\FieldType\RelationList\NameableField as RelationListNameableField;
+use eZ\Publish\Core\FieldType\RelationList\Type as RelationListType;
 use eZ\Publish\Core\FieldType\RelationList\Value as RelationListValue;
-use eZ\Publish\Core\FieldType\RichText\Converter as RichTextConverterInterface;
-use eZ\Publish\Core\FieldType\RichText\Value as RichTextValue;
 use eZ\Publish\Core\Helper\TranslationHelper;
-use eZ\Publish\Core\Repository\Helper\ContentTypeDomainMapper;
-use eZ\Publish\Core\Repository\Helper\FieldTypeRegistry;
-use eZ\Publish\Core\Repository\Helper\NameableFieldTypeRegistry;
 use eZ\Publish\Core\Repository\Helper\NameSchemaService;
+use eZ\Publish\Core\Repository\Mapper\ContentTypeDomainMapper;
 use eZ\Publish\Core\Repository\Values\Content\VersionInfo;
 use eZ\Publish\SPI\Persistence\Content\Language\Handler as ContentLanguageHandler;
 use eZ\Publish\SPI\Persistence\Content\Type as SPIContentType;
 use eZ\Publish\SPI\Persistence\Content\Type\Handler as ContentTypeHandler;
 use eZ\Publish\SPI\Variation\VariationHandler;
+use EzSystems\EzPlatformRichText\eZ\FieldType\RichText\Value as RichTextValue;
+use EzSystems\EzPlatformRichText\eZ\RichText\Converter as RichTextConverterInterface;
 
 class MetaNameSchema extends NameSchemaService
 {
@@ -73,32 +71,31 @@ class MetaNameSchema extends NameSchemaService
     protected $fieldTypeRegistry;
 
     /**
-     * @var RelationListNameableField
+     * @var RelationListType
      */
-    protected $relationListNameableField;
+    private $relationListField;
 
     public function __construct(
         ContentTypeHandler $contentTypeHandler,
-        FieldTypeCollectionFactory $collectionFactory,
+        FieldTypeRegistry $fieldTypeRegistry,
         ContentLanguageHandler $languageHandler,
         RepositoryInterface $repository,
-        TranslationHelper $helper,
-        RelationListNameableField $relationListNameableField,
+        TranslationHelper $translationHelper,
         array $settings = []
     ) {
-        $fieldTypes              = $collectionFactory->getFieldTypes();
-        $nameable                = new NameableFieldTypeRegistry($fieldTypes);
-        $this->fieldTypeRegistry = new FieldTypeRegistry($fieldTypes);
+        $this->fieldTypeRegistry = $fieldTypeRegistry;
         $settings['limit']       = $this->fieldContentMaxLength;
         $handler                 = new ContentTypeDomainMapper(
             $contentTypeHandler,
             $languageHandler,
             $this->fieldTypeRegistry
         );
-        parent::__construct($contentTypeHandler, $handler, $nameable, $settings);
-        $this->repository                = $repository;
-        $this->translationHelper         = $helper;
-        $this->relationListNameableField = $relationListNameableField;
+
+        parent::__construct($contentTypeHandler, $handler, $fieldTypeRegistry, $settings);
+
+        $this->repository        = $repository;
+        $this->translationHelper = $translationHelper;
+        $this->relationListField = $this->fieldTypeRegistry->getFieldType('ezobjectrelationlist');
     }
 
     public function setLanguages(array $languages = null): void
@@ -154,7 +151,8 @@ class MetaNameSchema extends NameSchemaService
                     foreach ($contentType->fieldDefinitions as $spiFieldDefinition) {
                         if ($spiFieldDefinition->identifier === $fieldDefinitionIdentifier) {
                             $fieldDefinition = $this->contentTypeDomainMapper->buildFieldDefinitionDomainObject(
-                                $spiFieldDefinition
+                                $spiFieldDefinition,
+                                $languageCode
                             );
                             break;
                         }
@@ -217,9 +215,8 @@ class MetaNameSchema extends NameSchemaService
                     continue;
                 }
 
-                $fieldType                               = $this->fieldTypeRegistry->getFieldType(
-                    $fieldDefinition->fieldTypeIdentifier
-                );
+                $fieldType = $this->fieldTypeRegistry->getFieldType($fieldDefinition->fieldTypeIdentifier);
+
                 $fieldTitles[$fieldDefinitionIdentifier] = $fieldType->getName(
                     $fieldMap[$fieldDefinitionIdentifier][$languageCode],
                     $fieldDefinition,
@@ -237,13 +234,14 @@ class MetaNameSchema extends NameSchemaService
         string $languageCode,
         string $variationName
     ): string {
-        $field     = new Field(
+        $field = new Field(
             [
                 'value'              => $value,
                 'fieldDefIdentifier' => $identifier,
                 'languageCode'       => $languageCode,
             ]
         );
+
         $variation = $this->imageVariationService->getVariation($field, new VersionInfo(), $variationName);
 
         return $variation->uri;
@@ -279,7 +277,7 @@ class MetaNameSchema extends NameSchemaService
 
     protected function handleRelationListValue(RelationListValue $value, $fieldDefinition, $languageCode): string
     {
-        return $this->relationListNameableField->getFieldName($value, $fieldDefinition, $languageCode);
+        return $this->relationListField->getName($value, $fieldDefinition, $languageCode);
     }
 
     /**

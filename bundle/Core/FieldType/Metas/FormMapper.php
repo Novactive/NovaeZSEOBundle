@@ -12,8 +12,8 @@
 namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas;
 
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
-use EzSystems\RepositoryForms\Data\Content\FieldData;
-use EzSystems\RepositoryForms\Data\FieldDefinitionData;
+use EzSystems\EzPlatformAdminUi\Form\Data\FieldDefinitionData;
+use EzSystems\EzPlatformContentForms\Data\Content\FieldData;
 use EzSystems\RepositoryForms\FieldType\FieldDefinitionFormMapperInterface;
 use EzSystems\RepositoryForms\FieldType\FieldValueFormMapperInterface;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
@@ -46,7 +46,7 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
      * @param FormInterface       $fieldDefinitionForm form for current FieldDefinition
      * @param FieldDefinitionData $data                underlying data for current FieldDefinition form
      */
-    public function mapFieldDefinitionForm(FormInterface $fieldDefinitionForm, FieldDefinitionData $data)
+    public function mapFieldDefinitionForm(FormInterface $fieldDefinitionForm, FieldDefinitionData $data): void
     {
         $metasConfig = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
 
