@@ -10,6 +10,7 @@ PHP_BIN := php
 COMPOSER := composer
 CURRENT_DIR := $(shell pwd)
 .DEFAULT_GOAL := list
+SYMFONY := symfony
 EZ_DIR := $(CURRENT_DIR)/ezplatform
 
 .PHONY: list
@@ -22,7 +23,7 @@ list:
 .PHONY: installez
 installez: ## Install eZ as the local project
 	@docker run -d -p 3364:3306 --name ezdbnovaezseocontainer -e MYSQL_ROOT_PASSWORD=ezplatform mariadb:10.3
-	@composer create-project ezsystems/ezplatform:dev-master --prefer-dist --no-progress --no-interaction --no-scripts $(EZ_DIR)
+	@composer create-project ezsystems/ezplatform --prefer-dist --no-progress --no-interaction --no-scripts $(EZ_DIR)
 	@curl -o tests/provisioning/wrap.php https://raw.githubusercontent.com/Plopix/symfony-bundle-app-wrapper/master/wrap-bundle.php
 	@WRAP_APP_DIR=./ezplatform WRAP_BUNDLE_DIR=./ php tests/provisioning/wrap.php
 	@rm tests/provisioning/wrap.php
@@ -39,14 +40,11 @@ serveez: stopez ## Clear the cache and start the web server
 	@cd $(EZ_DIR) && rm -rf var/cache/*
 	@docker start ezdbnovaezseocontainer
 	@cd $(EZ_DIR) && bin/console cache:clear
-	@cd $(EZ_DIR) && bin/console server:start
+	@cd $(EZ_DIR) && $(SYMFONY) local:server:start -d
 
 .PHONY: stopez
 stopez: ## Stop the web server if it is running
-	@if [ -a $(EZ_DIR)/.web-server-pid ] ; \
-	then \
-		 cd $(EZ_DIR) && php bin/console server:stop;  \
-	fi;
+	@cd $(EZ_DIR) && $(SYMFONY) local:server:stop
 	@docker stop ezdbnovaezseocontainer
 
 

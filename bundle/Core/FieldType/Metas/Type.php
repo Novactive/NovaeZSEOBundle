@@ -88,11 +88,7 @@ class Type extends FieldType
         if (\is_array($inputValue)) {
             foreach ($inputValue as $index => $inputValueItem) {
                 if (!$inputValueItem instanceof Meta) {
-                    throw new InvalidArgumentType(
-                        '$inputValue['.$index.']',
-                        '\\Novactive\\Bundle\\SEOBundle\\API\\Repository\\Values\\Metas\\Meta',
-                        $inputValueItem
-                    );
+                    throw new InvalidArgumentType('$inputValue['.$index.']', Meta::class, $inputValueItem);
                 }
             }
             $inputValue = new Value($inputValue);
@@ -106,23 +102,15 @@ class Type extends FieldType
      *
      * @throws InvalidArgumentType if the value does not match the expected structure
      */
-    protected function checkValueStructure(CoreValue $value)
+    protected function checkValueStructure(CoreValue $value): void
     {
         if (!\is_array($value->metas)) {
-            throw new InvalidArgumentType(
-                '$value->metas',
-                'array',
-                $value->metas
-            );
+            throw new InvalidArgumentType('$value->metas', 'array', $value->metas);
         }
 
         foreach ($value->metas as $index => $meta) {
             if (!$meta instanceof Meta) {
-                throw new InvalidArgumentType(
-                    '$value->metas['.$index.']',
-                    '\\Novactive\\Bundle\\SEOBundle\\API\\Repository\\Values\\Metas\\Meta',
-                    $meta
-                );
+                throw new InvalidArgumentType('$value->metas['.$index.']', Meta::class, $meta);
             }
         }
     }

@@ -25,5 +25,9 @@
     </filter>
     <php>
         <env name="UNIT_TESTS" value="true"/>
+        <env name="PANTHER_EXTERNAL_BASE_URI" value="https://127.0.0.1:8000"/>
     </php>
+    <extensions>
+        <extension class="Symfony\Component\Panther\ServerExtension" />
+    </extensions>
 </phpunit>

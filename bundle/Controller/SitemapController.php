@@ -43,7 +43,7 @@ class SitemapController extends Controller
         $limitToRootLocation = $this->getConfigResolver()->getParameter('limit_to_rootlocation', 'nova_ezseo');
         $excludes            = $this->getConfigResolver()->getParameter('sitemap_excludes', 'nova_ezseo');
         $query               = new Query();
-        $criterion[]         = new Criterion\Visibility(Criterion\Visibility::VISIBLE);
+        $criterion           = [new Criterion\Visibility(Criterion\Visibility::VISIBLE)];
         if (true === $limitToRootLocation) {
             $criterion[] = new Criterion\Subtree($this->getRootLocation()->pathString);
         }

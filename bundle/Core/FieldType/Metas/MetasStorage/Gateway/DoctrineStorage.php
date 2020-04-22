@@ -31,10 +31,10 @@ class DoctrineStorage extends Gateway
                 ->insert($this->connection->quoteIdentifier(self::TABLE))
                 ->values(
                     [
-                        $this->connection->quoteIdentifier('meta_name') => ':meta_name',
-                        $this->connection->quoteIdentifier('meta_content') => ':meta_content',
-                        $this->connection->quoteIdentifier('objectattribute_id') => ':objectattribute_id',
-                        $this->connection->quoteIdentifier('objectattribute_version') => ':objectattribute_version'
+                        $this->connection->quoteIdentifier('meta_name')               => ':meta_name',
+                        $this->connection->quoteIdentifier('meta_content')            => ':meta_content',
+                        $this->connection->quoteIdentifier('objectattribute_id')      => ':objectattribute_id',
+                        $this->connection->quoteIdentifier('objectattribute_version') => ':objectattribute_version',
                     ]
                 )
                 ->setParameter(':meta_name', $meta['meta_name'], ParameterType::STRING)

@@ -31,9 +31,6 @@ services:
         tags:
           - { name: ezpublish.fieldType.externalStorageHandler.gateway, alias: novaseometas, identifier: LegacyStorage }
 
-#    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\LegacyStorage:
-#        tags:
-#            - { name: ezpublish.fieldType.externalStorageHandler.gateway, alias: novaseometas, identifier: LegacyStorage }
 
     Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Converter:
         tags:
@@ -91,3 +88,16 @@ services:
     novaezmailing.doctrine.entity_manager:
         class: Doctrine\ORM\EntityManagerInterface
         factory: ['@Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory', 'get']
+
+
+    Novactive\Bundle\eZSEOBundle\Core\UrlWildcardRouter:
+        arguments:
+            - '@ezpublish.api.service.url_wildcard'
+            - '@ezpublish.urlalias_generator'
+            - '@router.request_context'
+        calls:
+            - [setLogger, ['@?logger']]
+            - [setWildcardService, ['@ezpublish.api.service.url_wildcard']]
+        tags:
+            - { name: router, priority: 2000 }
+

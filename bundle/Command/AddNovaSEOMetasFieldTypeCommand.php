@@ -56,13 +56,6 @@ class AddNovaSEOMetasFieldTypeCommand extends Command
      */
     private $adminUserId;
 
-    /**
-     * List of the ContentType we'll manage.
-     *
-     * @var ContentType[]
-     */
-    protected $contentTypes;
-
     public function __construct(
         ConfigResolverInterface $configResolver,
         Repository $repository,
@@ -109,9 +102,43 @@ EOT
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io           = new SymfonyStyle($input, $output);
-        $contentTypes = $this->contentTypes;
-        if (0 == count($contentTypes)) {
+        $io = new SymfonyStyle($input, $output);
+
+        $contentTypes = [];
+
+        $groupIdentifier = $input->getOption('group_identifier');
+        if (!empty($groupIdentifier)) {
+            $contentTypes = $this->contentTypesHelper->getContentTypesByGroup($groupIdentifier);
+        }
+
+        $identifiers = $input->getOption('identifiers');
+        if (!empty($identifiers)) {
+            $contentTypes = $this->contentTypesHelper->getContentTypesByIdentifier($identifiers);
+        }
+
+        $identifier = $input->getOption('identifier');
+        if (!empty($identifier)) {
+            $contentTypes = $this->contentTypesHelper->getContentTypesByIdentifier($identifier);
+        }
+
+        $output->writeln('<info>Selected Content Type:</info>');
+        foreach ($contentTypes as $contentType) {
+            /* @var ContentType $contentType */
+            $output->writeln("\t- {$contentType->getName($contentType->mainLanguageCode)}");
+        }
+        $helper   = $this->getHelper('question');
+        $question = new ConfirmationQuestion(
+            "\n<question>Are you sure you want to add novaseometas all these Content Type?</question>[yes]",
+            true
+        );
+
+        if (!$helper->ask($input, $output, $question)) {
+            $io->success('Nothing to do.');
+
+            return 0;
+        }
+
+        if (0 === \count($contentTypes)) {
             $io->success('Nothing to do.');
 
             return 0;
@@ -141,41 +168,6 @@ EOT
         $io->success('Done.');
 
         return 0;
-    }
-
-    protected function interact(InputInterface $input, OutputInterface $output): void
-    {
-        $contentTypes = [];
-
-        $groupIdentifier = $input->getOption('group_identifier');
-        if (!empty($groupIdentifier)) {
-            $contentTypes = $this->contentTypesHelper->getContentTypesByGroup($groupIdentifier);
-        }
-
-        $identifiers = $input->getOption('identifiers');
-        if (!empty($identifiers)) {
-            $contentTypes = $this->contentTypesHelper->getContentTypesByIdentifier($identifiers);
-        }
-
-        $identifier = $input->getOption('identifier');
-        if (!empty($identifier)) {
-            $contentTypes = $this->contentTypesHelper->getContentTypesByIdentifier($identifier);
-        }
-
-        $output->writeln('<info>Selected Content Type:</info>');
-        foreach ($contentTypes as $contentType) {
-            /* @var ContentType $contentType */
-            $output->writeln("\t- {$contentType->getName($contentType->mainLanguageCode)}");
-        }
-        $helper   = $this->getHelper('question');
-        $question = new ConfirmationQuestion(
-            "\n<question>Are you sure you want to add novaseometas all these Content Type?</question>[yes]",
-            true
-        );
-        if (!$helper->ask($input, $output, $question)) {
-            return;
-        }
-        $this->contentTypes = $contentTypes;
     }
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
