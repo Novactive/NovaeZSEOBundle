@@ -1,5 +1,13 @@
 # <i class="fa fa-3x fa-file"></i><br />Changelog
 
+## 5.0.0
+
+* Compatibility with 3.x
+* Github Actions and ready for more tests
+
+Thank you to all the contributors! Past, current and future! 
+https://github.com/Novactive/NovaeZSEOBundle/graphs/contributors
+
 ## 4.0.0
 
 * Compatibility with 2.x

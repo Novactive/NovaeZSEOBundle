@@ -16,9 +16,12 @@ class LoginTest extends TestCase
 {
     public function testAdminLoginAndSEOTab(): void
     {
-        $helper = new BrowserHelper($this->getPantherClient());
-        $helper->get('/admin');
-        $form = $helper->crawler()->filter('form');
+        $helper  = new BrowserHelper($this->getPantherClient());
+        $crawler = $helper->get('/admin/login');
+
+        $this->assertStringContainsString('ez-login__form-wrapper', $helper->client()->getPageSource());
+
+        $form = $crawler->filter('.ez-login__form-wrapper form');
         $form->form(
             [
                 '_username' => 'admin',
@@ -27,10 +30,10 @@ class LoginTest extends TestCase
         );
         $form->submit();
 
-        $waitForm = '.nav.nav-tabs .nav-item.last';
-        $crawler  = $helper->waitFor($waitForm);
-        $crawler->filter($waitForm)->count();
-        $this->assertEquals(1, $crawler->filter($waitForm)->count());
-        $this->assertEquals('SEO', $crawler->filter($waitForm)->text());
+        $tab     = '.nav.nav-tabs .nav-item.last';
+        $crawler = $helper->waitFor($tab);
+        $crawler->filter($tab)->count();
+        $this->assertEquals(1, $crawler->filter($tab)->count());
+        $this->assertEquals('SEO', $crawler->filter($tab)->text());
     }
 }
