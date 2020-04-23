@@ -50,7 +50,7 @@ class SEOController extends Controller
                 $robots[] = "Allow: {$rule}";
             }
         }
-        if ('prod' !== $this->get('kernel')->getEnvironment()) {
+        if ('prod' !== $this->getParameter('kernel.environment')) {
             $robots[] = 'Disallow: /';
         }
 

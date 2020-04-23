@@ -151,7 +151,11 @@ class SitemapController extends Controller
              */
             $location = $searchHit->valueObject;
             try {
-                $url = $this->generateUrl($location, [], UrlGeneratorInterface::ABSOLUTE_URL);
+                $url = $this->generateUrl(
+                    'ez_urlalias',
+                    ['locationId' => $location->id],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
             } catch (\Exception $exception) {
                 if ($this->has('logger')) {
                     $this->get('logger')->error('NovaeZSEO: '.$exception->getMessage());
