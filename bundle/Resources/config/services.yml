@@ -42,6 +42,10 @@ services:
             - { name: ez.fieldFormMapper.value, fieldType: novaseometas }
 
     # OTHER SERVICES
+    Novactive\Bundle\eZSEOBundle\Controller\SitemapController:
+        tags: ['controller.service_arguments']
+    Novactive\Bundle\eZSEOBundle\Controller\SEOController:
+        tags: ['controller.service_arguments']
     Novactive\Bundle\eZSEOBundle\Controller\Admin\RedirectController:
         tags: ['controller.service_arguments']
 
