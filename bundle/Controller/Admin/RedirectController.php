@@ -81,7 +81,7 @@ class RedirectController extends Controller
                 $e->getMessage();
             }
 
-            if (('' != $source || '' != $destination) && ($source != $destination) && (null === $urlExists)) {
+            if (('' !== $source || '' !== $destination) && ($source !== $destination) && (null === $urlExists)) {
                 try {
                     $result = $urlWildcardService->create($source, $destination, $type);
 
@@ -101,7 +101,7 @@ class RedirectController extends Controller
         if ($formDelete->isSubmitted() && $formDelete->isValid()) {
             $deleteAction = self::class.'::deleteAction';
             $response     = $this->forward($deleteAction, ['request' => $request]);
-            if (Response::HTTP_CREATED == $response->getStatusCode()) {
+            if (Response::HTTP_CREATED === $response->getStatusCode()) {
                 $messages[] = $translator->trans('nova.redirect.delete.info', [], 'redirect');
             }
         }
