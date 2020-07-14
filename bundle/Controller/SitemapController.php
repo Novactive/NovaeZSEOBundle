@@ -15,6 +15,7 @@ use DateTime;
 use DOMDocument;
 use DOMElement;
 use eZ\Bundle\EzPublishCoreBundle\Controller;
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\Values\Content\Location;
 use eZ\Publish\API\Repository\Values\Content\LocationQuery as Query;
@@ -41,35 +42,54 @@ class SitemapController extends Controller
     protected function getQuery(): Query
     {
         $limitToRootLocation = $this->getConfigResolver()->getParameter('limit_to_rootlocation', 'nova_ezseo');
-        $excludes            = $this->getConfigResolver()->getParameter('sitemap_excludes', 'nova_ezseo');
-        $query               = new Query();
-        $criterion           = [new Criterion\Visibility(Criterion\Visibility::VISIBLE)];
+        $excludes = $this->getConfigResolver()->getParameter('sitemap_excludes', 'nova_ezseo');
+        $query = new Query();
+
+        $criterion = [new Criterion\Visibility(Criterion\Visibility::VISIBLE)];
         if (true === $limitToRootLocation) {
             $criterion[] = new Criterion\Subtree($this->getRootLocation()->pathString);
         }
+
+        $contentTypeService = $this->getRepository()->getContentTypeService();
         foreach ($excludes['contentTypeIdentifiers'] as $contentTypeIdentifier) {
+            try {
+                $contentTypeService->loadContentTypeByIdentifier($contentTypeIdentifier);
+            } catch (NotFoundException $exception) {
+                continue;
+            }
             $criterion[] = new Criterion\LogicalNot(new Criterion\ContentTypeIdentifier($contentTypeIdentifier));
         }
-        foreach ($excludes['subtrees'] as $locationId) {
-            $excludedLocation = $this->getRepository()->sudo(
+
+        $testGetLocationId = function (int $locationId) {
+            return $this->getRepository()->sudo(
                 function (Repository $repository) use ($locationId) {
                     $locationService = $repository->getLocationService();
                     try {
                         return $locationService->loadLocation($locationId);
-                    } catch (\Exception $e) {
+                    } catch (NotFoundException $e) {
                         return false;
                     }
                 }
             );
-            if ($excludedLocation) {
-                $criterion[] = new Criterion\LogicalNot(new Criterion\Subtree($excludedLocation->pathString));
+        };
+
+        foreach ($excludes['subtrees'] as $locationId) {
+            $excludedLocation = $testGetLocationId($locationId);
+            if ($excludedLocation === false) {
+                continue;
             }
+            $criterion[] = new Criterion\LogicalNot(new Criterion\Subtree($excludedLocation->pathString));
         }
+
         foreach ($excludes['locations'] as $locationId) {
+            $excludedLocation = $testGetLocationId($locationId);
+            if ($excludedLocation === false) {
+                continue;
+            }
             $criterion[] = new Criterion\LogicalNot(new Criterion\LocationId($locationId));
         }
 
-        $query->query       = new Criterion\LogicalAnd($criterion);
+        $query->query = new Criterion\LogicalAnd($criterion);
         $query->sortClauses = [new SortClause\DatePublished(Query::SORT_DESC)];
 
         return $query;
@@ -81,12 +101,12 @@ class SitemapController extends Controller
     public function indexAction(): Response
     {
         $searchService = $this->getRepository()->getSearchService();
-        $query         = $this->getQuery();
-        $query->limit  = 0;
-        $resultCount   = $searchService->findLocations($query)->totalCount;
+        $query = $this->getQuery();
+        $query->limit = 0;
+        $resultCount = $searchService->findLocations($query)->totalCount;
 
         // Dom Doc
-        $sitemap               = new DOMDocument('1.0', 'UTF-8');
+        $sitemap = new DOMDocument('1.0', 'UTF-8');
         $sitemap->formatOutput = true;
 
         // create an index if we are greater than th PACKET_MAX
@@ -99,8 +119,8 @@ class SitemapController extends Controller
         } else {
             // if we are less or equal than the PACKET_SIZE, redo the search with no limit and list directly the urlmap
             $query->limit = $resultCount;
-            $results      = $searchService->findLocations($query);
-            $root         = $sitemap->createElement('urlset');
+            $results = $searchService->findLocations($query);
+            $root = $sitemap->createElement('urlset');
             $root->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
             $this->fillSitemap($sitemap, $root, $results);
             $sitemap->appendChild($root);
@@ -119,13 +139,13 @@ class SitemapController extends Controller
      */
     public function pageAction(int $page = 1): Response
     {
-        $sitemap               = new DOMDocument('1.0', 'UTF-8');
-        $root                  = $sitemap->createElement('urlset');
+        $sitemap = new DOMDocument('1.0', 'UTF-8');
+        $root = $sitemap->createElement('urlset');
         $sitemap->formatOutput = true;
         $root->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $sitemap->appendChild($root);
-        $query         = $this->getQuery();
-        $query->limit  = static::PACKET_MAX;
+        $query = $this->getQuery();
+        $query->limit = static::PACKET_MAX;
         $query->offset = static::PACKET_MAX * ($page - 1);
 
         $searchService = $this->getRepository()->getSearchService();
@@ -147,7 +167,7 @@ class SitemapController extends Controller
         foreach ($results->searchHits as $searchHit) {
             /**
              * @var SearchHit
-             * @var Location  $location
+             * @var Location $location
              */
             $location = $searchHit->valueObject;
             try {
@@ -164,9 +184,9 @@ class SitemapController extends Controller
             }
 
             $modified = $location->contentInfo->modificationDate->format('c');
-            $loc      = $sitemap->createElement('loc', $url);
-            $lastmod  = $sitemap->createElement('lastmod', $modified);
-            $urlElt   = $sitemap->createElement('url');
+            $loc = $sitemap->createElement('loc', $url);
+            $lastmod = $sitemap->createElement('lastmod', $modified);
+            $urlElt = $sitemap->createElement('url');
             $urlElt->appendChild($loc);
             $urlElt->appendChild($lastmod);
             $root->appendChild($urlElt);
@@ -195,10 +215,10 @@ class SitemapController extends Controller
                 continue;
             }
 
-            $loc              = $sitemap->createElement('loc', $locUrl);
-            $date             = new DateTime();
+            $loc = $sitemap->createElement('loc', $locUrl);
+            $date = new DateTime();
             $modificationDate = $date->format('c');
-            $mod              = $sitemap->createElement('lastmod', $modificationDate);
+            $mod = $sitemap->createElement('lastmod', $modificationDate);
             $sitemapElt->appendChild($loc);
             $sitemapElt->appendChild($mod);
             $root->appendChild($sitemapElt);
