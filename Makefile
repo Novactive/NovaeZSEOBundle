@@ -12,6 +12,8 @@ CURRENT_DIR := $(shell pwd)
 .DEFAULT_GOAL := list
 SYMFONY := symfony
 EZ_DIR := $(CURRENT_DIR)/ezplatform
+DOCKER_DB_CONTAINER := ezdbnovaezseocontainer
+MYSQL := mysql
 
 .PHONY: list
 list:
@@ -22,30 +24,28 @@ list:
 
 .PHONY: installez
 installez: ## Install eZ as the local project
-	@docker run -d -p 3364:3306 --name ezdbnovaezseocontainer -e MYSQL_ROOT_PASSWORD=ezplatform mariadb:10.3
+	@docker run -d -p 3364:3306 --name $(DOCKER_DB_CONTAINER) -e MYSQL_ROOT_PASSWORD=ezplatform mariadb:10.3
 	@composer create-project ezsystems/ezplatform --prefer-dist --no-progress --no-interaction --no-scripts $(EZ_DIR)
 	@curl -o tests/provisioning/wrap.php https://raw.githubusercontent.com/Plopix/symfony-bundle-app-wrapper/master/wrap-bundle.php
 	@WRAP_APP_DIR=./ezplatform WRAP_BUNDLE_DIR=./ php tests/provisioning/wrap.php
 	@rm tests/provisioning/wrap.php
-	@echo "Please set up this way:"
-	@echo "\tenv(DATABASE_HOST)     -> 127.0.0.1"
-	@echo "\tenv(DATABASE_PORT)     -> 3364"
-	@echo "\tenv(DATABASE_PASSWORD) -> ezplatform"
-	@cd $(EZ_DIR) && COMPOSER_MEMORY_LIMIT=-1 composer update --lock
-	@cd $(EZ_DIR) && bin/console ezplatform:install clean
+	@echo "DATABASE_URL=mysql://root:ezplatform@127.0.0.1:3364/ezplatform" >>  $(EZ_DIR)/.env.local
+	@cd $(EZ_DIR) && composer update --lock
+	@cd $(EZ_DIR) && composer ezplatform-install
+	@MYSQL -u root -pezplatform -h 127.0.0.1 -P 3364 ezplatform < bundle/Resources/sql/schema.sql
 	@cd $(EZ_DIR) && bin/console cache:clear
 
 .PHONY: serveez
 serveez: stopez ## Clear the cache and start the web server
 	@cd $(EZ_DIR) && rm -rf var/cache/*
-	@docker start ezdbnovaezseocontainer
+	@docker start $(DOCKER_DB_CONTAINER)
 	@cd $(EZ_DIR) && bin/console cache:clear
 	@cd $(EZ_DIR) && $(SYMFONY) local:server:start -d
 
 .PHONY: stopez
 stopez: ## Stop the web server if it is running
 	@cd $(EZ_DIR) && $(SYMFONY) local:server:stop
-	@docker stop ezdbnovaezseocontainer
+	@docker stop $(DOCKER_DB_CONTAINER)
 
 
 .PHONY: codeclean
@@ -64,6 +64,9 @@ install: ## Install vendors
 
 .PHONY: clean
 clean: ## Removes the vendors, and caches
-	rm -f .php_cs.cache
-	rm -rf vendor
-	rm -f composer.lock
+	@rm -f .php_cs.cache
+	@rm -rf vendor
+	@rm -rf ezplatform
+	@rm -f composer.lock
+	@docker stop $(DOCKER_DB_CONTAINER)
+	@docker rm $(DOCKER_DB_CONTAINER)
