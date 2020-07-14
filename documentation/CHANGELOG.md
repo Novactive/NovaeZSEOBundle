@@ -1,5 +1,11 @@
 # <i class="fa fa-3x fa-file"></i><br />Changelog
 
+## 5.1.0
+
+* Add new `sitemap_includes` configuration to specifically 'include' instead of 'exclude'.
+* Ignore `sitemap_excludes` misconfiguration when necessary
+* Update the Makefile for better contributor install 
+
 ## 5.0.0
 
 * Compatibility with 3.x

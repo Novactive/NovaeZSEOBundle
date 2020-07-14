@@ -91,6 +91,8 @@ services:
         factory: ['@Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory', 'get']
 
 
+    Novactive\Bundle\eZSEOBundle\Core\Sitemap\QueryFactory: ~
+
     Novactive\Bundle\eZSEOBundle\Core\UrlWildcardRouter:
         arguments:
             - '@ezpublish.api.service.url_wildcard'

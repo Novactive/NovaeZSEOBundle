@@ -16,6 +16,11 @@ parameters:
         locations: []
         subtrees: []
         contentTypeIdentifiers: ['image']
+    # Includes take precedence on excludes.
+    nova_ezseo.default.sitemap_includes:
+        locations: []
+        subtrees: []
+        contentTypeIdentifiers: []
     nova_ezseo.default.default_metas:
         author: "eZ Community Bundle Nova eZ SEO Bundle"
         copyright: ~
