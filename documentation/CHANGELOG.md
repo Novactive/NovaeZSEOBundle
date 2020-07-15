@@ -1,7 +1,9 @@
 # <i class="fa fa-3x fa-file"></i><br />Changelog
 
-## 5.1.0
+## 5.1.0 (next tag soon)
 
+* Add new `display_images_in_sitemap` configuration to enable listing the `ezimage` original 
+  urls for each content in the Sitemap.
 * Add new `sitemap_includes` configuration to specifically 'include' instead of 'exclude'.
 * Ignore `sitemap_excludes` misconfiguration when necessary
 * Update the Makefile for better contributor install 

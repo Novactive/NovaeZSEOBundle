@@ -18,6 +18,9 @@ use eZ\Bundle\EzPublishCoreBundle\Controller;
 use eZ\Publish\API\Repository\Values\Content\Location;
 use eZ\Publish\API\Repository\Values\Content\Search\SearchHit;
 use eZ\Publish\API\Repository\Values\Content\Search\SearchResult;
+use eZ\Publish\Core\Helper\FieldHelper;
+use eZ\Publish\Core\Repository\Values\Content\VersionInfo;
+use eZ\Publish\SPI\Variation\VariationHandler;
 use Novactive\Bundle\eZSEOBundle\Core\Sitemap\QueryFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,12 +28,24 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SitemapController extends Controller
 {
+    /** @var FieldHelper */
+    private $fieldHelper;
+
+    /** @var VariationHandler */
+    protected $imageVariationService;
+
     /**
      * How many in a Sitemap.
      *
      * @var int
      */
     const PACKET_MAX = 1000;
+
+    public function __construct(FieldHelper $fieldHelper, VariationHandler $imageVariationService)
+    {
+        $this->fieldHelper           = $fieldHelper;
+        $this->imageVariationService = $imageVariationService;
+    }
 
     /**
      * @Route("/sitemap.xml", name="_novaseo_sitemap_index", methods={"GET"})
@@ -59,6 +74,7 @@ class SitemapController extends Controller
             $results      = $searchService->findLocations($query);
             $root         = $sitemap->createElement('urlset');
             $root->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+            $root->setAttribute('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
             $this->fillSitemap($sitemap, $root, $results);
             $sitemap->appendChild($root);
         }
@@ -80,6 +96,7 @@ class SitemapController extends Controller
         $root                  = $sitemap->createElement('urlset');
         $sitemap->formatOutput = true;
         $root->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+        $root->setAttribute('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
         $sitemap->appendChild($root);
         $query         = $queryFactory();
         $query->limit  = static::PACKET_MAX;
@@ -124,6 +141,34 @@ class SitemapController extends Controller
             $loc      = $sitemap->createElement('loc', $url);
             $lastmod  = $sitemap->createElement('lastmod', $modified);
             $urlElt   = $sitemap->createElement('url');
+
+            // Inject the image tags if config is enabl
+
+            $displayImage = $this->getConfigResolver()->getParameter('display_images_in_sitemap', 'nova_ezseo');
+            if (true === $displayImage) {
+                $content = $this->getRepository()->getContentService()->loadContentByContentInfo(
+                    $location->contentInfo
+                );
+                foreach ($content->getFields() as $field) {
+                    $fieldTypeIdentifier = $content->getContentType()->getFieldDefinition(
+                        $field->fieldDefIdentifier
+                    )->fieldTypeIdentifier;
+
+                    if ('ezimage' !== $fieldTypeIdentifier) {
+                        continue;
+                    }
+
+                    if ($this->fieldHelper->isFieldEmpty($content, $field->fieldDefIdentifier)) {
+                        continue;
+                    }
+                    $variation      = $this->imageVariationService->getVariation($field, new VersionInfo(), 'original');
+                    $imageContainer = $sitemap->createElement('image:image');
+                    $imageLoc       = $sitemap->createElement('image:loc', $variation->uri);
+                    $imageContainer->appendChild($imageLoc);
+                    $urlElt->appendChild($imageContainer);
+                }
+            }
+
             $urlElt->appendChild($loc);
             $urlElt->appendChild($lastmod);
             $root->appendChild($urlElt);

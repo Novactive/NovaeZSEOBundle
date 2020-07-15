@@ -66,6 +66,7 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
         $processor->mapSetting('google_anonymizeIp', $config);
         $processor->mapSetting('bing_verification', $config);
         $processor->mapSetting('limit_to_rootlocation', $config);
+        $processor->mapSetting('display_images_in_sitemap', $config);
         $processor->mapSetting('robots', $config);
         $processor->mapConfigArray('fieldtype_metas', $config, ContextualizerInterface::MERGE_FROM_SECOND_LEVEL);
         $processor->mapConfigArray('default_metas', $config);

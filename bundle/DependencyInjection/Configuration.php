@@ -28,6 +28,7 @@ class Configuration extends SAConfiguration
             ->scalarNode('google_anonymizeIp')->defaultValue('~')->end()
             ->scalarNode('bing_verification')->defaultValue('~')->end()
             ->booleanNode('limit_to_rootlocation')->defaultValue('~')->end()
+            ->booleanNode('display_images_in_sitemap')->defaultValue('~')->end()
             ->scalarNode('fieldtype_metas_identifier')->defaultValue('metas')->end()
             ->arrayNode('fieldtype_metas')
                 ->isRequired()

@@ -45,6 +45,8 @@ services:
     Novactive\Bundle\eZSEOBundle\Controller\:
         resource: '../../Controller'
         tags: ['controller.service_arguments']
+        bind:
+            $fieldHelper: '@ezpublish.field_helper'
 
     Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension: ~
     Novactive\Bundle\eZSEOBundle\Core\DummyCustomFallback: ~
