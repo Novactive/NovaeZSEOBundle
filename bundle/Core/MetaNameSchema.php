@@ -37,11 +37,6 @@ use eZ\Publish\Core\MVC\ConfigResolverInterface;
 class MetaNameSchema extends NameSchemaService
 {
     /**
-     * @var array
-     */
-    protected $languages;
-
-    /**
      * @var RichTextConverterInterface
      */
     protected $richTextConverter;
