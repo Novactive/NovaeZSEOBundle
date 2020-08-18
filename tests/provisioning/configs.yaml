@@ -1,0 +1,20 @@
+nova_ezseo:
+    system:
+        default:
+            google_verification: plop2test42
+            fieldtype_metas_identifier: "metas"
+            default_metas:
+                author: "eZ Community Bundle Nova eZ SEO Bundle"
+                copyright: ~
+                generator: "eZ Platform"
+                MSSmartTagsPreventParsing: "TRUE"
+            fieldtype_metas:
+                title:
+                    label: 'Title'
+                    default_pattern: "<title|name>"
+                description:
+                    label: 'Description'
+                    default_pattern: "<description|short_description|title|name>"
+                keywords:
+                    label: 'Keywords'
+                    default_pattern: ~

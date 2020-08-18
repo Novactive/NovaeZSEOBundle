@@ -1,0 +1,13 @@
+system:
+    default:
+        fielddefinition_settings_templates:
+            -
+                template: "@NovaeZSEO/fields/fielddefinition_settings.html.twig"
+
+        fielddefinition_edit_templates:
+            -
+                template: "@NovaeZSEO/fields/field_types.html.twig"
+
+        field_templates:
+            -
+                template: "@NovaeZSEO/fields/novaseometas.html.twig"

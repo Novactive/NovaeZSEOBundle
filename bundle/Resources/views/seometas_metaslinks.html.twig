@@ -1,0 +1,47 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+{% for name, content in nova_ezseo.default_metas %}
+    {% if content is not empty %}
+        <meta name="{{ name }}" content="{{ content }}"/>
+    {% endif %}
+{% endfor %}
+
+{% if content is defined and content.fields[nova_ezseo.fieldtype_metas_identifier] is defined %}
+    {{ ez_render_field( content, nova_ezseo.fieldtype_metas_identifier ) }}
+{% endif %}
+
+{% if content is defined and content.fields[nova_ezseo.fieldtype_metas_identifier] is not defined %}
+    {% if content.contentInfo.mainLocationId is defined and content.contentInfo.mainLocationId is not null %}
+        <link rel="canonical" href="{{ url( 'ez_urlalias', {'locationId': content.contentInfo.mainLocationId} ) }}" />
+    {% endif %}
+{% endif %}
+
+{% for rel, attrs in nova_ezseo.default_links %}
+    {% if attrs.href is not empty %}
+        {% set href = attrs.href %}
+        {% if href.location_id is defined %}
+            {% set href = path( 'ez_urlalias', {'locationId': href.location_id } ) %}
+        {% elseif href.route is defined %}
+            {% set href = path( href.route ) %}
+        {% elseif href.asset is defined %}
+            {% if href.asset.package is defined %}
+                {% set href = asset( href.asset.path, href.asset.package ) %}
+            {% else %}
+                {% set href = asset( href.asset.path ) %}
+            {% endif %}
+        {% endif %}
+        <link rel="{{ rel }}"{% if attrs.type is defined %} type="{{ attrs.type }}"{% endif %}{% if attrs.title is defined %} title="{{ attrs.title }}"{% endif %} {% if not href is iterable %}href="{{ href }}"{% endif %}/>
+    {% endif %}
+{% endfor %}
+
+{% if ezplatform.availableLanguages|length > 1 %}
+    {% for lang in ezplatform.availableLanguages %}
+        {% if location is defined and not location.isDraft %}
+            <link rel="alternate" data-sa="{{ ezplatform.translationSiteAccess( lang ) }}" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( location, {"siteaccess": ezplatform.translationSiteAccess( lang ) } ) }}" />
+        {% else %}
+            {# FAILS WITH PAGE BUILDER ON NEW CREATION
+            {% set route = ez_route( params={"language": lang} ) %}
+            <link rel="alternate" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( route ) }}" />
+            #}
+        {% endif %}
+    {% endfor %}
+{% endif %}

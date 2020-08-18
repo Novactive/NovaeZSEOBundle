@@ -1,0 +1,108 @@
+parameters:
+    novactive.novaseobundle.admin_user_id: 14
+    novactive.novaseobundle.meta_field_name: Metas
+    novactive.novaseobundle.meta_field_description: Metas for Search Engine Optimizations
+    novactive.novaseobundle.meta_field_group: novaseo
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+        bind:
+            $entityManager: "@novaezmailing.doctrine.entity_manager"
+
+    # Marking fieldtype as unindexable for ez platform solr bundle to stop errors
+    novactive.novaseobundle.field_type.novaseometas.indexable.unindexed:
+        class: "%ezpublish.fieldType.indexable.unindexed.class%"
+        tags:
+            - { name: ezpublish.fieldType.indexable, alias: novaseometas }
+
+    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage:
+        arguments:
+            $gateway: '@Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\DoctrineStorage'
+        public: true
+        tags:
+            - { name: ezpublish.fieldType.externalStorageHandler, alias: novaseometas }
+
+    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\DoctrineStorage:
+        arguments:
+            $connection: "@ezpublish.api.storage_engine.legacy.connection"
+        tags:
+          - { name: ezpublish.fieldType.externalStorageHandler.gateway, alias: novaseometas, identifier: LegacyStorage }
+
+
+    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Converter:
+        tags:
+            - { name: ezpublish.storageEngine.legacy.converter, alias: novaseometas, lazy: true, callback: '::create' }
+
+    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\FormMapper:
+        tags:
+            - { name: ez.fieldFormMapper.definition, fieldType: novaseometas }
+            - { name: ez.fieldFormMapper.value, fieldType: novaseometas }
+
+    # OTHER SERVICES
+    Novactive\Bundle\eZSEOBundle\Controller\:
+        resource: '../../Controller'
+        tags: ['controller.service_arguments']
+        bind:
+            $fieldHelper: '@ezpublish.field_helper'
+
+    Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension: ~
+    Novactive\Bundle\eZSEOBundle\Core\DummyCustomFallback: ~
+
+    Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema:
+        arguments:
+            $contentTypeHandler: "@ezpublish.spi.persistence.content_type_handler"
+            $languageHandler: "@ezpublish.spi.persistence.cache.contentLanguageHandler"
+            $translationHelper: "@ezpublish.translation_helper"
+        calls:
+            - [setLanguages, ["@=service('ezpublish.config.resolver').getParameter('languages')"]]
+            - [setRichTextConverter, ["@ezrichtext.converter.output.xhtml5.core"]]
+            # Note: injecting lower layer Variation Handler (AliasGenerator) as a workaround for missing Public API objects context
+            - [setImageVariationService, ["@ezpublish.image_alias.imagine.alias_generator", "@ezpublish.fieldType.ezimage"]]
+
+    Novactive\Bundle\eZSEOBundle\Core\Installer\Field:
+        arguments:
+            $metaFieldName: "%novactive.novaseobundle.meta_field_name%"
+            $metaFieldDescription: "%novactive.novaseobundle.meta_field_description%"
+            $metaFieldGroup: "%novactive.novaseobundle.meta_field_group%"
+
+    Novactive\Bundle\eZSEOBundle\Command\AddNovaSEOMetasFieldTypeCommand:
+        arguments:
+            $adminUserId: "%novactive.novaseobundle.admin_user_id%"
+
+    Novactive\Bundle\eZSEOBundle\Core\Converter\ContentTypesHelper: ~
+
+    Novactive\Bundle\eZSEOBundle\Listener\AdminTopMenu:
+        tags:
+            - { name: kernel.event_listener, event: "ezplatform_admin_ui.menu_configure.main_menu", method: "onMenuConfigure",  priority: -100 }
+
+    Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper:
+        $ioService: '@ezseo_importurls.ezpublish.core.io_service'
+        $cacheDirectory: '%kernel.cache_dir%'
+
+    Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory:
+        arguments:
+            $repositoryConfigurationProvider: "@ezpublish.api.repository_configuration_provider"
+            $resolver: "@doctrine.orm.default_entity_listener_resolver"
+            $settings: { debug: "%kernel.debug%", cache_dir: "%kernel.cache_dir%" }
+
+    novaezmailing.doctrine.entity_manager:
+        class: Doctrine\ORM\EntityManagerInterface
+        factory: ['@Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory', 'get']
+
+
+    Novactive\Bundle\eZSEOBundle\Core\Sitemap\QueryFactory: ~
+
+    Novactive\Bundle\eZSEOBundle\Core\UrlWildcardRouter:
+        arguments:
+            - '@ezpublish.api.service.url_wildcard'
+            - '@ezpublish.urlalias_generator'
+            - '@router.request_context'
+        calls:
+            - [setLogger, ['@?logger']]
+            - [setWildcardService, ['@ezpublish.api.service.url_wildcard']]
+        tags:
+            - { name: router, priority: 2000 }
+

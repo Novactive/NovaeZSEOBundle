@@ -1,0 +1,46 @@
+{% extends '@ezdesign/ui/layout.html.twig' %}
+
+{% trans_default_domain 'redirect' %}
+
+{% block title %}
+    {{ 'menu.main_menu.import'|trans }}
+{% endblock %}
+{% block content %}
+    <section class="container mt-4 px-5">
+        {% if pager is defined and pager is not empty %}
+            <!-- template pagination -->
+            {{ include("NovaeZSEOBundle:commun:paginator.html.twig") }}
+            <!-- template pagination end -->
+        {% endif %}
+        <div class="ez-table-header">
+            <div class="ez-table-header__headline">{{ 'nova.history.list.menu.label'|trans }}</div>
+        </div>
+        <table class="table table-striped mb-3">
+            <thead>
+            <tr>
+                <th>{{ 'nova.history.list.table.name'|trans }}</th>
+                <th>{{ 'nova.history.list.table.date'|trans }}</th>
+                <th>{{ 'nova.history.list.table.link'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if pager is defined %}
+                {% for data in pager.currentPageResults %}
+                    <tr>
+                        <td>{{ data.nameFile }}</td>
+                        <td>{{ data.date|date('Y-m-d H:m:s') }}</td>
+                        <td>
+                            <a href="{{ path('novactive_platform_admin_ui.download-log-redirect-url',{'id': data.id}) }}"
+                               download>{{ 'nova.history.list.table.link_file'|trans }}</a></td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+        {% if pager is defined and pager is not empty %}
+            <!-- template pagination -->
+            {{ include("NovaeZSEOBundle:commun:paginator.html.twig") }}
+            <!-- template pagination end -->
+        {% endif %}
+    </section>
+{% endblock %}

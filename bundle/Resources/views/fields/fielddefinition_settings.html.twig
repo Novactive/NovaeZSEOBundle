@@ -1,0 +1,12 @@
+{% extends '@EzPublishCore/fielddefinition_settings.html.twig' %}
+
+{% block novaseometas_settings %}
+    <ul class="ez-fielddefinition-settings ez-fielddefinition-{{ fielddefinition.fieldTypeIdentifier }}-settings">
+        {% for metaIdentifier, metaValue in settings.configuration %}
+            <li class="ez-fielddefinition-setting meta-value">
+                <div class="ez-fielddefinition-setting-name">{{ metaIdentifier|capitalize }}</div>
+                <div class="ez-fielddefinition-setting-value">{{ metaValue ?: (nova_ezseo.fieldtype_metas[metaIdentifier] is defined ? nova_ezseo.fieldtype_metas[metaIdentifier].default_pattern) }}</div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

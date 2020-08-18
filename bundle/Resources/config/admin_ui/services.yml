@@ -1,0 +1,44 @@
+services:
+
+    # FIELD TYPE
+    Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Type:
+        parent: ezpublish.fieldType
+        tags:
+            - { name: ezpublish.fieldType, alias: novaseometas }
+
+    Novactive\Bundle\eZSEOBundle\Core\SeoMetas:
+        arguments:
+            - "@ezpublish.config.resolver"
+        tags:
+            - { name: ezplatform.admin_ui.config_provider, key: 'seoMetas' }
+
+    ezplatform.adminui.novaseobundle.css:
+        parent: EzSystems\EzPlatformAdminUi\Component\LinkComponent
+        arguments:
+            $href: "/bundles/novaezseo/css/views/fields/edit/novaseometas.css"
+        tags:
+            - { name: ezplatform.admin_ui.component, group: 'stylesheet-head' }
+
+    ezplatform.adminui.novaseobundle.css_font:
+        parent: EzSystems\EzPlatformAdminUi\Component\LinkComponent
+        arguments:
+            $href: "/bundles/novaezseo/font/font-awesome.min.css"
+        tags:
+            - { name: ezplatform.admin_ui.component, group: 'stylesheet-head' }
+
+    ezplatform.adminui.novaseobundle.css_page:
+        parent: EzSystems\EzPlatformAdminUi\Component\LinkComponent
+        arguments:
+            $href: "/bundles/novaezseo/css/style.css"
+        tags:
+            - { name: ezplatform.admin_ui.component, group: 'stylesheet-head' }
+
+    ezplatform.adminui.novaseobundle.js:
+        parent: EzSystems\EzPlatformAdminUi\Component\ScriptComponent
+        autowire: true
+        autoconfigure: false
+        public: false
+        arguments:
+            $src: "/bundles/novaezseo/js/script.js"
+        tags:
+            - { name: ezplatform.admin_ui.component, group: 'script-body' }

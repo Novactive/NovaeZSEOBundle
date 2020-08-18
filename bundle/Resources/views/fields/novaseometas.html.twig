@@ -1,0 +1,40 @@
+{%  extends "@EzPublishCore/content_fields.html.twig"  %}
+
+{% block novaseometas_field %}
+    {{ field|compute_novaseometas(contentInfo) }}
+    {% set isCanonicalFind = false %}
+    {% set isTtitleFind = false %}
+    {% for meta in field.value.metas %}
+        {% if meta.content is not empty %}
+            {% if meta.name == "title" %}
+                <title>{{ meta.content }}</title>
+                {% set isTtitleFind = true %}
+            {% elseif meta.name == "canonical" %}
+                <link rel="canonical" href="{{ meta.content }}" />
+                {% set isCanonicalFind = true %}
+            {% elseif 'image' in meta.name|trim or 'card' in meta.name|trim or 'url' in meta.name|trim %}
+                <meta property="{{ meta.name }}" content="{{ meta.content | replace({' ': '%20'})  }}"/>
+            {% elseif meta.name|trim starts with "og" %}
+                <meta property="{{ meta.name }}" content="{{ meta.content }}"/>
+            {% else %}
+                <meta name="{{ meta.name }}" content="{{ meta.content }}"/>
+            {% endif %}
+        {% else %}
+            {% set fallbackedContent = contentInfo|fallback_novaseometas( meta.name ) %}
+            {% if fallbackedContent is not empty %}
+                {% if meta.name == "title" %}
+                    {% set isTtitleFind = true %}
+                    <title>{{ fallbackedContent }}</title>
+                {% else %}
+                    <meta name="{{ meta.name }}" content="{{ fallbackedContent }}"/>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    {% if contentInfo.mainLocationId is defined and contentInfo.mainLocationId is not null and isCanonicalFind == false %}
+        <link rel="canonical" href="{{ url( 'ez_urlalias', {'locationId': contentInfo.mainLocationId} ) }}" />
+    {% endif %}
+    {% if isTtitleFind == false %}
+        <title>{{ ez_content_name( contentInfo ) }}</title>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,88 @@
+parameters:
+    nova_ezseo.default.robots_disallow: []
+    nova_ezseo.default.robots:
+        sitemap:
+#            - { route : '_novaseo_sitemap_index' }
+#            - { url : 'https://www.google.fr/sitemap.xml' }
+        allow: []
+        disallow: []
+    nova_ezseo.default.google_gatracker: ~
+    nova_ezseo.default.google_verification: 1234567890
+    nova_ezseo.default.google_anonymizeIp: ~
+    nova_ezseo.default.bing_verification: ~
+    nova_ezseo.default.custom_fallback_service: ~
+    nova_ezseo.default.limit_to_rootlocation: ~
+    nova_ezseo.default.display_images_in_sitemap: ~
+    nova_ezseo.default.sitemap_excludes:
+        locations: []
+        subtrees: []
+        contentTypeIdentifiers: ['image']
+    # Includes take precedence on excludes.
+    nova_ezseo.default.sitemap_includes:
+        locations: []
+        subtrees: []
+        contentTypeIdentifiers: []
+    nova_ezseo.default.default_metas:
+        author: "eZ Community Bundle Nova eZ SEO Bundle"
+        copyright: ~
+        generator: "eZ Platform"
+        MSSmartTagsPreventParsing: "TRUE"
+    nova_ezseo.default.default_links:
+        Index:
+            href: { location_id: 2 }
+            title: 'Home'
+#        Top:
+#            href: { route : 'route_name' }
+#            title: 'Home'
+#        Search:
+#            href: { route: 'search_route_name' }
+#            title: 'Search'
+        'Shortcut icon':
+            href: { asset: { path: '/bundles/sitebundle/images/favicon.ico' } }
+            type: 'image/x-icon'
+#        Alternate:
+#            href: { route: 'rss_feed_route_name' }
+#            title: 'RSS'
+#            type: 'application/rss+xml'
+    nova_ezseo.default.fieldtype_metas_identifier: "metas"
+    nova_ezseo.default.fieldtype_metas:
+        title:
+            label: 'Title'
+            default_pattern: "<title|name>"
+            icon: 'book'
+        description:
+            label: 'Description'
+            default_pattern: ~
+            icon: 'book'
+        keywords:
+            label: 'Keywords'
+            default_pattern: ~
+            icon: 'tags'
+        'canonical':
+            label: 'External Canonical URL'
+            default_pattern: ~
+            icon: 'link'
+        'og:title':
+            label: 'Facebook - Title'
+            default_pattern: "<title|name>"
+            icon: 'facebook-official'
+        'og:description':
+            label: 'Facebook - Description'
+            default_pattern: "<short_description|description|title|name>"
+            icon: 'facebook-official'
+        'og:image':
+            label: 'Facebook - Image'
+            default_pattern: "<image|picture>"
+            icon: 'facebook-official'
+        'twitter:title':
+            label: 'Twitter - Title'
+            default_pattern: "<title|name>"
+            icon: 'twitter-square'
+        'twitter:description':
+            label: 'Twitter - Description'
+            default_pattern: "<short_description|description|title|name>"
+            icon: 'twitter-square'
+        'twitter:image':
+            label: 'Twitter - Image'
+            default_pattern: "<image|picture>"
+            icon: 'twitter-square'

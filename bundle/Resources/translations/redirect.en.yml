@@ -1,0 +1,67 @@
+menu.main_menu.header: 'SEO'
+menu.main_menu.list: 'Redirect Url'
+menu.main_menu.import: 'Import Urls'
+menu.main_menu.history.import: "History Import Urls"
+
+info:
+    back: "Back"
+
+nova:
+  redirect:
+    root:
+      menu:
+        label: "Redirect manager"
+    list:
+      menu:
+        label: "URL aliases with wildcard characters (total %total%) "
+      title: "List of URL (total %total%)"
+      source: "Source"
+      destination: "Destination"
+      type: "Type"
+      forward: "Redirection"
+      direct: "Direct"
+      undined: "Undefined"
+    button:
+      delete: "Delete selection"
+      create: "Create"
+    create:
+      title: "Create a new redirect URL"
+      type: "Redirection 301"
+      source: "URL Alias Source :"
+      destination: "Destination :"
+      info:  "The URL has been created"
+      warnning: "Enter the text in the field to create a new alias."
+      exists: "The URL alias (url) already exists as a Source URL."
+    delete:
+      info: "The selected aliases have been removed."
+  import:
+    root:
+      menu:
+        label: "Import Urls"
+      form:
+        label: "File*:"
+        upload_file_message: "Drag and drop your files on browser window or upload them"
+        upload_file_button: "Upload file"
+        button: "import"
+        error:
+          invalid_type: "Invalid file type"
+          invalid_file: "Invalid file content"
+    list:
+      menu:
+        label: "Total url imported (%totalImported% / %totalUrls%)"
+      table:
+        source: "Source"
+        destination: "Destination"
+        message: "Message"
+        status: "Status"
+        info: "The URL has been created"
+        exists: "The URL alias (url) already exists as a Source URL."
+  history:
+    list:
+      menu:
+        label: "History files imported"
+      table:
+        name: "FileName"
+        date: "Date"
+        link: "Log file link"
+        link_file: "Download Log File"

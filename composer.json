@@ -1,0 +1,54 @@
+{
+    "name": "novactive/ezseobundle",
+    "description": "Novactive eZ SEO Bundle is an eZ Platform bundle for SEO simplications. metas, sitemaps, robots.txt, etc.",
+    "keywords": [
+        "seo",
+        "ezplatform",
+        "novactive",
+        "metas",
+        "robots.txt",
+        "sitemap"
+    ],
+    "homepage": "https://github.com/Novactive/NovaeZSEOBundle",
+    "type": "ezplatform-bundle",
+    "authors": [
+        {
+            "name": "Novactive",
+            "homepage": "https://www.novactive.us",
+            "email": "dir.tech@novactive.com"
+        },
+        {
+            "name": "Sebastien Morel",
+            "homepage": "https://github.com/Plopix",
+            "email": "morel.seb@gmail.com"
+        }
+    ],
+    "license": [
+        "MIT"
+    ],
+    "require": {
+        "php": "^7.3",
+        "ext-dom": "*",
+        "ext-pdo": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.4",
+        "phpmd/phpmd": "^2.7",
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "phpunit/phpunit": "^8.0",
+        "symfony/panther": "^0.7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Novactive\\Bundle\\eZSEOBundle\\": "bundle",
+            "Novactive\\Bundle\\eZSEOBundle\\Tests\\": "tests/Tests"
+        }
+    },
+    "extra": {
+        "thanks": {
+            "name": "ezsystems/ezplatform",
+            "url": "https://github.com/ezsystems/ezplatform"
+        }
+    }
+}
