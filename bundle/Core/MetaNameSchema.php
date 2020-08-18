@@ -37,11 +37,6 @@ use EzSystems\EzPlatformRichText\eZ\RichText\Converter as RichTextConverterInter
 class MetaNameSchema extends NameSchemaService
 {
     /**
-     * @var array
-     */
-    protected $languages;
-
-    /**
      * @var RichTextConverterInterface
      */
     protected $richTextConverter;
@@ -76,12 +71,18 @@ class MetaNameSchema extends NameSchemaService
      */
     private $relationListField;
 
+    /**
+     * @var ConfigResolverInterface
+     */
+    private $configurationResolver;
+
     public function __construct(
         ContentTypeHandler $contentTypeHandler,
         FieldTypeRegistry $fieldTypeRegistry,
         ContentLanguageHandler $languageHandler,
         RepositoryInterface $repository,
         TranslationHelper $translationHelper,
+        ConfigResolverInterface $configurationResolver,
         array $settings = []
     ) {
         $this->fieldTypeRegistry = $fieldTypeRegistry;
@@ -97,11 +98,7 @@ class MetaNameSchema extends NameSchemaService
         $this->repository = $repository;
         $this->translationHelper = $translationHelper;
         $this->relationListField = $this->fieldTypeRegistry->getFieldType('ezobjectrelationlist');
-    }
-
-    public function setLanguages(array $languages = null): void
-    {
-        $this->languages = $languages;
+        $this->configurationResolver = $configurationResolver;
     }
 
     public function setRichTextConverter(RichTextConverterInterface $richTextConverter): void
@@ -116,6 +113,8 @@ class MetaNameSchema extends NameSchemaService
 
     public function resolveMeta(Meta $meta, Content $content, ContentType $contentType = null): bool
     {
+        $languages = $this->configurationResolver->getParameter('languages');
+
         if (null === $contentType) {
             $contentType = $this->repository->getContentTypeService()->loadContentType(
                 $content->contentInfo->contentTypeId
@@ -130,10 +129,10 @@ class MetaNameSchema extends NameSchemaService
         );
         // we don't fallback on the other languages... it would be very bad for SEO to mix the languages
         if (
-            (\array_key_exists($this->languages[0], $resolveMultilingue)) &&
-            ('' !== $resolveMultilingue[$this->languages[0]])
+            (\array_key_exists($languages[0], $resolveMultilingue)) &&
+            ('' !== $resolveMultilingue[$languages[0]])
         ) {
-            $meta->setContent($resolveMultilingue[$this->languages[0]]);
+            $meta->setContent($resolveMultilingue[$languages[0]]);
 
             return true;
         }
