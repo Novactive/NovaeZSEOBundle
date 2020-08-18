@@ -32,11 +32,11 @@ class SeoMetas implements ProviderInterface
      */
     public function getConfig()
     {
-        $list  = [];
+        $list = [];
         $metas = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
         foreach ($metas as $metaIdentifier => $meta) {
             $meta['identifier'] = $metaIdentifier;
-            $list[]             = $meta;
+            $list[] = $meta;
         }
 
         return $list;

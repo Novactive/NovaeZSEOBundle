@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle MetaNameSchema.
  *
@@ -84,8 +85,8 @@ class MetaNameSchema extends NameSchemaService
         array $settings = []
     ) {
         $this->fieldTypeRegistry = $fieldTypeRegistry;
-        $settings['limit']       = $this->fieldContentMaxLength;
-        $handler                 = new ContentTypeDomainMapper(
+        $settings['limit'] = $this->fieldContentMaxLength;
+        $handler = new ContentTypeDomainMapper(
             $contentTypeHandler,
             $languageHandler,
             $this->fieldTypeRegistry
@@ -93,7 +94,7 @@ class MetaNameSchema extends NameSchemaService
 
         parent::__construct($contentTypeHandler, $handler, $fieldTypeRegistry, $settings);
 
-        $this->repository        = $repository;
+        $this->repository = $repository;
         $this->translationHelper = $translationHelper;
         $this->relationListField = $this->fieldTypeRegistry->getFieldType('ezobjectrelationlist');
     }
@@ -128,7 +129,8 @@ class MetaNameSchema extends NameSchemaService
             $content->versionInfo->languageCodes
         );
         // we don't fallback on the other languages... it would be very bad for SEO to mix the languages
-        if ((\array_key_exists($this->languages[0], $resolveMultilingue)) &&
+        if (
+            (\array_key_exists($this->languages[0], $resolveMultilingue)) &&
             ('' !== $resolveMultilingue[$this->languages[0]])
         ) {
             $meta->setContent($resolveMultilingue[$this->languages[0]]);
@@ -236,9 +238,9 @@ class MetaNameSchema extends NameSchemaService
     ): string {
         $field = new Field(
             [
-                'value'              => $value,
+                'value' => $value,
                 'fieldDefIdentifier' => $identifier,
-                'languageCode'       => $languageCode,
+                'languageCode' => $languageCode,
             ]
         );
 

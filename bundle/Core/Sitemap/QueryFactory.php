@@ -28,7 +28,7 @@ final class QueryFactory
     public function __construct(ConfigResolverInterface $configResolver, Repository $repository)
     {
         $this->configResolver = $configResolver;
-        $this->repository     = $repository;
+        $this->repository = $repository;
     }
 
     private function getLocation(int $locationId): ?Location
@@ -66,7 +66,7 @@ final class QueryFactory
         }
 
         // Inclusions
-        $config     = $this->configResolver->getParameter('sitemap_includes', 'nova_ezseo');
+        $config = $this->configResolver->getParameter('sitemap_includes', 'nova_ezseo');
         $criterions = array_merge(
             $criterions,
             $this->getCriterionsForConfig(
@@ -78,7 +78,7 @@ final class QueryFactory
         );
 
         // Exclusions
-        $config     = $this->configResolver->getParameter('sitemap_excludes', 'nova_ezseo');
+        $config = $this->configResolver->getParameter('sitemap_excludes', 'nova_ezseo');
         $criterions = array_merge(
             $criterions,
             $this->getCriterionsForConfig(
@@ -89,7 +89,7 @@ final class QueryFactory
             )
         );
 
-        $query->query       = new Criterion\LogicalAnd($criterions);
+        $query->query = new Criterion\LogicalAnd($criterions);
         $query->sortClauses = [new SortClause\DatePublished(Query::SORT_DESC)];
 
         return $query;
@@ -102,7 +102,7 @@ final class QueryFactory
         bool $isLogicalNot = false
     ) {
         $contentTypeService = $this->repository->getContentTypeService();
-        $criterions         = [];
+        $criterions = [];
 
         foreach ($contentTypeIdentifiers as $contentTypeIdentifier) {
             try {

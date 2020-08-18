@@ -32,17 +32,9 @@
         "ext-pdo": "*",
         "ext-json": "*"
     },
-    "require-dev": {
-        "squizlabs/php_codesniffer": "^3.4",
-        "phpmd/phpmd": "^2.7",
-        "friendsofphp/php-cs-fixer": "^2.15",
-        "phpunit/phpunit": "^8.0",
-        "symfony/panther": "^0.7.1"
-    },
     "autoload": {
         "psr-4": {
-            "Novactive\\Bundle\\eZSEOBundle\\": "bundle",
-            "Novactive\\Bundle\\eZSEOBundle\\Tests\\": "tests/Tests"
+            "Novactive\\Bundle\\eZSEOBundle\\": "bundle"
         }
     },
     "extra": {

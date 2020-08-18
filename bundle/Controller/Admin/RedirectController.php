@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle RedirectController.
  *
@@ -39,7 +40,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class RedirectController extends Controller
 {
-    const URL_LIMIT = 10;
+    public const URL_LIMIT = 10;
 
     /**
      * @Route("/list", name="novaseo_redirect_list")
@@ -55,8 +56,8 @@ class RedirectController extends Controller
             throw new AccessDeniedException('Limited access !!!');
         }
 
-        $errors    = [];
-        $messages  = [];
+        $errors = [];
+        $messages = [];
         $urlExists = null;
 
         $form = $this->createForm(RedirectType::class);
@@ -66,9 +67,9 @@ class RedirectController extends Controller
         $formDelete->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $source      = trim($form->getData()['source']);
+            $source = trim($form->getData()['source']);
             $destination = trim($form->getData()['destination']);
-            $type        = trim($form->getData()['type']);
+            $type = trim($form->getData()['type']);
 
             if (!$permissionResolver->hasAccess('novaseobundle.redirects', 'add')) {
                 throw new AccessDeniedException('Limited access !!!');
@@ -76,7 +77,7 @@ class RedirectController extends Controller
             // verify if URL destination exists in source URL
             try {
                 $urlExists = $urlWildcardService->translate($destination);
-                $errors[]  = $translator->trans('nova.redirect.create.exists', ['url' => $destination], 'redirect');
+                $errors[] = $translator->trans('nova.redirect.create.exists', ['url' => $destination], 'redirect');
             } catch (Exception $e) {
                 $e->getMessage();
             }
@@ -89,7 +90,7 @@ class RedirectController extends Controller
                         $messages[] = $source.' '.$translator->trans('nova.redirect.create.info', [], 'redirect');
                     }
                 } catch (Exception $e) {
-                    $message  = explode(':', $e->getMessage());
+                    $message = explode(':', $e->getMessage());
                     $errors[] = isset($message[1]) ? $source.' '.$message[1] : $e->getMessage();
                     $logger->log(LogLevel::ERROR, $e->getMessage());
                 }
@@ -100,13 +101,13 @@ class RedirectController extends Controller
 
         if ($formDelete->isSubmitted() && $formDelete->isValid()) {
             $deleteAction = self::class.'::deleteAction';
-            $response     = $this->forward($deleteAction, ['request' => $request]);
+            $response = $this->forward($deleteAction, ['request' => $request]);
             if (Response::HTTP_CREATED === $response->getStatusCode()) {
                 $messages[] = $translator->trans('nova.redirect.delete.info', [], 'redirect');
             }
         }
 
-        $page       = $request->query->get('page') ?? 1;
+        $page = $request->query->get('page') ?? 1;
         $pagerfanta = new Pagerfanta(new ArrayAdapter($urlWildcardService->loadAll()));
 
         $pagerfanta->setMaxPerPage(self::URL_LIMIT);
@@ -115,10 +116,10 @@ class RedirectController extends Controller
         return $this->render(
             '@NovaeZSEO/platform_admin/list_url_wildcard.html.twig',
             [
-                'pager'      => $pagerfanta,
-                'form'       => $form->createView(),
-                'errors'     => $errors,
-                'messages'   => $messages,
+                'pager' => $pagerfanta,
+                'form' => $form->createView(),
+                'errors' => $errors,
+                'messages' => $messages,
                 'formDelete' => $formDelete->createView(),
             ]
         );
@@ -166,7 +167,7 @@ class RedirectController extends Controller
             throw new AccessDeniedException('Limited access !!!');
         }
 
-        $params  = [];
+        $params = [];
         $session = $request->getSession();
 
         $form = $this->createForm(ImportUrlsType::class);
@@ -204,14 +205,14 @@ class RedirectController extends Controller
         $lastUrlImported = $session->get('IMPORT_URL');
 
         if ($lastUrlImported) {
-            $page       = $request->query->get('page') ?? 1;
+            $page = $request->query->get('page') ?? 1;
             $pagerfanta = new Pagerfanta(new ArrayAdapter($lastUrlImported['return']));
 
             $pagerfanta->setMaxPerPage(self::URL_LIMIT);
             $pagerfanta->setCurrentPage(min($page, $pagerfanta->getNbPages()));
-            $params['pager']         = $pagerfanta;
+            $params['pager'] = $pagerfanta;
             $params['totalImported'] = $lastUrlImported['totalImported'];
-            $params['totalUrls']     = $lastUrlImported['totalUrls'];
+            $params['totalUrls'] = $lastUrlImported['totalUrls'];
         }
 
         $params += [
@@ -236,7 +237,7 @@ class RedirectController extends Controller
         $result = $importUrlsHelper->getLogsHistory();
         $params = [];
         if (count($result) > 0) {
-            $page       = $request->query->get('page') ?? 1;
+            $page = $request->query->get('page') ?? 1;
             $pagerfanta = new Pagerfanta(new ArrayAdapter($result));
 
             $pagerfanta->setMaxPerPage(self::URL_LIMIT);
@@ -264,7 +265,7 @@ class RedirectController extends Controller
         if ($log instanceof RedirectImportHistory) {
             $fileContent = $importUrlsHelper->downloadFile($log);
             if ($fileContent) {
-                $response    = new Response($fileContent);
+                $response = new Response($fileContent);
                 $disposition = $response->headers->makeDisposition(
                     ResponseHeaderBag::DISPOSITION_INLINE,
                     $log->getNameFile()

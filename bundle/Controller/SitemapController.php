@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle SitemapController.
  *
@@ -39,11 +40,11 @@ class SitemapController extends Controller
      *
      * @var int
      */
-    const PACKET_MAX = 1000;
+    public const PACKET_MAX = 1000;
 
     public function __construct(FieldHelper $fieldHelper, VariationHandler $imageVariationService)
     {
-        $this->fieldHelper           = $fieldHelper;
+        $this->fieldHelper = $fieldHelper;
         $this->imageVariationService = $imageVariationService;
     }
 
@@ -53,12 +54,12 @@ class SitemapController extends Controller
     public function indexAction(QueryFactory $queryFactory): Response
     {
         $searchService = $this->getRepository()->getSearchService();
-        $query         = $queryFactory();
-        $query->limit  = 0;
-        $resultCount   = $searchService->findLocations($query)->totalCount;
+        $query = $queryFactory();
+        $query->limit = 0;
+        $resultCount = $searchService->findLocations($query)->totalCount;
 
         // Dom Doc
-        $sitemap               = new DOMDocument('1.0', 'UTF-8');
+        $sitemap = new DOMDocument('1.0', 'UTF-8');
         $sitemap->formatOutput = true;
 
         // create an index if we are greater than th PACKET_MAX
@@ -71,8 +72,8 @@ class SitemapController extends Controller
         } else {
             // if we are less or equal than the PACKET_SIZE, redo the search with no limit and list directly the urlmap
             $query->limit = $resultCount;
-            $results      = $searchService->findLocations($query);
-            $root         = $sitemap->createElement('urlset');
+            $results = $searchService->findLocations($query);
+            $root = $sitemap->createElement('urlset');
             $root->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
             $root->setAttribute('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
             $this->fillSitemap($sitemap, $root, $results);
@@ -92,14 +93,14 @@ class SitemapController extends Controller
      */
     public function pageAction(QueryFactory $queryFactory, int $page = 1): Response
     {
-        $sitemap               = new DOMDocument('1.0', 'UTF-8');
-        $root                  = $sitemap->createElement('urlset');
+        $sitemap = new DOMDocument('1.0', 'UTF-8');
+        $root = $sitemap->createElement('urlset');
         $sitemap->formatOutput = true;
         $root->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $root->setAttribute('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
         $sitemap->appendChild($root);
-        $query         = $queryFactory();
-        $query->limit  = static::PACKET_MAX;
+        $query = $queryFactory();
+        $query->limit = static::PACKET_MAX;
         $query->offset = static::PACKET_MAX * ($page - 1);
 
         $searchService = $this->getRepository()->getSearchService();
@@ -138,9 +139,9 @@ class SitemapController extends Controller
             }
 
             $modified = $location->contentInfo->modificationDate->format('c');
-            $loc      = $sitemap->createElement('loc', $url);
-            $lastmod  = $sitemap->createElement('lastmod', $modified);
-            $urlElt   = $sitemap->createElement('url');
+            $loc = $sitemap->createElement('loc', $url);
+            $lastmod = $sitemap->createElement('lastmod', $modified);
+            $urlElt = $sitemap->createElement('url');
 
             // Inject the image tags if config is enabl
 
@@ -161,9 +162,9 @@ class SitemapController extends Controller
                     if ($this->fieldHelper->isFieldEmpty($content, $field->fieldDefIdentifier)) {
                         continue;
                     }
-                    $variation      = $this->imageVariationService->getVariation($field, new VersionInfo(), 'original');
+                    $variation = $this->imageVariationService->getVariation($field, new VersionInfo(), 'original');
                     $imageContainer = $sitemap->createElement('image:image');
-                    $imageLoc       = $sitemap->createElement('image:loc', $variation->uri);
+                    $imageLoc = $sitemap->createElement('image:loc', $variation->uri);
                     $imageContainer->appendChild($imageLoc);
                     $urlElt->appendChild($imageContainer);
                 }
@@ -197,10 +198,10 @@ class SitemapController extends Controller
                 continue;
             }
 
-            $loc              = $sitemap->createElement('loc', $locUrl);
-            $date             = new DateTime();
+            $loc = $sitemap->createElement('loc', $locUrl);
+            $date = new DateTime();
             $modificationDate = $date->format('c');
-            $mod              = $sitemap->createElement('lastmod', $modificationDate);
+            $mod = $sitemap->createElement('lastmod', $modificationDate);
             $sitemapElt->appendChild($loc);
             $sitemapElt->appendChild($mod);
             $root->appendChild($sitemapElt);

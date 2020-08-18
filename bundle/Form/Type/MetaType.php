@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle MetaType.
  *
@@ -41,7 +42,7 @@ class MetaType extends AbstractType
                 'content',
                 TextType::class,
                 [
-                    'label'      => false,
+                    'label' => false,
                     'empty_data' => '',
                 ]
             );

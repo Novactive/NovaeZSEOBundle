@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle Bundle.
  *
@@ -36,7 +37,7 @@ class NovaeZSEOBundle extends Bundle
 
             if (null !== $extension) {
                 if (!$extension instanceof ExtensionInterface) {
-                    $fqdn    = \get_class($extension);
+                    $fqdn = \get_class($extension);
                     $message = 'Extension %s must implement %s.';
                     throw new LogicException(sprintf($message, $fqdn, ExtensionInterface::class));
                 }

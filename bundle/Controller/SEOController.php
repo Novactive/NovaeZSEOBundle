@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle SEOController.
  *
@@ -29,14 +30,14 @@ class SEOController extends Controller
         $response->setSharedMaxAge(86400);
         $robots = ['User-agent: *'];
 
-        $robotsRules             = $this->getConfigResolver()->getParameter('robots', 'nova_ezseo');
+        $robotsRules = $this->getConfigResolver()->getParameter('robots', 'nova_ezseo');
         $backwardCompatibleRules = $this->getConfigResolver()->getParameter('robots_disallow', 'nova_ezseo');
 
         if (\is_array($robotsRules['sitemap'])) {
             foreach ($robotsRules['sitemap'] as $sitemapRules) {
                 foreach ($sitemapRules as $key => $value) {
                     if ('route' === $key) {
-                        $url      = $this->generateUrl($value, [], UrlGeneratorInterface::ABSOLUTE_URL);
+                        $url = $this->generateUrl($value, [], UrlGeneratorInterface::ABSOLUTE_URL);
                         $robots[] = "Sitemap: {$url}";
                     }
                     if ('url' === $key) {
@@ -98,7 +99,7 @@ class SEOController extends Controller
 
         $key = $this->getConfigResolver()->getParameter('bing_verification', 'nova_ezseo');
 
-        $xml               = new DOMDocument('1.0', 'UTF-8');
+        $xml = new DOMDocument('1.0', 'UTF-8');
         $xml->formatOutput = true;
 
         $root = $xml->createElement('users');

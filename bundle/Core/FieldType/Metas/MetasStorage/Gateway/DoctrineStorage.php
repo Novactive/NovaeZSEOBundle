@@ -11,7 +11,7 @@ use Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway;
 
 class DoctrineStorage extends Gateway
 {
-    const TABLE = 'novaseo_meta';
+    public const TABLE = 'novaseo_meta';
 
     /**
      * @var \Doctrine\DBAL\Connection
@@ -31,17 +31,16 @@ class DoctrineStorage extends Gateway
                 ->insert($this->connection->quoteIdentifier(self::TABLE))
                 ->values(
                     [
-                        $this->connection->quoteIdentifier('meta_name')               => ':meta_name',
-                        $this->connection->quoteIdentifier('meta_content')            => ':meta_content',
-                        $this->connection->quoteIdentifier('objectattribute_id')      => ':objectattribute_id',
+                        $this->connection->quoteIdentifier('meta_name') => ':meta_name',
+                        $this->connection->quoteIdentifier('meta_content') => ':meta_content',
+                        $this->connection->quoteIdentifier('objectattribute_id') => ':objectattribute_id',
                         $this->connection->quoteIdentifier('objectattribute_version') => ':objectattribute_version',
                     ]
                 )
                 ->setParameter(':meta_name', $meta['meta_name'], ParameterType::STRING)
                 ->setParameter(':meta_content', $meta['meta_content'], ParameterType::STRING)
                 ->setParameter(':objectattribute_id', $field->id, ParameterType::INTEGER)
-                ->setParameter(':objectattribute_version', $versionInfo->versionNo, ParameterType::INTEGER)
-            ;
+                ->setParameter(':objectattribute_version', $versionInfo->versionNo, ParameterType::INTEGER);
 
             $insertQuery->execute();
         }
@@ -69,8 +68,7 @@ class DoctrineStorage extends Gateway
                     )
                 )
             )
-            ->setParameter(':version', $versionInfo->versionNo, ParameterType::INTEGER)
-        ;
+            ->setParameter(':version', $versionInfo->versionNo, ParameterType::INTEGER);
 
         $deleteQuery->execute();
     }
@@ -95,8 +93,7 @@ class DoctrineStorage extends Gateway
                 )
             )
             ->setParameter(':objectattribute_id', $field->id, ParameterType::INTEGER)
-            ->setParameter(':objectattribute_version', $versionInfo->versionNo, ParameterType::INTEGER)
-        ;
+            ->setParameter(':objectattribute_version', $versionInfo->versionNo, ParameterType::INTEGER);
 
         $statement = $selectQuery->execute();
 

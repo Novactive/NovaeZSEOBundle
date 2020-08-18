@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle MetasType.
  *
@@ -22,14 +23,14 @@ use Novactive\Bundle\eZSEOBundle\Core\Meta;
 
 class Type extends FieldType
 {
-    const IDENTIFIER = 'novaseometas';
+    public const IDENTIFIER = 'novaseometas';
 
     /**
      * @var array
      */
     protected $settingsSchema = [
         'configuration' => [
-            'type'    => 'hash',
+            'type' => 'hash',
             'default' => [],
         ],
     ];
@@ -50,8 +51,8 @@ class Type extends FieldType
                             null,
                             [
                                 '%fieldType%' => $this->getFieldTypeIdentifier(),
-                                '%setting%'   => $settingKey,
-                                '%type%'      => 'hash',
+                                '%setting%' => $settingKey,
+                                '%type%' => 'hash',
                             ],
                             "[$settingKey]"
                         );
@@ -169,9 +170,9 @@ class Type extends FieldType
         $hash = [];
         foreach ($value->metas as $meta) {
             /* @var Meta $meta */
-            $name        = $meta->getName();
+            $name = $meta->getName();
             $hash[$name] = [
-                'meta_name'    => $name,
+                'meta_name' => $name,
                 'meta_content' => $meta->getContent(),
             ];
         }
@@ -186,9 +187,9 @@ class Type extends FieldType
     {
         return new FieldValue(
             [
-                'data'         => null,
+                'data' => null,
                 'externalData' => $this->toHash($value),
-                'sortKey'      => $this->getSortInfo($value),
+                'sortKey' => $this->getSortInfo($value),
             ]
         );
     }

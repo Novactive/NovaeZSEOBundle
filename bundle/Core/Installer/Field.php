@@ -41,10 +41,10 @@ class Field
         string $metaFieldDescription,
         string $metaFieldGroup
     ) {
-        $this->contentTypeService   = $contentTypeService;
-        $this->metaFieldName        = $metaFieldName;
+        $this->contentTypeService = $contentTypeService;
+        $this->metaFieldName = $metaFieldName;
         $this->metaFieldDescription = $metaFieldDescription;
-        $this->metaFieldGroup       = $metaFieldGroup;
+        $this->metaFieldGroup = $metaFieldGroup;
     }
 
     public function addToContentType(string $fieldName, ContentType $contentType): bool
@@ -55,7 +55,7 @@ class Field
             $contentTypeDraft = $this->contentTypeService->createContentTypeDraft($contentType);
         }
 
-        $typeUpdate                   = $this->contentTypeService->newContentTypeUpdateStruct();
+        $typeUpdate = $this->contentTypeService->newContentTypeUpdateStruct();
         $typeUpdate->modificationDate = new DateTime();
 
         $knowLanguage = array_keys($contentType->getDescriptions());
@@ -69,13 +69,13 @@ class Field
             'novaseometas'
         );
 
-        $fieldCreateStruct->names           = array_fill_keys($knowLanguage, $this->metaFieldName);
-        $fieldCreateStruct->descriptions    = array_fill_keys($knowLanguage, $this->metaFieldDescription);
-        $fieldCreateStruct->fieldGroup      = $this->metaFieldGroup;
-        $fieldCreateStruct->position        = 100;
-        $fieldCreateStruct->isTranslatable  = true;
-        $fieldCreateStruct->isRequired      = false;
-        $fieldCreateStruct->isSearchable    = false;
+        $fieldCreateStruct->names = array_fill_keys($knowLanguage, $this->metaFieldName);
+        $fieldCreateStruct->descriptions = array_fill_keys($knowLanguage, $this->metaFieldDescription);
+        $fieldCreateStruct->fieldGroup = $this->metaFieldGroup;
+        $fieldCreateStruct->position = 100;
+        $fieldCreateStruct->isTranslatable = true;
+        $fieldCreateStruct->isRequired = false;
+        $fieldCreateStruct->isSearchable = false;
         $fieldCreateStruct->isInfoCollector = false;
 
         try {

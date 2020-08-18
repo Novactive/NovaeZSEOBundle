@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle AddNovaSEOMetasFieldTypeCommand.
  *
@@ -64,12 +65,12 @@ class AddNovaSEOMetasFieldTypeCommand extends Command
         ContentTypesHelper $contentTypesHelper,
         int $adminUserId
     ) {
-        $this->configResolver     = $configResolver;
-        $this->repository         = $repository;
-        $this->userService        = $userService;
-        $this->fieldInstaller     = $fieldInstaller;
+        $this->configResolver = $configResolver;
+        $this->repository = $repository;
+        $this->userService = $userService;
+        $this->fieldInstaller = $fieldInstaller;
         $this->contentTypesHelper = $contentTypesHelper;
-        $this->adminUserId        = $adminUserId;
+        $this->adminUserId = $adminUserId;
 
         parent::__construct();
     }
@@ -126,7 +127,7 @@ EOT
             /* @var ContentType $contentType */
             $output->writeln("\t- {$contentType->getName($contentType->mainLanguageCode)}");
         }
-        $helper   = $this->getHelper('question');
+        $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion(
             "\n<question>Are you sure you want to add novaseometas all these Content Type?</question>[yes]",
             true

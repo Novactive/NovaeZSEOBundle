@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle Configuration.
  *

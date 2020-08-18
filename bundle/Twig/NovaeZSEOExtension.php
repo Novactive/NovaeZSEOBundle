@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle NovaeZSEOExtension.
  *
@@ -69,9 +70,9 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
         ConfigResolverInterface $configResolver,
         LocaleConverter $localeConverter
     ) {
-        $this->metaNameSchema  = $nameSchema;
-        $this->eZRepository    = $repository;
-        $this->configResolver  = $configResolver;
+        $this->metaNameSchema = $nameSchema;
+        $this->eZRepository = $repository;
+        $this->configResolver = $configResolver;
         $this->localeConverter = $localeConverter;
     }
 
@@ -108,18 +109,18 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
      */
     public function computeMetas(Field $field, ContentInfo $contentInfo): string
     {
-        $fallback     = false;
-        $languages    = $this->configResolver->getParameter('languages');
-        $contentType  = $this->eZRepository->getContentTypeService()->loadContentType(
+        $fallback = false;
+        $languages = $this->configResolver->getParameter('languages');
+        $contentType = $this->eZRepository->getContentTypeService()->loadContentType(
             $contentInfo->contentTypeId
         );
-        $content      = $this->eZRepository->getContentService()->loadContentByContentInfo($contentInfo, $languages);
+        $content = $this->eZRepository->getContentService()->loadContentByContentInfo($contentInfo, $languages);
         $contentMetas = $this->innerComputeMetas($content, $field, $contentType, $fallback);
         if ($fallback && !$this->customFallBackService) {
-            $rootNode        = $this->eZRepository->getLocationService()->loadLocation(
+            $rootNode = $this->eZRepository->getLocationService()->loadLocation(
                 $this->configResolver->getParameter('content.tree_root.location_id')
             );
-            $rootContent     = $this->eZRepository->getContentService()->loadContentByContentInfo(
+            $rootContent = $this->eZRepository->getContentService()->loadContentByContentInfo(
                 $rootNode->contentInfo,
                 $languages
             );
@@ -128,7 +129,7 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
             );
             // We need to load the good field too
             $metasIdentifier = $this->configResolver->getParameter('fieldtype_metas_identifier', 'nova_ezseo');
-            $rootMetas       = $this->innerComputeMetas($rootContent, $metasIdentifier, $rootContentType, $fallback);
+            $rootMetas = $this->innerComputeMetas($rootContent, $metasIdentifier, $rootContentType, $fallback);
             foreach ($contentMetas as $key => $metaContent) {
                 if (\array_key_exists($key, $rootMetas)) {
                     $metaContent->setContent(
@@ -151,7 +152,7 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
         &$needFallback = false
     ): array {
         if ($fieldDefIdentifier instanceof Field) {
-            $metasFieldValue    = $fieldDefIdentifier->value;
+            $metasFieldValue = $fieldDefIdentifier->value;
             $fieldDefIdentifier = $fieldDefIdentifier->fieldDefIdentifier;
         } else {
             $metasFieldValue = $content->getFieldValue($fieldDefIdentifier);
@@ -164,7 +165,7 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
                 if ($metasFieldValue->nameExists($metaName)) {
                     $meta = $metasFieldValue->metas[$metaName];
                 } else {
-                    $meta                              = new Meta($metaName);
+                    $meta = new Meta($metaName);
                     $metasFieldValue->metas[$metaName] = $meta;
                 }
 
@@ -172,7 +173,7 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
                 if ($meta->isEmpty()) {
                     $meta->setContent($metasConfig[$meta->getName()]['default_pattern']);
                     $fieldDefinition = $contentType->getFieldDefinition($fieldDefIdentifier);
-                    $configuration   = $fieldDefinition->getFieldSettings()['configuration'];
+                    $configuration = $fieldDefinition->getFieldSettings()['configuration'];
                     // but if we need something is the configuration we take it
                     if (isset($configuration[$meta->getName()]) && !empty($configuration[$meta->getName()])) {
                         $meta->setContent($configuration[$meta->getName()]);
@@ -196,19 +197,19 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
 
     public function getGlobals(): array
     {
-        $identifier     = $this->configResolver->getParameter('fieldtype_metas_identifier', 'nova_ezseo');
+        $identifier = $this->configResolver->getParameter('fieldtype_metas_identifier', 'nova_ezseo');
         $fieldtypeMetas = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
-        $metas          = $this->configResolver->getParameter('default_metas', 'nova_ezseo');
-        $links          = $this->configResolver->getParameter('default_links', 'nova_ezseo');
-        $gatracker      = $this->configResolver->getParameter('google_gatracker', 'nova_ezseo');
-        $anonymizeIp    = $this->configResolver->getParameter('google_anonymizeIp', 'nova_ezseo');
-        $novaeZseo      = [
+        $metas = $this->configResolver->getParameter('default_metas', 'nova_ezseo');
+        $links = $this->configResolver->getParameter('default_links', 'nova_ezseo');
+        $gatracker = $this->configResolver->getParameter('google_gatracker', 'nova_ezseo');
+        $anonymizeIp = $this->configResolver->getParameter('google_anonymizeIp', 'nova_ezseo');
+        $novaeZseo = [
             'fieldtype_metas_identifier' => $identifier,
-            'fieldtype_metas'            => $fieldtypeMetas,
-            'default_metas'              => $metas,
-            'default_links'              => $links,
-            'google_gatracker'           => '~' !== $gatracker ? $gatracker : null,
-            'google_anonymizeIp'         => '~' !== $anonymizeIp ? (bool) $anonymizeIp : true,
+            'fieldtype_metas' => $fieldtypeMetas,
+            'default_metas' => $metas,
+            'default_links' => $links,
+            'google_gatracker' => '~' !== $gatracker ? $gatracker : null,
+            'google_anonymizeIp' => '~' !== $anonymizeIp ? (bool) $anonymizeIp : true,
         ];
 
         return ['nova_ezseo' => $novaeZseo];

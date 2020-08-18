@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle ImportUrlsHelper.
  *
@@ -68,25 +69,25 @@ class ImportUrlsHelper
         string $cacheDirectory
     ) {
         $this->urlWildCardService = $urlWildcardService;
-        $this->entityManager      = $entityManager;
-        $this->cacheDirectory     = $cacheDirectory;
-        $this->translator         = $translator;
-        $this->logger             = $logger;
-        $this->fs                 = $fileSystem;
-        $this->ioService          = $ioService;
+        $this->entityManager = $entityManager;
+        $this->cacheDirectory = $cacheDirectory;
+        $this->translator = $translator;
+        $this->logger = $logger;
+        $this->fs = $fileSystem;
+        $this->ioService = $ioService;
     }
 
     public function importUrlRedirection(string $filePath): array
     {
         $counter = 0;
-        $params  = $return = [];
+        $params = $return = [];
 
         $fileToImport = fopen($filePath, 'r');
         if (false !== $fileToImport) {
             $totalImported = 0;
-            $totalUrls     = 0;
-            $filename      = 'redirectUrls/report/redirect_import_urls-'.date('d-m-Y-H-i-s').'.csv';
-            $filePath      = $this->cacheDirectory.$filename;
+            $totalUrls = 0;
+            $filename = 'redirectUrls/report/redirect_import_urls-'.date('d-m-Y-H-i-s').'.csv';
+            $filePath = $this->cacheDirectory.$filename;
             $this->fs->dumpFile($filePath, "Source;Destination;Message;Status\n");
 
             while (false !== ($data = fgetcsv($fileToImport, 1000, ';'))) {
@@ -96,15 +97,17 @@ class ImportUrlsHelper
                 }
 
                 if (isset($data[0]) and isset($data[1])) {
-                    $source      = $data[0]; // source
+                    $source = $data[0]; // source
                     $destination = $data[1]; // destination
                     ++$totalUrls;
                     // verify if URL destination exists in source URL
                     $verifResult = $this->checkUrlDestinationExist($destination);
 
-                    if (('' != $source || '' != $destination)
+                    if (
+                        ('' != $source || '' != $destination)
                         && ($source != $destination)
-                        && (null === $verifResult['urlExists'])) {
+                        && (null === $verifResult['urlExists'])
+                    ) {
                         // try to save data in table ezurlwildcard
                         $saveResult = $this->saveUrls($filePath, $source, $destination);
                         if ('OK' === $saveResult['imported']) {
@@ -112,13 +115,13 @@ class ImportUrlsHelper
                         }
                         $return[] = $saveResult;
                     } else {
-                        $msg      = $this->translator->trans('nova.import.list.table.exists', [], 'redirect');
-                        $status   = 'KO';
+                        $msg = $this->translator->trans('nova.import.list.table.exists', [], 'redirect');
+                        $status = 'KO';
                         $return[] = [
-                            'source'      => $source,
+                            'source' => $source,
                             'destination' => $destination,
-                            'msg'         => $msg,
-                            'imported'    => $status,
+                            'msg' => $msg,
+                            'imported' => $status,
                         ];
                         $this->fs->appendToFile(
                             $filePath,
@@ -136,7 +139,7 @@ class ImportUrlsHelper
 
             if (!isset($params['errorType'])) {
                 try {
-                    $uploadedFileStruct     = $this->ioService->newBinaryCreateStructFromLocalFile($filePath);
+                    $uploadedFileStruct = $this->ioService->newBinaryCreateStructFromLocalFile($filePath);
                     $uploadedFileStruct->id = $filename;
                     $this->ioService->createBinaryFile($uploadedFileStruct);
                     $this->fs->remove($filePath);
@@ -147,9 +150,9 @@ class ImportUrlsHelper
 
             $params += [
                 'totalImported' => $totalImported,
-                'totalUrls'     => $totalUrls,
-                'return'        => $return,
-                'fileLog'       => $filename,
+                'totalUrls' => $totalUrls,
+                'return' => $return,
+                'fileLog' => $filename,
             ];
         }
 
@@ -176,13 +179,13 @@ class ImportUrlsHelper
             $result = $this->urlWildCardService->create($source, $destination, 'Redirection');
             if ($result) {
                 $return = [
-                    'source'      => $source,
+                    'source' => $source,
                     'destination' => $destination,
-                    'msg'         => $this->translator->trans('nova.import.list.table.info', [], 'redirect'),
-                    'imported'    => 'OK',
+                    'msg' => $this->translator->trans('nova.import.list.table.info', [], 'redirect'),
+                    'imported' => 'OK',
                 ];
 
-                $msg    = $return['msg'];
+                $msg = $return['msg'];
                 $status = $return['imported'];
                 $this->fs->appendToFile(
                     $filePath,
@@ -191,12 +194,12 @@ class ImportUrlsHelper
             }
         } catch (\Exception $e) {
             $return = [
-                'source'      => $source,
+                'source' => $source,
                 'destination' => $destination,
-                'msg'         => $e->getMessage(),
-                'imported'    => 'KO',
+                'msg' => $e->getMessage(),
+                'imported' => 'KO',
             ];
-            $msg    = $return['msg'];
+            $msg = $return['msg'];
             $status = $return['imported'];
             $this->fs->appendToFile(
                 $filePath,
@@ -222,7 +225,7 @@ class ImportUrlsHelper
         }
     }
 
-    public function downloadFile(RedirectImportHistory $log): string
+    public function downloadFile(RedirectImportHistory $log): ?string
     {
         try {
             $file = $this->ioService->loadBinaryFile($log->getPath());

@@ -32,7 +32,7 @@ class RedirectType extends AbstractType
                 CheckboxType::class,
                 [
                     'required' => false,
-                    'data'     => true,
+                    'data' => true,
                 ]
             )
             ->add(

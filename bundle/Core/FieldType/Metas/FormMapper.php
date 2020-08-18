@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle FormMapper.
  *
@@ -12,9 +13,9 @@
 namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas;
 
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
+use EzSystems\EzPlatformAdminUi\FieldType\FieldDefinitionFormMapperInterface;
 use EzSystems\EzPlatformAdminUi\Form\Data\FieldDefinitionData;
 use EzSystems\EzPlatformContentForms\Data\Content\FieldData;
-use EzSystems\EzPlatformAdminUi\FieldType\FieldDefinitionFormMapperInterface;
 use EzSystems\EzPlatformContentForms\FieldType\FieldValueFormMapperInterface;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 use Novactive\Bundle\eZSEOBundle\Form\Type\MetasFieldType;
@@ -63,11 +64,11 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
                 'configuration',
                 CollectionType::class,
                 [
-                    'entry_type'    => TextType::class,
+                    'entry_type' => TextType::class,
                     'entry_options' => ['required' => false],
-                    'required'      => false,
+                    'required' => false,
                     'property_path' => 'fieldSettings[configuration]',
-                    'label'         => 'field_definition.novaseometas.configuration',
+                    'label' => 'field_definition.novaseometas.configuration',
                 ]
             );
     }
@@ -82,7 +83,7 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
     public function mapFieldValueForm(FormInterface $fieldForm, FieldData $data)
     {
         $fieldDefinition = $data->fieldDefinition;
-        $formConfig      = $fieldForm->getConfig();
+        $formConfig = $fieldForm->getConfig();
 
         $metasConfig = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
 
@@ -100,7 +101,7 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
                                MetasFieldType::class,
                                [
                                    'required' => $fieldDefinition->isRequired,
-                                   'label'    => $fieldDefinition->getName($formConfig->getOption('languageCode')),
+                                   'label' => $fieldDefinition->getName($formConfig->getOption('languageCode')),
                                ]
                            )
                            ->setAutoInitialize(false)

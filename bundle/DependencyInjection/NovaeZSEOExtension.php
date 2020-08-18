@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle Extension.
  *
@@ -33,15 +34,15 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
         $container->prependExtensionConfig('assetic', ['bundles' => ['NovaeZSEOBundle']]);
 
         $configs = [
-            'wildcard_routing.yml'            => 'ezpublish',
-            'ez_field_templates.yml'          => 'ezpublish',
-            'variations.yml'                  => 'ezpublish',
+            'wildcard_routing.yml' => 'ezpublish',
+            'ez_field_templates.yml' => 'ezpublish',
+            'variations.yml' => 'ezpublish',
             'admin_ui/ez_field_templates.yml' => 'ezpublish',
         ];
 
         foreach ($configs as $fileName => $extensionName) {
             $configFile = __DIR__.'/../Resources/config/'.$fileName;
-            $config     = Yaml::parse(file_get_contents($configFile));
+            $config = Yaml::parse(file_get_contents($configFile));
             $container->prependExtensionConfig($extensionName, $config);
             $container->addResource(new FileResource($configFile));
         }
@@ -50,7 +51,7 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
-        $config        = $this->processConfiguration($configuration, $configs);
+        $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle Bundle.
  *
@@ -31,7 +32,7 @@ class UrlWildcardRouter extends BaseUrlWildcardRouter
     {
         try {
             $requestedPath = $request->attributes->get('semanticPathinfo', $request->getPathInfo());
-            $urlWildcard   = $this->wildcardService->translate($requestedPath);
+            $urlWildcard = $this->wildcardService->translate($requestedPath);
 
             $params = [
                 '_route' => 'ez_urlalias',

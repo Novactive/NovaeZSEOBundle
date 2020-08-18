@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle Bundle.
  *
@@ -8,6 +9,7 @@
  * @copyright 2015 Novactive
  * @license   https://github.com/Novactive/NovaeZSEOBundle/blob/master/LICENSE MIT Licence
  */
+
 declare(strict_types=1);
 
 namespace Novactive\Bundle\eZSEOBundle\Tests;
@@ -53,12 +55,12 @@ final class BrowserHelper
         bool $changeHistory = true
     ): Crawler {
         $request = [
-            'method'        => $method,
-            'uri'           => $uri,
-            'parameters'    => $parameters,
-            'files'         => $files,
-            'server'        => $server,
-            'content'       => $content,
+            'method' => $method,
+            'uri' => $uri,
+            'parameters' => $parameters,
+            'files' => $files,
+            'server' => $server,
+            'content' => $content,
             'changeHistory' => $changeHistory,
         ];
 

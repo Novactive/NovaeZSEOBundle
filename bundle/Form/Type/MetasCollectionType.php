@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle MetasCollectionType.
  *
@@ -34,12 +35,12 @@ class MetasCollectionType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'allow_add'          => false,
-                'allow_delete'       => false,
-                'entry_type'         => MetaType::class,
-                'entry_options'      => ['required' => false],
-                'required'           => false,
-                'label'              => 'field_definition',
+                'allow_add' => false,
+                'allow_delete' => false,
+                'entry_type' => MetaType::class,
+                'entry_options' => ['required' => false],
+                'required' => false,
+                'label' => 'field_definition',
                 'translation_domain' => 'fieldtypes',
             ]
         );

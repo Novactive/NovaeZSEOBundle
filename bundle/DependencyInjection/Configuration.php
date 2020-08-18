@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NovaeZSEOBundle Configuration.
  *
@@ -19,8 +20,8 @@ class Configuration extends SAConfiguration
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('nova_ezseo');
-        $rootNode    = $treeBuilder->getRootNode();
-        $systemNode  = $this->generateScopeBaseNode($rootNode);
+        $rootNode = $treeBuilder->getRootNode();
+        $systemNode = $this->generateScopeBaseNode($rootNode);
         $systemNode
             ->scalarNode('custom_fallback_service')->defaultValue('~')->end()
             ->scalarNode('google_verification')->defaultValue('~')->end()
