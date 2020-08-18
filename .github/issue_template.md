@@ -1,13 +1,9 @@
-| Q                | A
-| ---------------- | -----
-| Bug report?      | yes/no
-| Feature request? | yes/no
-| BC Break report? | yes/no
-| RFC?             | yes/no
-| Version          | x.y.z
+Thanks for reporting an issue! We love feedback.
 
+However, this repository is what we call a "subtree split": a read-only copy of one directory of the main repository. It is used by Composer to allow developers to depend on specific bundles.
 
-<!--
-- Please fill in this template according to your issue.
-- And replace this comment by the description of your issue.
--->
+If you want to report or contribute, you should instead open your issue on the main repository:
+
+https://github.com/Novactive/Nova-eZPlatform-Bunddles
+
+Thank you for your contribution!
