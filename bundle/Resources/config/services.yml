@@ -57,7 +57,6 @@ services:
             $languageHandler: "@ezpublish.spi.persistence.cache.contentLanguageHandler"
             $translationHelper: "@ezpublish.translation_helper"
         calls:
-            - [setLanguages, ["@=service('ezpublish.config.resolver').getParameter('languages')"]]
             - [setRichTextConverter, ["@ezrichtext.converter.output.xhtml5.core"]]
             # Note: injecting lower layer Variation Handler (AliasGenerator) as a workaround for missing Public API objects context
             - [setImageVariationService, ["@ezpublish.image_alias.imagine.alias_generator", "@ezpublish.fieldType.ezimage"]]
