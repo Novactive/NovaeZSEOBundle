@@ -1,6 +1,5 @@
 # Novactive eZ SEO Bundle
 
-[![Build Status](https://github.com/Novactive/NovaeZSEOBundle/workflows/CI/badge.svg?branch=master)](https://github.com/Novactive/NovaeZSEOBundle/actions)
 [![Downloads](https://img.shields.io/packagist/dt/novactive/ezseobundle.svg?style=flat-square)](https://packagist.org/packages/novactive/ezseobundle)
 [![Latest version](https://img.shields.io/github/release/Novactive/NovaeZSEOBundle.svg?style=flat-square)](https://github.com/Novactive/NovaeZSEOBundle/releases)
 [![License](https://img.shields.io/packagist/l/novactive/ezseobundle.svg?style=flat-square)](LICENSE)
