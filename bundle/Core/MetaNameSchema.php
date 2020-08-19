@@ -24,6 +24,7 @@ use eZ\Publish\Core\FieldType\Relation\Value as RelationValue;
 use eZ\Publish\Core\FieldType\RelationList\Type as RelationListType;
 use eZ\Publish\Core\FieldType\RelationList\Value as RelationListValue;
 use eZ\Publish\Core\Helper\TranslationHelper;
+use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use eZ\Publish\Core\Repository\Helper\NameSchemaService;
 use eZ\Publish\Core\Repository\Mapper\ContentTypeDomainMapper;
 use eZ\Publish\Core\Repository\Values\Content\VersionInfo;
