@@ -14,12 +14,12 @@
         </whitelist>
     </filter>
     <php>
-        <env name="APP_ENV" value="test"/>
+        <env name="APP_ENV" value="test" force="true"/>
         <env name="KERNEL_CLASS" value="App\Kernel"/>
         <env name="UNIT_TESTS" value="true"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="verbose=0"/>
     </php>
     <extensions>
-        <extension class="Symfony\Component\Panther\ServerExtension" />
+        <extension class="Symfony\Component\Panther\ServerExtension"/>
     </extensions>
 </phpunit>
