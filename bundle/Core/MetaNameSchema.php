@@ -142,6 +142,9 @@ class MetaNameSchema extends NameSchemaService
         return false;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     */
     protected function getFieldTitles(array $schemaIdentifiers, $contentType, array $fieldMap, $languageCode): array
     {
         $fieldTitles = [];

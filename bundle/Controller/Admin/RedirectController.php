@@ -37,6 +37,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/novaseo/redirect")
+ * @SuppressWarnings(PHPMD.NPathComplexity)
  */
 class RedirectController extends Controller
 {

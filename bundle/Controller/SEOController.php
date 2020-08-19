@@ -23,6 +23,7 @@ class SEOController extends Controller
 {
     /**
      * @Route("/robots.txt", methods={"GET"})
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function robotsAction(): Response
     {

@@ -25,6 +25,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @SuppressWarnings(PHPMD.NPathComplexity)
+ */
 class AddNovaSEOMetasFieldTypeCommand extends Command
 {
     /**
