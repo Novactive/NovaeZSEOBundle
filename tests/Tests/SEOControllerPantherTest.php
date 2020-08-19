@@ -14,7 +14,10 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\eZSEOBundle\Tests;
 
-class SEOControllerTest extends TestCase
+use Novactive\eZPlatform\Bundles\Tests\BrowserHelper;
+use Novactive\eZPlatform\Bundles\Tests\PantherTestCase;
+
+class SEOControllerPantherTest extends PantherTestCase
 {
     public function testRobotTxt(): void
     {

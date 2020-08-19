@@ -14,7 +14,10 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\eZSEOBundle\Tests;
 
-class SitemapControllerTest extends TestCase
+use Novactive\eZPlatform\Bundles\Tests\BrowserHelper;
+use Novactive\eZPlatform\Bundles\Tests\PantherTestCase;
+
+class SitemapControllerPantherTest extends PantherTestCase
 {
     public function testSitemapIsXML(): void
     {
