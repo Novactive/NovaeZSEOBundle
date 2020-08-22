@@ -1,4 +1,6 @@
-# <i class="fa fa-3x fa-rocket"></i><br /> Usage
+# Novactive eZ SEO Bundle
+
+# <i class="fa fa-rocket"></i> Usage
 
 
 ## Description
@@ -31,7 +33,7 @@ But you will have to manage yourself. ( we can't do that for you, but we'd simpl
 > As this template handles a lot of &lt;meta&gt; and &lt;link&gt; and the &lt;title&gt; tag you have to be careful in your code to avoid duplicate tags.
 
 
-## <i class="fa fa-3x fa-wrench"></i><br /> Configuration
+## <i class="fa fa-wrench"></i> Configuration
 
 
 ### &lt;meta&gt; Configuration
@@ -108,7 +110,7 @@ This configuration defines 3 metas, _title_, _description_ and _keywords_
 > You can add what you want to here.
 
 
-## <i class="fa fa-3x fa-file"></i><br /> sitemap.xml
+## <i class="fa fa-file"></i> sitemap.xml
 
 Your sitemap is automatically generated on the fly.
 
@@ -206,7 +208,7 @@ Wait, you read 5 !
 There is a transverse abstract level based on a feature similar to the Object/Url Name Pattern.
 
 
-### <i class="fa fa-3x fa-magic"></i><br /> Object Pattern like feature
+### <i class="fa fa-magic"></i> Object Pattern like feature
 
 At each level mentioned above, you can set a **default_pattern** value.
 

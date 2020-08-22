@@ -1,13 +1,8 @@
-# <i class="fa fa-3x fa-cogs"></i><br /> Install
+# Novactive eZ SEO Bundle
 
+# <i class="fa fa-cogs"></i> Install
 
-## Requirements
-
-* eZ Platform 3.x
-* PHP 7.3
-
-
-## <i class="fa fa-3x fa-spinner"></i><br /> Installation steps
+## <i class="fa fa-spinner"></i> Installation steps
 
 
 ### Use Composer

@@ -30,9 +30,8 @@ Presentation and documentation available here : [http://novactive.github.io/Nova
 
 [Installation](documentation/INSTALL.md)
 
-Change and License
-------------------
+Change
+------
 
 [Changelog](documentation/CHANGELOG.md)
 
-[License](LICENSE)

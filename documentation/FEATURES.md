@@ -1,5 +1,6 @@
-# <i class="fa fa-3x fa-briefcase"></i><br /> Features
+# Novactive eZ SEO Bundle
 
+# <i class="fa fa-briefcase"></i> Features
 
 ## Implemented
 
@@ -16,10 +17,9 @@
 * **Sitemap** generation (basic system)
 * **Google Analytics ** integration
 
-
 ## Field Type edition
 
-![Nova eZ SEO Field Type](https://raw.githubusercontent.com/Novactive/NovaeZSEOBundle/master/Resources/doc/NovaeZSeoFieldType.png "Nova eZ SEO Field Type")
+![Nova eZ SEO Field Type](NovaeZSeoFieldType.png "Nova eZ SEO Field Type")
 
 
 ## Next Steps ?

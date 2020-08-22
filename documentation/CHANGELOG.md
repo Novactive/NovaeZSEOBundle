@@ -1,4 +1,6 @@
-# <i class="fa fa-3x fa-file"></i><br />Changelog
+# Novactive eZ SEO Bundle
+
+# <i class="fa fa-file"></i>Changelog
 
 ## 5.1.0 (next tag soon)
 
