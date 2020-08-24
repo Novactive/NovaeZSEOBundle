@@ -7,16 +7,7 @@
 
 ### Use Composer
 
-Add the following to your composer.json and run `php composer.phar update novactive/ezseobundle` to refresh dependencies:
-
-```json
-# composer.json
-
-"require": {
-    "novactive/ezseobundle": "^5.0",
-}
-```
-
+Add the lib to your composer.json, run `composer require novactive/ezseobundle` to refresh dependencies.
 
 ### Register the bundle
 
