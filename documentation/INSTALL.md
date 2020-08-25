@@ -4,27 +4,15 @@
 
 ## <i class="fa fa-spinner"></i> Installation steps
 
-
 ### Use Composer
 
 Add the lib to your composer.json, run `composer require novactive/ezseobundle` to refresh dependencies.
 
-### Register the bundle
-
-Activate the bundle in `config\bundles.php` file.
+Then inject the bundle in the `bundles.php` of your application.
 
 ```php
-// config\bundles.php
-
-<?php
-
-return [
-    Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
-    ...
-    Novactive\Bundle\eZSEOBundle\NovaeZSEOBundle::class => ['all' => true],
-];
+    Novactive\Bundle\eZSEOBundle\NovaeZSEOBundle::class => [ 'all'=> true ],
 ```
-
 
 ### Add routes
 
