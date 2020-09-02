@@ -10,7 +10,7 @@ services:
         autoconfigure: true
         public: false
         bind:
-            $entityManager: "@novaezmailing.doctrine.entity_manager"
+            $entityManager: "@novaezeo.doctrine.entity_manager"
 
     # Marking fieldtype as unindexable for ez platform solr bundle to stop errors
     novactive.novaseobundle.field_type.novaseometas.indexable.unindexed:
@@ -87,10 +87,9 @@ services:
             $resolver: "@doctrine.orm.default_entity_listener_resolver"
             $settings: { debug: "%kernel.debug%", cache_dir: "%kernel.cache_dir%" }
 
-    novaezmailing.doctrine.entity_manager:
+    novaezeo.doctrine.entity_manager:
         class: Doctrine\ORM\EntityManagerInterface
         factory: ['@Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory', 'get']
-
 
     Novactive\Bundle\eZSEOBundle\Core\Sitemap\QueryFactory: ~
 
