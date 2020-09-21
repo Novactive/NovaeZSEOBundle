@@ -93,6 +93,21 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
             }
         }
 
+        // able to add a meta which is not existant on your draft but on the configuration yml
+        foreach ($metasConfig as $key => $arrayValue) {
+            if (!isset($data->value->metas[$key])) {
+                $data->value->metas[$key] = new Meta($key, '');
+            }
+        }
+        // to avoid an 500 error, unset a meta if you have a draft which is not ISO with your configuration YML.
+        // able to not delete an enter on the table nova meta.
+        // And it preserve your historic for each version of objet
+        foreach ($data->value->metas as $key => $arrayValue) {
+            if (!isset($metasConfig[$key])) {
+                unset($data->value->metas[$key]);
+            }
+        }
+
         $fieldForm
             ->add(
                 $formConfig->getFormFactory()->createBuilder()
