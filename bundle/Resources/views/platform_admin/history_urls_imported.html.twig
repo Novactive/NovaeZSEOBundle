@@ -9,7 +9,7 @@
     <section class="container mt-4 px-5">
         {% if pager is defined and pager is not empty %}
             <!-- template pagination -->
-            {{ include("NovaeZSEOBundle:commun:paginator.html.twig") }}
+            {{ include("@NovaeZSEO/commun/paginator.html.twig") }}
             <!-- template pagination end -->
         {% endif %}
         <div class="ez-table-header">
@@ -39,7 +39,7 @@
         </table>
         {% if pager is defined and pager is not empty %}
             <!-- template pagination -->
-            {{ include("NovaeZSEOBundle:commun:paginator.html.twig") }}
+            {{ include("@NovaeZSEO/commun/paginator.html.twig") }}
             <!-- template pagination end -->
         {% endif %}
     </section>
