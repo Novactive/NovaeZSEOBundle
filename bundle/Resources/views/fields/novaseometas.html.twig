@@ -1,7 +1,7 @@
 {%  extends "@EzPublishCore/content_fields.html.twig"  %}
 
 {% block novaseometas_field %}
-    {{ field|compute_novaseometas(contentInfo) }}
+    {{ field|compute_novaseometas(content) }}
     {% set isCanonicalFind = false %}
     {% set isTtitleFind = false %}
     {% for meta in field.value.metas %}

@@ -16,7 +16,7 @@ use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\API\Repository\Values\Content\ContentInfo;
 use eZ\Publish\API\Repository\Values\Content\Field;
-use eZ\Publish\API\Repository\Values\ContentType\ContentType;
+use eZ\Publish\Core\Base\Exceptions\InvalidArgumentType;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use eZ\Publish\Core\MVC\Symfony\Locale\LocaleConverterInterface as LocaleConverter;
 use Novactive\Bundle\eZSEOBundle\Core\CustomFallbackInterface;
@@ -106,30 +106,29 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
 
     /**
      * Compute Metas of the Field thanks to its Content and the Fallback.
+     * @param $content: use type Content rather than ContentInfo, the last one is @deprecated
      */
-    public function computeMetas(Field $field, ContentInfo $contentInfo): string
+    public function computeMetas(Field $field, $content): string
     {
         $fallback = false;
-        $languages = $this->configResolver->getParameter('languages');
-        $contentType = $this->eZRepository->getContentTypeService()->loadContentType(
-            $contentInfo->contentTypeId
-        );
-        $content = $this->eZRepository->getContentService()->loadContentByContentInfo($contentInfo, $languages);
-        $contentMetas = $this->innerComputeMetas($content, $field, $contentType, $fallback);
+
+        if ($content instanceof ContentInfo) {
+            $content = $this->eZRepository->getContentService()->loadContentByContentInfo($content);
+        } elseif (!($content instanceof Content)) {
+            throw new InvalidArgumentType('$content', 'Content of ContentType');
+        }
+
+        $contentMetas = $this->innerComputeMetas($content, $field, $fallback);
+
         if ($fallback && !$this->customFallBackService) {
-            $rootNode = $this->eZRepository->getLocationService()->loadLocation(
+            $rootContent = $this->eZRepository->getLocationService()->loadLocation(
                 $this->configResolver->getParameter('content.tree_root.location_id')
-            );
-            $rootContent = $this->eZRepository->getContentService()->loadContentByContentInfo(
-                $rootNode->contentInfo,
-                $languages
-            );
-            $rootContentType = $this->eZRepository->getContentTypeService()->loadContentType(
-                $rootContent->contentInfo->contentTypeId
-            );
+            )->getContent();
+
             // We need to load the good field too
             $metasIdentifier = $this->configResolver->getParameter('fieldtype_metas_identifier', 'nova_ezseo');
-            $rootMetas = $this->innerComputeMetas($rootContent, $metasIdentifier, $rootContentType, $fallback);
+            $rootMetas = $this->innerComputeMetas($rootContent, $metasIdentifier, $fallback);
+
             foreach ($contentMetas as $key => $metaContent) {
                 if (\array_key_exists($key, $rootMetas)) {
                     $metaContent->setContent(
@@ -144,18 +143,20 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
 
     /**
      * Compute Meta by reference.
+     *
+     * @return array
      */
     protected function innerComputeMetas(
         Content $content,
-        $fieldDefIdentifier,
-        ContentType $contentType,
+        $field,
         &$needFallback = false
     ): array {
-        if ($fieldDefIdentifier instanceof Field) {
-            $metasFieldValue = $fieldDefIdentifier->value;
-            $fieldDefIdentifier = $fieldDefIdentifier->fieldDefIdentifier;
+        if ($field instanceof Field) {
+            $metasFieldValue = $field->value;
+            $fieldDefIdentifier = $field->fieldDefIdentifier;
         } else {
-            $metasFieldValue = $content->getFieldValue($fieldDefIdentifier);
+            $metasFieldValue = $content->getFieldValue($field);
+            $fieldDefIdentifier = $field;
         }
 
         if ($metasFieldValue instanceof MetasFieldValue) {
@@ -172,14 +173,14 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
                 /** @var Meta $meta */
                 if ($meta->isEmpty()) {
                     $meta->setContent($metasConfig[$meta->getName()]['default_pattern']);
-                    $fieldDefinition = $contentType->getFieldDefinition($fieldDefIdentifier);
+                    $fieldDefinition = $content->getContentType()->getFieldDefinition($fieldDefIdentifier);
                     $configuration = $fieldDefinition->getFieldSettings()['configuration'];
                     // but if we need something is the configuration we take it
                     if (isset($configuration[$meta->getName()]) && !empty($configuration[$meta->getName()])) {
                         $meta->setContent($configuration[$meta->getName()]);
                     }
                 }
-                if (!$this->metaNameSchema->resolveMeta($meta, $content, $contentType)) {
+                if (!$this->metaNameSchema->resolveMeta($meta, $content)) {
                     $needFallback = true;
                 }
             }

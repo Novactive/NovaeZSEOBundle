@@ -112,19 +112,16 @@ class MetaNameSchema extends NameSchemaService
         $this->imageVariationService = $handler;
     }
 
+    /**
+     * @param ContentType|null $contentType: @deprecated argument.
+     */
     public function resolveMeta(Meta $meta, Content $content, ContentType $contentType = null): bool
     {
         $languages = $this->configurationResolver->getParameter('languages');
 
-        if (null === $contentType) {
-            $contentType = $this->repository->getContentTypeService()->loadContentType(
-                $content->contentInfo->contentTypeId
-            );
-        }
-
         $resolveMultilingue = $this->resolve(
             $meta->getContent(),
-            $contentType,
+            $content->getContentType(),
             $content->fields,
             $content->versionInfo->languageCodes
         );
@@ -145,8 +142,12 @@ class MetaNameSchema extends NameSchemaService
     /**
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
-    protected function getFieldTitles(array $schemaIdentifiers, $contentType, array $fieldMap, $languageCode): array
-    {
+    protected function getFieldTitles(
+        array $schemaIdentifiers,
+        $contentType,
+        array $fieldMap,
+        $languageCode
+    ): array {
         $fieldTitles = [];
 
         foreach ($schemaIdentifiers as $fieldDefinitionIdentifier) {
@@ -273,7 +274,12 @@ class MetaNameSchema extends NameSchemaService
         $fieldImageValue = $relatedContent->getFieldValue('image');
         if ($fieldImageValue) {
             if ($fieldImageValue->uri) {
-                return $this->getVariation($fieldImageValue, 'image', $languageCode, 'social_network_image');
+                return $this->getVariation(
+                    $fieldImageValue,
+                    'image',
+                    $languageCode,
+                    'social_network_image'
+                );
             }
         }
 
