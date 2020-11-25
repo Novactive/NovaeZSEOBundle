@@ -4,7 +4,7 @@ However, this repository is what we call a "subtree split": a read-only copy of 
 
 If you want to contribute, you should instead open a pull request on the main repository:
 
-https://github.com/Novactive/Nova-eZPlatform-Bunddles
+https://github.com/Novactive/Nova-eZPlatform-Bundles
 
 Thank you for your contribution!
 
