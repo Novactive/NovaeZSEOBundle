@@ -106,8 +106,8 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
 
     /**
      * Compute Metas of the Field thanks to its Content and the Fallback.
-     * @param $content: use type Content rather than ContentInfo, the last one is @deprecated
      */
+    // @param $content: use type Content rather than ContentInfo, the last one is @deprecated
     public function computeMetas(Field $field, $content): string
     {
         $fallback = false;
@@ -143,8 +143,6 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
 
     /**
      * Compute Meta by reference.
-     *
-     * @return array
      */
     protected function innerComputeMetas(
         Content $content,

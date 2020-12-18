@@ -112,9 +112,7 @@ class MetaNameSchema extends NameSchemaService
         $this->imageVariationService = $handler;
     }
 
-    /**
-     * @param ContentType|null $contentType: @deprecated argument.
-     */
+    // @param ContentType|null $contentType: @deprecated argument.
     public function resolveMeta(Meta $meta, Content $content, ContentType $contentType = null): bool
     {
         $languages = $this->configurationResolver->getParameter('languages');
