@@ -104,3 +104,9 @@ services:
         tags:
             - { name: router, priority: 2000 }
 
+    novactive.novaseobundle.form.type.meta:
+        class: Novactive\Bundle\eZSEOBundle\Form\Type\MetaType
+        arguments:
+            - "%nova_ezseo.default.fieldtype_metas%"
+        tags:
+            - { name: form.type, alias: seos }
