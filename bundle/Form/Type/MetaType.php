@@ -12,16 +12,12 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Form\Type;
 
-use Doctrine\Common\Annotations\Annotation\Required;
-use EzSystems\EzPlatformMatrixFieldtype\FieldType\Value\Row;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Blank;
-use Symfony\Component\Validator\Constraints\IsNull;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -65,8 +61,9 @@ class MetaType extends AbstractType
                     'label' => false,
                     'empty_data' => false,
                     'required' => true,
-                    'constraints' => $constraints
-                ]);
+                    'constraints' => $constraints,
+                ]
+            );
     }
 
     private function getConstraints(array $config)
@@ -91,7 +88,7 @@ class MetaType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Meta::class,
-            'cascade_validation' => false
+            'cascade_validation' => false,
         ]);
     }
 }

@@ -47,12 +47,14 @@ class Meta
 
     /**
      * Constructor.
-     *
-     * @param string $name
-     * @param string $content
      */
-    public function __construct(?string $name = null, ?string $content = null, ?bool $required = null, ?string $minLength = null, ?string $maxLength = null)
-    {
+    public function __construct(
+        ?string $name = null,
+        ?string $content = null,
+        ?bool $required = null,
+        ?string $minLength = null,
+        ?string $maxLength = null
+    ) {
         $this->name = $name;
         $this->content = $content;
         $this->required = $required;
@@ -84,49 +86,31 @@ class Meta
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getRequired(): ?bool
     {
         return $this->required;
     }
 
-    /**
-     * @param bool|null $required
-     */
     public function setRequired(?bool $required): void
     {
         $this->required = $required;
     }
 
-    /**
-     * @return string|null
-     */
     public function getMinLength(): ?string
     {
         return $this->minLength;
     }
 
-    /**
-     * @param string|null $minLength
-     */
     public function setMinLength(?string $minLength): void
     {
         $this->minLength = $minLength;
     }
 
-    /**
-     * @return string|null
-     */
     public function getMaxLength(): ?string
     {
         return $this->maxLength;
     }
 
-    /**
-     * @param string|null $maxLength
-     */
     public function setMaxLength(?string $maxLength): void
     {
         $this->maxLength = $maxLength;
@@ -150,7 +134,7 @@ class Meta
             'content',
             'required',
             'minLength',
-            'maxLength'
+            'maxLength',
         ];
     }
 
