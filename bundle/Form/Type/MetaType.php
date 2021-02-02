@@ -12,18 +12,31 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Form\Type;
 
+use Doctrine\Common\Annotations\Annotation\Required;
+use EzSystems\EzPlatformMatrixFieldtype\FieldType\Value\Row;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Blank;
+use Symfony\Component\Validator\Constraints\IsNull;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * Form Type representing meta field type.
  */
 class MetaType extends AbstractType
 {
+    private $novaEzseo;
+
+    public function __construct(array $novaEzseo)
+    {
+        $this->novaEzseo = $novaEzseo;
+    }
+
     public function getName(): string
     {
         return $this->getBlockPrefix();
@@ -36,6 +49,13 @@ class MetaType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $config = [];
+        if (isset($this->novaEzseo[$builder->getName()])) {
+            $config = $this->novaEzseo[$builder->getName()];
+        }
+
+        $constraints = $this->getConstraints($config);
+
         $builder
             ->add('name', HiddenType::class)
             ->add(
@@ -43,13 +63,35 @@ class MetaType extends AbstractType
                 TextType::class,
                 [
                     'label' => false,
-                    'empty_data' => '',
-                ]
-            );
+                    'empty_data' => false,
+                    'required' => true,
+                    'constraints' => $constraints
+                ]);
+    }
+
+    private function getConstraints(array $config)
+    {
+        $constraints = [];
+
+        if (isset($config['minLength']) || isset($config['maxLength'])) {
+            $constraints[] = new Length([
+                'min' => $config['minLength'] ?? null,
+                'max' => $config['maxLength'] ?? null,
+            ]);
+        }
+
+        if (isset($config['required'])) {
+            $constraints[] = new NotBlank();
+        }
+
+        return $constraints;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('data_class', Meta::class);
+        $resolver->setDefaults([
+            'data_class' => Meta::class,
+            'cascade_validation' => false
+        ]);
     }
 }
