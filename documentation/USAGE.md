@@ -96,9 +96,12 @@ nova_ezseo:
                 title:
                     label: 'Title'
                     default_pattern: "<title|name>"
+                    required: true
                 description:
                     label: 'Description'
                     default_pattern: "<description|short_description|title|name>"
+                    minLength: 100
+                    maxLength: 150
                 keywords:
                     label: 'Keywords'
                     default_pattern: ~
@@ -106,6 +109,8 @@ nova_ezseo:
 ```
 
 This configuration defines 3 metas, _title_, _description_ and _keywords_
+
+The options required, minLength and maxLength are optional.
 
 > You can add what you want to here.
 
