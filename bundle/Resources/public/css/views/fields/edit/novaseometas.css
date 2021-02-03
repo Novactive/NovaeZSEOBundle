@@ -104,6 +104,10 @@
     padding-left: 10px;
 }
 
+.ez-field-edit--novaseometas {
+    display: flow-root;
+}
+
 .ez-field-edit--novaseometas .ez-data-source__input-wrapper .ez-data-source__label-wrapper {
     display: block;
     border-left: 3px solid #F4D8B1;
