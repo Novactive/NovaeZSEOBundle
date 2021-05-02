@@ -90,6 +90,9 @@ class LegacyStorage extends Gateway
                     $connection->quoteColumn('meta_content'),
                     $insertQuery->bindValue($meta['meta_content'], null, PDO::PARAM_STR)
                 )->set(
+                    $connection->quoteColumn('meta_fieldtype'),
+                    $insertQuery->bindValue($meta['meta_fieldtype'], null, PDO::PARAM_STR)
+                )->set(
                     $connection->quoteColumn('objectattribute_id'),
                     $insertQuery->bindValue($field->id, null, PDO::PARAM_INT)
                 )->set(

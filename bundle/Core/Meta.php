@@ -30,15 +30,24 @@ class Meta
     protected $content;
 
     /**
+     * Meta fieldType.
+     *
+     * @var string
+     */
+    protected $fieldType;
+
+    /**
      * Constructor.
      *
      * @param string $name
-     * @param string $content
+     * @param mixed $content
+     * @param string $fieldType
      */
-    public function __construct(?string $name = null, ?string $content = null)
+    public function __construct(?string $name = null, $content = null, ?string $fieldType = null)
     {
-        $this->name    = $name;
-        $this->content = $content;
+        $this->name      = $name;
+        $this->content   = $content;
+        $this->fieldType = $fieldType;
     }
 
     public function getName(): string
@@ -53,14 +62,26 @@ class Meta
         return $this;
     }
 
-    public function getContent(): string
+    public function getFieldType(): string
     {
-        return $this->content ?? '';
+        return $this->fieldType ?? '';
     }
 
-    public function setContent(?string $content): self
+    public function setFieldType(?string $fieldType): self
     {
-        $this->content = $content ?? '';
+        $this->fieldType = $fieldType ?? '';
+
+        return $this;
+    }
+
+    public function getContent()
+    {
+        return $this->content ?? null;
+    }
+
+    public function setContent($content): self
+    {
+        $this->content = $content ?? null;
 
         return $this;
     }
@@ -81,6 +102,7 @@ class Meta
         return [
             'name',
             'content',
+            'fieldType'
         ];
     }
 
@@ -95,6 +117,9 @@ class Meta
                 break;
             case 'content':
                 return $this->getContent();
+                break;
+            case 'fieldType':
+                return $this->getFieldType();
                 break;
             default:
                 throw new PropertyNotFoundException($name, \get_class($this));

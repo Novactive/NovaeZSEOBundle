@@ -186,7 +186,9 @@ class Type extends FieldType
             }
             $meta = new Meta();
             $meta->setName($hashItem['meta_name']);
-            $meta->setContent($hashItem['meta_content']);
+            $meta->setFieldType(isset($hashItem['meta_fieldtype']) ? $hashItem['meta_fieldtype'] : '');
+            $content = isset($hashItem['meta_fieldtype']) && $hashItem['meta_fieldtype'] == "boolean" ? ($hashItem['meta_content'] == "1" ? true : false) : $hashItem['meta_content'];
+            $meta->setContent($content);
             $metas[] = $meta;
         }
 
@@ -208,6 +210,7 @@ class Type extends FieldType
             $hash[$meta->getName()] = [
                 'meta_name'    => $meta->getName(),
                 'meta_content' => $meta->getContent(),
+                'meta_fieldtype' => $meta->getFieldType(),
             ];
         }
 

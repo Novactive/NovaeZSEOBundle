@@ -57,7 +57,7 @@ _novaezseo_routes:
 
 ### Create the table
 
-See the file `bundle/Resources/sql/shema.sql`
+See the folder `bundle/Resources/sql`
 
 
 ### Remove the Robots.txt (native RewriteRules )

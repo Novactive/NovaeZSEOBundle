@@ -80,3 +80,10 @@ parameters:
             label: 'Twitter - Image'
             default_pattern: "<image|picture>"
             icon: 'twitter-square'
+        'robots':
+            label: 'Robots'
+            type: 'boolean'
+            params:
+                label: 'NOINDEX'
+            default_pattern: 'all'
+            icon: 'book'

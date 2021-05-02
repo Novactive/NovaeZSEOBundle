@@ -34,11 +34,15 @@ class MetasFieldType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('metas', MetasCollectionType::class);
+            ->add('metas', MetasCollectionType::class,
+                [
+                    'entry_options' => ['required' => false, 'metaConfig' => $options['metaConfig']]
+                ])
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('data_class', Value::class);
+        $resolver->setDefaults([ 'metaConfig' => null, 'data_class' => Value::class]);
     }
 }
