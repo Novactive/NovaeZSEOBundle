@@ -58,10 +58,10 @@ class MetaType extends AbstractType
                 'content',
                 TextType::class,
                 [
-                    'label' => false,
                     'empty_data' => false,
                     'required' => true,
                     'constraints' => $constraints,
+                    'label_attr' => ['style' => 'display:none']
                 ]
             );
     }
