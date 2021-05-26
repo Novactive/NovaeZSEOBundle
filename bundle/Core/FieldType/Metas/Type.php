@@ -17,11 +17,15 @@ use eZ\Publish\Core\FieldType\ValidationError;
 use eZ\Publish\Core\FieldType\Value as CoreValue;
 use eZ\Publish\SPI\FieldType\Value as SPIValue;
 use eZ\Publish\SPI\Persistence\Content\FieldValue;
+use Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\SeoMetadataFieldTypeRegistry;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 
 class Type extends FieldType
 {
     const IDENTIFIER = 'novaseometas';
+
+    /** @var SeoMetadataFieldTypeRegistry */
+    protected $metaData;
 
     /**
      * @var array
@@ -32,6 +36,15 @@ class Type extends FieldType
             'default' => [],
         ],
     ];
+
+    /**
+     * Type constructor.
+     * @param SeoMetadataFieldTypeRegistry $metaData
+     */
+    public function __construct(SeoMetadataFieldTypeRegistry $metaData)
+    {
+        $this->metaData = $metaData;
+    }
 
     /**
      * Validates the fieldSettings of a FieldDefinitionCreateStruct or FieldDefinitionUpdateStruct.
@@ -179,20 +192,8 @@ class Type extends FieldType
         if (!is_array($hash)) {
             return new Value([]);
         }
-        $metas = [];
-        foreach ($hash as $hashItem) {
-            if (!is_array($hashItem)) {
-                continue;
-            }
-            $meta = new Meta();
-            $meta->setName($hashItem['meta_name']);
-            $meta->setFieldType(isset($hashItem['meta_fieldtype']) ? $hashItem['meta_fieldtype'] : '');
-            $content = isset($hashItem['meta_fieldtype']) && $hashItem['meta_fieldtype'] == "boolean" ? ($hashItem['meta_content'] == "1" ? true : false) : $hashItem['meta_content'];
-            $meta->setContent($content);
-            $metas[] = $meta;
-        }
 
-        return new Value($metas);
+        return new Value($this->metaData->fromHash($hash));
     }
 
     /**

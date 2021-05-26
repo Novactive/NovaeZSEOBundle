@@ -76,12 +76,12 @@ class Meta
 
     public function getContent()
     {
-        return $this->content ?? null;
+        return $this->content;
     }
 
     public function setContent($content): self
     {
-        $this->content = $content ?? null;
+        $this->content = $content;
 
         return $this;
     }

@@ -11,11 +11,11 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Form\Type;
 
+use eZ\Publish\Core\MVC\ConfigResolverInterface;
+use Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\SeoMetadataFieldTypeRegistry;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -24,6 +24,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MetaType extends AbstractType
 {
+    /** @var ConfigResolverInterface */
+    protected $configResolver;
+
+    /** @var SeoMetadataFieldTypeRegistry */
+    protected $metaData;
+    /**
+     * FormMapper constructor.
+     */
+    public function __construct(ConfigResolverInterface $configResolver, SeoMetadataFieldTypeRegistry $metaData)
+    {
+        $this->configResolver = $configResolver;
+        $this->metaData = $metaData;
+    }
+
     public function getName(): string
     {
         return $this->getBlockPrefix();
@@ -36,33 +50,25 @@ class MetaType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $label = false;
-        $type  = '';
-        if (isset($options['metaConfig'][$builder->getName()])) {
-            $meta  = $options['metaConfig'][$builder->getName()];
-            $type  = $meta['type'];
-            $label = isset($meta['params']) ? $meta['params']['label'] : $label;
+        $metasConfig = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
+
+        $type    = 'text';
+        $options = [
+            'label'      => false,
+            'empty_data' => '',
+        ];
+        if (isset($metasConfig[$builder->getName()])) {
+            $meta    = $metasConfig[$builder->getName()];
+            $type    = $meta['type'];
+            $options = !empty($meta['params']) ? $meta['params'] : $options;
         }
-        $builder
-            ->add('name', HiddenType::class);
-            if ($type == 'boolean') {
-                $builder->add('content', CheckboxType::class, [
-                    'label' => $label,
-                    'attr'  => [
-                        'class'        => 'form-control',
-                        'false_values' => '0'
-                    ]
-                ]);
-            } else {
-                $builder->add('content', TextType::class, [
-                    'label'      => false,
-                    'empty_data' => '',
-                ]);
-            }
+
+        $builder->add('name', HiddenType::class);
+        $this->metaData->mapForm($builder, $options, $type);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => Meta::class, 'metaConfig' => null]);
+        $resolver->setDefault('data_class', Meta::class);
     }
 }

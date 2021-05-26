@@ -43,9 +43,15 @@ parameters:
         title:
             label: 'Title'
             default_pattern: "<title|name>"
+            params:
+                label: false
+                empty_data: ''
             icon: 'book'
         description:
             label: 'Description'
+            params:
+                label: false
+                empty_data: ''
             default_pattern: ~
             icon: 'book'
         keywords:
@@ -54,30 +60,51 @@ parameters:
             icon: 'tags'
         'canonical':
             label: 'External Canonical URL'
+            params:
+                label: false
+                empty_data: ''
             default_pattern: ~
             icon: 'link'
         'og:title':
             label: 'Facebook - Title'
+            params:
+                label: false
+                empty_data: ''
             default_pattern: "<title|name>"
             icon: 'facebook-official'
         'og:description':
             label: 'Facebook - Description'
+            params:
+                label: false
+                empty_data: ''
             default_pattern: "<short_description|description|title|name>"
             icon: 'facebook-official'
         'og:image':
             label: 'Facebook - Image'
+            params:
+                label: false
+                empty_data: ''
             default_pattern: "<image|picture>"
             icon: 'facebook-official'
         'twitter:title':
             label: 'Twitter - Title'
+            params:
+                label: false
+                empty_data: ''
             default_pattern: "<title|name>"
             icon: 'twitter-square'
         'twitter:description':
             label: 'Twitter - Description'
+            params:
+                label: false
+                empty_data: ''
             default_pattern: "<short_description|description|title|name>"
             icon: 'twitter-square'
         'twitter:image':
             label: 'Twitter - Image'
+            params:
+                label: false
+                empty_data: ''
             default_pattern: "<image|picture>"
             icon: 'twitter-square'
         'robots':
@@ -85,5 +112,8 @@ parameters:
             type: 'boolean'
             params:
                 label: 'NOINDEX'
+                attr:
+                    class: form-control
+                    false_values: '0'
             default_pattern: 'all'
             icon: 'book'

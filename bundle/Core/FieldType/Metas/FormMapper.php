@@ -85,10 +85,13 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
         $formConfig      = $fieldForm->getConfig();
 
         $metasConfig = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
-        $metasData = $data->value->metas;
+        $metasData   = $data->value->metas;
         foreach ($metasConfig as $key => $meta) {
-            $content = isset($metasData[$key]) ? $metasData[$key]->getContent() : null;
-            $fieldType = isset($metasData[$key]) && $metasData[$key]->getFieldType() != '' ? $metasData[$key]->getFieldType() : $meta['type'];
+            $content   = isset($metasData[$key]) ? $metasData[$key]->getContent() : null;
+            $fieldType = $meta['type'];
+            if (isset($metasData[$key]) && $metasData[$key]->getFieldType() != '') {
+                $fieldType = $metasData[$key]->getFieldType();
+            }
             $data->value->metas[$key] = new Meta($key, $content, $fieldType);
         }
 
@@ -100,8 +103,7 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
                                MetasFieldType::class,
                                [
                                    'required' => $fieldDefinition->isRequired,
-                                   'label'    => $fieldDefinition->getName($formConfig->getOption('languageCode')),
-                                   'metaConfig' => $metasConfig
+                                   'label'    => $fieldDefinition->getName($formConfig->getOption('languageCode'))
                                ]
                            )
                            ->setAutoInitialize(false)
