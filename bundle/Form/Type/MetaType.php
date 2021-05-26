@@ -35,7 +35,7 @@ class MetaType extends AbstractType
     public function __construct(ConfigResolverInterface $configResolver, SeoMetadataFieldTypeRegistry $metaData)
     {
         $this->configResolver = $configResolver;
-        $this->metaData = $metaData;
+        $this->metaData       = $metaData;
     }
 
     public function getName(): string
