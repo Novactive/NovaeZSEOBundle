@@ -43,7 +43,7 @@ class SeoMetadataFieldTypeRegistry
                 continue;
             }
             foreach ($this->metaFieldTypes as $metaFieldType) {
-                if (!$metaFieldType->support($hashItem['meta_fieldtype'])) {
+                if (!$metaFieldType->support($hashItem['meta_fieldtype'] ?? SeoMetadataDefaultFieldType::IDENTIFIER)) {
                     continue;
                 }
                 $metas[] = $metaFieldType->fromHash($hashItem);

@@ -17,22 +17,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SeoMetadataChoiceFieldType extends SeoMetadataDefaultFieldType
 {
-
-    public function support(string $fieldType): bool
-    {
-        return 'select' === $fieldType;
-    }
-
-    public function fromHash($hash): Meta
-    {
-        $meta = new Meta();
-        $meta->setName($hash['meta_name']);
-        $meta->setFieldType($hash['meta_fieldtype']);
-        $content = $hash['meta_content'];
-        $meta->setContent($content);
-
-        return $meta;
-    }
+    public const IDENTIFIER = 'select';
 
     public function mapForm(FormBuilderInterface &$builder, array $params)
     {

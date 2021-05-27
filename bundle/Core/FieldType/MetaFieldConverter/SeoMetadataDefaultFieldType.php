@@ -17,16 +17,18 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SeoMetadataDefaultFieldType implements SeoMetadataFieldTypeInterface
 {
+    public const IDENTIFIER = 'text';
+
     public function support(string $fieldType): bool
     {
-        return 'text' === $fieldType;
+        return static::IDENTIFIER === $fieldType;
     }
 
     public function fromHash($hash): Meta
     {
         $meta = new Meta();
         $meta->setName($hash['meta_name']);
-        $meta->setFieldType($hash['meta_fieldtype']);
+        $meta->setFieldType(self::IDENTIFIER);
         $content = $hash['meta_content'];
         $meta->setContent($content);
 

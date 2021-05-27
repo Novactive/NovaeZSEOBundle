@@ -17,17 +17,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SeoMetadataBooleanFieldType extends SeoMetadataDefaultFieldType
 {
-
-    public function support(string $fieldType): bool
-    {
-        return 'boolean' === $fieldType;
-    }
-
+    public const IDENTIFIER = 'boolean';
     public function fromHash($hash): Meta
     {
-        $meta = new Meta();
-        $meta->setName($hash['meta_name']);
-        $meta->setFieldType($hash['meta_fieldtype']);
+        $meta = parent::fromHash($hash);
         $content = $hash['meta_content'] == "1" ? true : false;
         $meta->setContent($content);
 
