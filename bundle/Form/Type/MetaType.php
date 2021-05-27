@@ -32,10 +32,12 @@ class MetaType extends AbstractType
     /**
      * FormMapper constructor.
      */
-    public function __construct(ConfigResolverInterface $configResolver, SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry)
-    {
-        $this->configResolver             = $configResolver;
-        $this->metadataFieldTypeRegistry  = $metadataFieldTypeRegistry;
+    public function __construct(
+        ConfigResolverInterface $configResolver,
+        SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry
+    ) {
+        $this->configResolver            = $configResolver;
+        $this->metadataFieldTypeRegistry = $metadataFieldTypeRegistry;
     }
 
     public function getName(): string
