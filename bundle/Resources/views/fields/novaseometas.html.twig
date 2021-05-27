@@ -16,8 +16,6 @@
                 <meta property="{{ meta.name }}" content="{{ meta.content | replace({' ': '%20'})  }}"/>
             {% elseif meta.name|trim starts with "og" %}
                 <meta property="{{ meta.name }}" content="{{ meta.content }}"/>
-            {% elseif meta.name == "robots" and meta.content %}
-                <meta name="{{ meta.name }}" content="noindex"/>
             {% else %}
                 <meta name="{{ meta.name }}" content="{{ meta.content }}"/>
             {% endif %}

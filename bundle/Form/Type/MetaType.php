@@ -28,14 +28,14 @@ class MetaType extends AbstractType
     protected $configResolver;
 
     /** @var SeoMetadataFieldTypeRegistry */
-    protected $metaData;
+    protected $metadataFieldTypeRegistry;
     /**
      * FormMapper constructor.
      */
-    public function __construct(ConfigResolverInterface $configResolver, SeoMetadataFieldTypeRegistry $metaData)
+    public function __construct(ConfigResolverInterface $configResolver, SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry)
     {
-        $this->configResolver = $configResolver;
-        $this->metaData       = $metaData;
+        $this->configResolver             = $configResolver;
+        $this->metadataFieldTypeRegistry  = $metadataFieldTypeRegistry;
     }
 
     public function getName(): string
@@ -54,17 +54,16 @@ class MetaType extends AbstractType
 
         $type    = 'text';
         $options = [
-            'label'      => false,
-            'empty_data' => '',
+            'label' => false,
         ];
         if (isset($metasConfig[$builder->getName()])) {
             $meta    = $metasConfig[$builder->getName()];
             $type    = $meta['type'];
-            $options = !empty($meta['params']) ? $meta['params'] : $options;
+            $options = array_merge($options, $meta['params']);
         }
 
         $builder->add('name', HiddenType::class);
-        $this->metaData->mapForm($builder, $options, $type);
+        $this->metadataFieldTypeRegistry->mapForm($builder, $options, $type);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

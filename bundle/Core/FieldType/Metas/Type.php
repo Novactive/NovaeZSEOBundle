@@ -25,7 +25,7 @@ class Type extends FieldType
     const IDENTIFIER = 'novaseometas';
 
     /** @var SeoMetadataFieldTypeRegistry */
-    protected $metaData;
+    protected $metadataFieldTypeRegistry;
 
     /**
      * @var array
@@ -39,11 +39,11 @@ class Type extends FieldType
 
     /**
      * Type constructor.
-     * @param SeoMetadataFieldTypeRegistry $metaData
+     * @param SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry
      */
-    public function __construct(SeoMetadataFieldTypeRegistry $metaData)
+    public function __construct(SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry)
     {
-        $this->metaData = $metaData;
+        $this->metadataFieldTypeRegistry = $metadataFieldTypeRegistry;
     }
 
     /**
@@ -193,7 +193,7 @@ class Type extends FieldType
             return new Value([]);
         }
 
-        return new Value($this->metaData->fromHash($hash));
+        return new Value($this->metadataFieldTypeRegistry->fromHash($hash));
     }
 
     /**

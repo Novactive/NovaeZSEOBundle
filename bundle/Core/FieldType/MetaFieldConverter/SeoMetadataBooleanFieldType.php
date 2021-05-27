@@ -36,10 +36,14 @@ class SeoMetadataBooleanFieldType extends SeoMetadataDefaultFieldType
 
     public function mapForm(FormBuilderInterface &$builder, array $params)
     {
+        $option = [
+            'class'        => 'form-control',
+            'false_values' => '0'
+        ];
         $builder->add(
             'content',
             CheckboxType::class,
-            $params
+            array_merge($params, $option)
         );
     }
 }

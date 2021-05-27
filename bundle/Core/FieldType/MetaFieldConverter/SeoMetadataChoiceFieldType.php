@@ -1,6 +1,6 @@
 <?php
 /**
- * NovaeZSEOBundle SeoMetadataDefaultFieldType.
+ * NovaeZSEOBundle SeoMetadataChoiceFieldType.
  *
  * @package   Novactive\Bundle\eZSEOBundle
  *
@@ -12,14 +12,15 @@
 namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter;
 
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class SeoMetadataDefaultFieldType implements SeoMetadataFieldTypeInterface
+class SeoMetadataChoiceFieldType extends SeoMetadataDefaultFieldType
 {
+
     public function support(string $fieldType): bool
     {
-        return 'text' === $fieldType;
+        return 'select' === $fieldType;
     }
 
     public function fromHash($hash): Meta
@@ -35,10 +36,9 @@ class SeoMetadataDefaultFieldType implements SeoMetadataFieldTypeInterface
 
     public function mapForm(FormBuilderInterface &$builder, array $params)
     {
-        $params['empty_data'] = '';
         $builder->add(
             'content',
-            TextType::class,
+            ChoiceType::class,
             $params
         );
     }

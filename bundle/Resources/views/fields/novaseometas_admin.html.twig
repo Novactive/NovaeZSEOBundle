@@ -7,7 +7,7 @@
             <li class="ez-field meta-value">
                 {% set default_value = nova_ezseo.fieldtype_metas[meta.name] %}
                 <b>{{ default_value.label }}:</b>
-                {{ meta.isEmpty() ? default_value.default_pattern|raw|escape : (meta.name == 'robots' ?  (meta.content ? 'noindex' : default_value.default_pattern|raw|escape) : meta.content) }}
+                {{ meta.isEmpty() ? default_value.default_pattern|raw|escape : meta.content }}
             </li>
         {% endif %}
     {% endfor %}

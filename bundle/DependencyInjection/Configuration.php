@@ -34,7 +34,7 @@ class Configuration extends SAConfiguration
                 ->prototype('array')
                     ->children()
                         ->scalarNode('label')->isRequired()->end()
-                        ->enumNode('type')->values(['boolean', 'text'])->defaultValue('text')->end()
+                        ->enumNode('type')->values(['boolean', 'text', 'select'])->defaultValue('text')->end()
                         ->arrayNode('params')
                             ->prototype('variable')->end()
                         ->end()
