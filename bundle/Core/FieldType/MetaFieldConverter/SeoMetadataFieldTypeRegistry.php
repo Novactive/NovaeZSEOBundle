@@ -11,12 +11,16 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter;
 
+use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class SeoMetadataFieldTypeRegistry
 {
     /** @var SeoMetadataFieldTypeInterface[] */
     protected $metaFieldTypes;
+
+    /** @var ConfigResolverInterface */
+    protected $configResolver;
 
     /**
      * SeoMetadataFieldTypeRegistry constructor.
@@ -30,6 +34,15 @@ class SeoMetadataFieldTypeRegistry
         }
     }
 
+    /**
+     * @required
+     * @param ConfigResolverInterface $configResolver
+     */
+    public function setConfigResolver( ConfigResolverInterface $configResolver ): void
+    {
+        $this->configResolver = $configResolver;
+    }
+
     public function addMetaFieldType(SeoMetadataFieldTypeInterface $metaFieldType): void
     {
         $this->metaFieldTypes[] = $metaFieldType;
@@ -37,13 +50,17 @@ class SeoMetadataFieldTypeRegistry
 
     public function fromHash($hash): array
     {
+        $metasConfig = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
+
         $metas = [];
         foreach ($hash as $hashItem) {
             if (!is_array($hashItem)) {
                 continue;
             }
+            $fieldConfig = $metasConfig[$hashItem['meta_name']] ?? null;
+            $fieldType = $fieldConfig['type'] ?? SeoMetadataDefaultFieldType::IDENTIFIER;
             foreach ($this->metaFieldTypes as $metaFieldType) {
-                if (!$metaFieldType->support($hashItem['meta_fieldtype'] ?? SeoMetadataDefaultFieldType::IDENTIFIER)) {
+                if (!$metaFieldType->support($fieldType)) {
                     continue;
                 }
                 $metas[] = $metaFieldType->fromHash($hashItem);
