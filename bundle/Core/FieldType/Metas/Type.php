@@ -17,11 +17,15 @@ use eZ\Publish\Core\FieldType\ValidationError;
 use eZ\Publish\Core\FieldType\Value as CoreValue;
 use eZ\Publish\SPI\FieldType\Value as SPIValue;
 use eZ\Publish\SPI\Persistence\Content\FieldValue;
+use Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\SeoMetadataFieldTypeRegistry;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 
 class Type extends FieldType
 {
     const IDENTIFIER = 'novaseometas';
+
+    /** @var SeoMetadataFieldTypeRegistry */
+    protected $metadataFieldTypeRegistry;
 
     /**
      * @var array
@@ -32,6 +36,15 @@ class Type extends FieldType
             'default' => [],
         ],
     ];
+
+    /**
+     * Type constructor.
+     * @param SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry
+     */
+    public function __construct(SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry)
+    {
+        $this->metadataFieldTypeRegistry = $metadataFieldTypeRegistry;
+    }
 
     /**
      * Validates the fieldSettings of a FieldDefinitionCreateStruct or FieldDefinitionUpdateStruct.
@@ -179,18 +192,8 @@ class Type extends FieldType
         if (!is_array($hash)) {
             return new Value([]);
         }
-        $metas = [];
-        foreach ($hash as $hashItem) {
-            if (!is_array($hashItem)) {
-                continue;
-            }
-            $meta = new Meta();
-            $meta->setName($hashItem['meta_name']);
-            $meta->setContent($hashItem['meta_content']);
-            $metas[] = $meta;
-        }
 
-        return new Value($metas);
+        return new Value($this->metadataFieldTypeRegistry->fromHash($hash));
     }
 
     /**
@@ -207,7 +210,7 @@ class Type extends FieldType
             /* @var Meta $meta */
             $hash[$meta->getName()] = [
                 'meta_name'    => $meta->getName(),
-                'meta_content' => $meta->getContent(),
+                'meta_content' => $meta->getContent()
             ];
         }
 

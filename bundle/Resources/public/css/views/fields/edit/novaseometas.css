@@ -118,3 +118,17 @@
     float: left;
     clear: right;
 }
+
+.ez-field-edit--novaseometas .ez-data-source__input-wrapper .ez-data-source__input-wrapper .form-check .form-check-label {
+    display: none;
+}
+
+.ez-field-edit--novaseometas .ez-data-source__input-wrapper .ez-data-source__input-wrapper .form-check .form-check-input {
+    margin-top: 0;
+    position: relative;
+    height: 30px;
+}
+
+.ez-field-edit--novaseometas .ez-data-source__input-wrapper .ez-data-source__input-wrapper .form-check .form-check-input:focus {
+    box-shadow: none;
+}

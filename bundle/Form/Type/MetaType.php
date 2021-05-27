@@ -11,10 +11,11 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Form\Type;
 
+use eZ\Publish\Core\MVC\ConfigResolverInterface;
+use Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\SeoMetadataFieldTypeRegistry;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -23,6 +24,22 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MetaType extends AbstractType
 {
+    /** @var ConfigResolverInterface */
+    protected $configResolver;
+
+    /** @var SeoMetadataFieldTypeRegistry */
+    protected $metadataFieldTypeRegistry;
+    /**
+     * FormMapper constructor.
+     */
+    public function __construct(
+        ConfigResolverInterface $configResolver,
+        SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry
+    ) {
+        $this->configResolver            = $configResolver;
+        $this->metadataFieldTypeRegistry = $metadataFieldTypeRegistry;
+    }
+
     public function getName(): string
     {
         return $this->getBlockPrefix();
@@ -35,16 +52,20 @@ class MetaType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('name', HiddenType::class)
-            ->add(
-                'content',
-                TextType::class,
-                [
-                    'label'      => false,
-                    'empty_data' => '',
-                ]
-            );
+        $metasConfig = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
+
+        $type    = 'text';
+        $options = [
+            'label' => false,
+        ];
+        if (isset($metasConfig[$builder->getName()])) {
+            $meta    = $metasConfig[$builder->getName()];
+            $type    = $meta['type'];
+            $options = array_merge($options, $meta['params']);
+        }
+
+        $builder->add('name', HiddenType::class);
+        $this->metadataFieldTypeRegistry->mapForm($builder, $options, $type);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
