@@ -52,6 +52,7 @@ services:
     Novactive\Bundle\eZSEOBundle\Core\DummyCustomFallback: ~
 
     Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema:
+        lazy: true
         arguments:
             $contentTypeHandler: "@ezpublish.spi.persistence.content_type_handler"
             $languageHandler: "@ezpublish.spi.persistence.cache.contentLanguageHandler"
