@@ -71,8 +71,8 @@ final class QueryFactory
             $criterions,
             $this->getCriterionsForConfig(
                 $config['contentTypeIdentifiers'],
-                $config['subtrees'],
                 $config['locations'],
+                $config['subtrees'],
                 false
             )
         );
@@ -83,8 +83,8 @@ final class QueryFactory
             $criterions,
             $this->getCriterionsForConfig(
                 $config['contentTypeIdentifiers'],
-                $config['subtrees'],
                 $config['locations'],
+                $config['subtrees'],
                 true
             )
         );
