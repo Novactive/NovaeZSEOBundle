@@ -135,3 +135,7 @@
 .ez-field-edit--novaseometas .ez-data-source__input-wrapper .ez-data-source__input-wrapper .form-check .form-check-input:focus {
     box-shadow: none;
 }
+
+.ibexa-field-edit--novaseometas legend {
+    display: none;
+}
