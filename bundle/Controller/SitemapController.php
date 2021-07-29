@@ -138,6 +138,10 @@ class SitemapController extends Controller
                 continue;
             }
 
+            if(strpos($url, 'view/content/') != 0) {
+                continue;
+            }
+
             $modified = $location->contentInfo->modificationDate->format('c');
             $loc = $sitemap->createElement('loc', $url);
             $lastmod = $sitemap->createElement('lastmod', $modified);
