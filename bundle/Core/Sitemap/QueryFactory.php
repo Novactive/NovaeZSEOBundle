@@ -89,6 +89,8 @@ final class QueryFactory
             )
         );
 
+        $criterions[] = new Criterion\LanguageCode($this->configResolver->getParameter('languages'), true);
+
         $query->query = new Criterion\LogicalAnd($criterions);
         $query->sortClauses = [new SortClause\DatePublished(Query::SORT_DESC)];
 

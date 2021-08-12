@@ -26,7 +26,6 @@ use Novactive\Bundle\eZSEOBundle\Core\Sitemap\QueryFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 
 class SitemapController extends Controller
 {
@@ -57,7 +56,6 @@ class SitemapController extends Controller
         $searchService = $this->getRepository()->getSearchService();
         $query = $queryFactory();
         $query->limit = 0;
-        $query->filter = new Criterion\LogicalAnd([new Criterion\LanguageCode($this->getConfigResolver()->getParameter('languages'),true)]);
         $resultCount = $searchService->findLocations($query)->totalCount;
 
         // Dom Doc
@@ -104,8 +102,6 @@ class SitemapController extends Controller
         $query = $queryFactory();
         $query->limit = static::PACKET_MAX;
         $query->offset = static::PACKET_MAX * ($page - 1);
-        $query->filter = new Criterion\LogicalAnd([new Criterion\LanguageCode($this->getConfigResolver()->getParameter('languages'),true)]);
-
         $searchService = $this->getRepository()->getSearchService();
 
         $results = $searchService->findLocations($query);
@@ -141,7 +137,7 @@ class SitemapController extends Controller
                 continue;
             }
 
-            if(strpos($url, 'view/content/') != 0) {
+            if (0 != strpos($url, 'view/content/')) {
                 continue;
             }
 

@@ -113,12 +113,12 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
     public function computeMetas(Field $field, $content): string
     {
         $fallback = false;
-        $languages    = $this->configResolver->getParameter('languages');
+        $languages = $this->configResolver->getParameter('languages');
 
         if ($content instanceof ContentInfo) {
-            try{
+            try {
                 $content = $this->eZRepository->getContentService()->loadContentByContentInfo($content, $languages);
-            } catch(NotFoundException | UnauthorizedException $e){
+            } catch (NotFoundException | UnauthorizedException $e) {
                 return '';
             }
         } elseif (!($content instanceof Content)) {

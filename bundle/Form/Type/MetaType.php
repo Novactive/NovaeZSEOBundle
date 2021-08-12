@@ -61,7 +61,7 @@ class MetaType extends AbstractType
                     'empty_data' => false,
                     'required' => true,
                     'constraints' => $constraints,
-                    'label_attr' => ['style' => 'display:none']
+                    'label_attr' => ['style' => 'display:none'],
                 ]
             );
     }
