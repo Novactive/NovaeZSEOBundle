@@ -12,6 +12,8 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Twig;
 
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\API\Repository\Values\Content\ContentInfo;
@@ -111,9 +113,14 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
     public function computeMetas(Field $field, $content): string
     {
         $fallback = false;
+        $languages    = $this->configResolver->getParameter('languages');
 
         if ($content instanceof ContentInfo) {
-            $content = $this->eZRepository->getContentService()->loadContentByContentInfo($content);
+            try{
+                $content = $this->eZRepository->getContentService()->loadContentByContentInfo($content, $languages);
+            } catch(NotFoundException | UnauthorizedException $e){
+                return '';
+            }
         } elseif (!($content instanceof Content)) {
             throw new InvalidArgumentType('$content', 'Content of ContentType');
         }
