@@ -11,13 +11,13 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Twig;
 
-use eZ\Publish\API\Repository\Exceptions\NotFoundException;
-use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\API\Repository\Values\Content\ContentInfo;
 use eZ\Publish\API\Repository\Values\Content\Field;
 use eZ\Publish\API\Repository\Values\ContentType\ContentType;
+use eZ\Publish\Core\Base\Exceptions\NotFoundException;
+use eZ\Publish\Core\Base\Exceptions\UnauthorizedException;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use eZ\Publish\Core\MVC\Symfony\Locale\LocaleConverter;
 use Novactive\Bundle\eZSEOBundle\Core\CustomFallbackInterface;
@@ -197,8 +197,7 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
                     if (!$this->metaNameSchema->resolveMeta($meta, $content, $contentType)) {
                         $needFallback = true;
                     }
-                } catch (\eZ\Publish\Core\Base\Exceptions\NotFoundException|
-                \eZ\Publish\Core\Base\Exceptions\UnauthorizedException $exception) {
+                } catch (NotFoundException|UnauthorizedException $exception) {
                     if ($this->logger) {
                         $this->logger->error('[Nova eZ SEO] Error when resolving meta', [
                             'message' => $exception->getMessage(),
