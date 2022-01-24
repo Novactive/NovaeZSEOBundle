@@ -34,6 +34,7 @@ use eZ\Publish\SPI\Persistence\Content\Language\Handler as ContentLanguageHandle
 use eZ\Publish\SPI\Persistence\Content\Type as SPIContentType;
 use eZ\Publish\SPI\Persistence\Content\Type\Handler as ContentTypeHandler;
 use eZ\Publish\SPI\Variation\VariationHandler;
+use Psr\Log\LoggerInterface;
 
 class MetaNameSchema extends NameSchemaService
 {
@@ -77,6 +78,11 @@ class MetaNameSchema extends NameSchemaService
      */
     protected $relationListNameableField;
 
+    /**
+     * @var LoggerInterface|null
+     */
+    protected $logger;
+
     public function __construct(
         ContentTypeHandler $contentTypeHandler,
         FieldTypeCollectionFactory $collectionFactory,
@@ -99,6 +105,14 @@ class MetaNameSchema extends NameSchemaService
         $this->repository                = $repository;
         $this->translationHelper         = $helper;
         $this->relationListNameableField = $relationListNameableField;
+    }
+
+    /**
+     * @required
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     public function setLanguages(array $languages = null): void
@@ -140,7 +154,12 @@ class MetaNameSchema extends NameSchemaService
                 return true;
             }
         } catch(\Exception $exception) {
-            // TODO log
+            if ($this->logger) {
+                $this->logger->error('[Nova eZ SEO] Error when resolving meta', [
+                    'message' => $exception->getMessage(),
+                    'contentId' => $content->id,
+                ]);
+            }
         }
         $meta->setContent('');
 
