@@ -78,11 +78,6 @@ class MetaNameSchema extends NameSchemaService
      */
     protected $relationListNameableField;
 
-    /**
-     * @var LoggerInterface|null
-     */
-    protected $logger;
-
     public function __construct(
         ContentTypeHandler $contentTypeHandler,
         FieldTypeCollectionFactory $collectionFactory,
@@ -105,14 +100,6 @@ class MetaNameSchema extends NameSchemaService
         $this->repository                = $repository;
         $this->translationHelper         = $helper;
         $this->relationListNameableField = $relationListNameableField;
-    }
-
-    /**
-     * @required
-     */
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
     }
 
     public function setLanguages(array $languages = null): void
@@ -138,28 +125,19 @@ class MetaNameSchema extends NameSchemaService
             );
         }
 
-        try {
-            $resolveMultilingue = $this->resolve(
-                $meta->getContent(),
-                $contentType,
-                $content->fields,
-                $content->versionInfo->languageCodes
-            );
-            // we don't fallback on the other languages... it would be very bad for SEO to mix the languages
-            if ((\array_key_exists($this->languages[0], $resolveMultilingue)) &&
-                ('' !== $resolveMultilingue[$this->languages[0]])
-            ) {
-                $meta->setContent($resolveMultilingue[$this->languages[0]]);
+        $resolveMultilingue = $this->resolve(
+            $meta->getContent(),
+            $contentType,
+            $content->fields,
+            $content->versionInfo->languageCodes
+        );
+        // we don't fallback on the other languages... it would be very bad for SEO to mix the languages
+        if ((\array_key_exists($this->languages[0], $resolveMultilingue)) &&
+            ('' !== $resolveMultilingue[$this->languages[0]])
+        ) {
+            $meta->setContent($resolveMultilingue[$this->languages[0]]);
 
-                return true;
-            }
-        } catch(\Exception $exception) {
-            if ($this->logger) {
-                $this->logger->error('[Nova eZ SEO] Error when resolving meta', [
-                    'message' => $exception->getMessage(),
-                    'contentId' => $content->id,
-                ]);
-            }
+            return true;
         }
         $meta->setContent('');
 

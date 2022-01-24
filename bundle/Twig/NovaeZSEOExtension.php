@@ -11,6 +11,8 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Twig;
 
+use eZ\Publish\API\Repository\Exceptions\NotFoundException;
+use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
 use eZ\Publish\API\Repository\Repository;
 use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\API\Repository\Values\Content\ContentInfo;
@@ -63,6 +65,11 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
      */
     protected $customFallBackService;
 
+    /**
+     * @var LoggerInterface|null
+     */
+    protected $logger;
+
     public function __construct(
         Repository $repository,
         MetaNameSchema $nameSchema,
@@ -73,6 +80,14 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
         $this->eZRepository    = $repository;
         $this->configResolver  = $configResolver;
         $this->localeConverter = $localeConverter;
+    }
+
+    /**
+     * @required
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     public function setCustomFallbackService(CustomFallbackInterface $service)
@@ -182,8 +197,18 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
                         $meta->setContent($configuration[$meta->getName()]);
                     }
                 }
-                if (!$this->metaNameSchema->resolveMeta($meta, $content, $contentType)) {
-                    $needFallback = true;
+                try {
+                    if (!$this->metaNameSchema->resolveMeta($meta, $content, $contentType)) {
+                        $needFallback = true;
+                    }
+                } catch (\eZ\Publish\Core\Base\Exceptions\NotFoundException|
+                \eZ\Publish\Core\Base\Exceptions\UnauthorizedException $exception) {
+                    if ($this->logger) {
+                        $this->logger->error('[Nova eZ SEO] Error when resolving meta', [
+                            'message' => $exception->getMessage(),
+                            'contentId' => $content->id,
+                        ]);
+                    }
                 }
             }
 
