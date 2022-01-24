@@ -112,37 +112,41 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
     // @param $content: use type Content rather than ContentInfo, the last one is @deprecated
     public function computeMetas(Field $field, $content): string
     {
-        $fallback = false;
-        $languages = $this->configResolver->getParameter('languages');
+        try {
+            $fallback = false;
+            $languages = $this->configResolver->getParameter('languages');
 
-        if ($content instanceof ContentInfo) {
-            try {
-                $content = $this->eZRepository->getContentService()->loadContentByContentInfo($content, $languages);
-            } catch (NotFoundException | UnauthorizedException $e) {
-                return '';
+            if ($content instanceof ContentInfo) {
+                try {
+                    $content = $this->eZRepository->getContentService()->loadContentByContentInfo($content, $languages);
+                } catch (NotFoundException|UnauthorizedException $e) {
+                    return '';
+                }
+            } elseif (!($content instanceof Content)) {
+                throw new InvalidArgumentType('$content', 'Content of ContentType');
             }
-        } elseif (!($content instanceof Content)) {
-            throw new InvalidArgumentType('$content', 'Content of ContentType');
-        }
 
-        $contentMetas = $this->innerComputeMetas($content, $field, $fallback);
+            $contentMetas = $this->innerComputeMetas($content, $field, $fallback);
 
-        if ($fallback && !$this->customFallBackService) {
-            $rootContent = $this->eZRepository->getLocationService()->loadLocation(
-                $this->configResolver->getParameter('content.tree_root.location_id')
-            )->getContent();
+            if ($fallback && !$this->customFallBackService) {
+                $rootContent = $this->eZRepository->getLocationService()->loadLocation(
+                    $this->configResolver->getParameter('content.tree_root.location_id')
+                )->getContent();
 
-            // We need to load the good field too
-            $metasIdentifier = $this->configResolver->getParameter('fieldtype_metas_identifier', 'nova_ezseo');
-            $rootMetas = $this->innerComputeMetas($rootContent, $metasIdentifier, $fallback);
+                // We need to load the good field too
+                $metasIdentifier = $this->configResolver->getParameter('fieldtype_metas_identifier', 'nova_ezseo');
+                $rootMetas = $this->innerComputeMetas($rootContent, $metasIdentifier, $fallback);
 
-            foreach ($contentMetas as $key => $metaContent) {
-                if (\array_key_exists($key, $rootMetas)) {
-                    $metaContent->setContent(
-                        $metaContent->isEmpty() ? $rootMetas[$key]->getContent() : $metaContent->getContent()
-                    );
+                foreach ($contentMetas as $key => $metaContent) {
+                    if (\array_key_exists($key, $rootMetas)) {
+                        $metaContent->setContent(
+                            $metaContent->isEmpty() ? $rootMetas[$key]->getContent() : $metaContent->getContent()
+                        );
+                    }
                 }
             }
+        } catch (\Exception $exception) {
+            // TODO log
         }
 
         return '';
