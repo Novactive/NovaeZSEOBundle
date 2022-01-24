@@ -123,38 +123,34 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
      */
     public function computeMetas(Field $field, ContentInfo $contentInfo): string
     {
-        try {
-            $fallback     = false;
-            $languages    = $this->configResolver->getParameter('languages');
-            $contentType  = $this->eZRepository->getContentTypeService()->loadContentType(
-                $contentInfo->contentTypeId
+        $fallback     = false;
+        $languages    = $this->configResolver->getParameter('languages');
+        $contentType  = $this->eZRepository->getContentTypeService()->loadContentType(
+            $contentInfo->contentTypeId
+        );
+        $content      = $this->eZRepository->getContentService()->loadContentByContentInfo($contentInfo, $languages);
+        $contentMetas = $this->innerComputeMetas($content, $field, $contentType, $fallback);
+        if ($fallback && !$this->customFallBackService) {
+            $rootNode        = $this->eZRepository->getLocationService()->loadLocation(
+                $this->configResolver->getParameter('content.tree_root.location_id')
             );
-            $content      = $this->eZRepository->getContentService()->loadContentByContentInfo($contentInfo, $languages);
-            $contentMetas = $this->innerComputeMetas($content, $field, $contentType, $fallback);
-            if ($fallback && !$this->customFallBackService) {
-                $rootNode        = $this->eZRepository->getLocationService()->loadLocation(
-                    $this->configResolver->getParameter('content.tree_root.location_id')
-                );
-                $rootContent     = $this->eZRepository->getContentService()->loadContentByContentInfo(
-                    $rootNode->contentInfo,
-                    $languages
-                );
-                $rootContentType = $this->eZRepository->getContentTypeService()->loadContentType(
-                    $rootContent->contentInfo->contentTypeId
-                );
-                // We need to load the good field too
-                $metasIdentifier = $this->configResolver->getParameter('fieldtype_metas_identifier', 'nova_ezseo');
-                $rootMetas       = $this->innerComputeMetas($rootContent, $metasIdentifier, $rootContentType, $fallback);
-                foreach ($contentMetas as $key => $metaContent) {
-                    if (\array_key_exists($key, $rootMetas)) {
-                        $metaContent->setContent(
-                            $metaContent->isEmpty() ? $rootMetas[$key]->getContent() : $metaContent->getContent()
-                        );
-                    }
+            $rootContent     = $this->eZRepository->getContentService()->loadContentByContentInfo(
+                $rootNode->contentInfo,
+                $languages
+            );
+            $rootContentType = $this->eZRepository->getContentTypeService()->loadContentType(
+                $rootContent->contentInfo->contentTypeId
+            );
+            // We need to load the good field too
+            $metasIdentifier = $this->configResolver->getParameter('fieldtype_metas_identifier', 'nova_ezseo');
+            $rootMetas       = $this->innerComputeMetas($rootContent, $metasIdentifier, $rootContentType, $fallback);
+            foreach ($contentMetas as $key => $metaContent) {
+                if (\array_key_exists($key, $rootMetas)) {
+                    $metaContent->setContent(
+                        $metaContent->isEmpty() ? $rootMetas[$key]->getContent() : $metaContent->getContent()
+                    );
                 }
             }
-        } catch (\Exception $exception) {
-            // TODO log
         }
 
         return '';

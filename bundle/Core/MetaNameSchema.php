@@ -34,7 +34,6 @@ use eZ\Publish\SPI\Persistence\Content\Language\Handler as ContentLanguageHandle
 use eZ\Publish\SPI\Persistence\Content\Type as SPIContentType;
 use eZ\Publish\SPI\Persistence\Content\Type\Handler as ContentTypeHandler;
 use eZ\Publish\SPI\Variation\VariationHandler;
-use Psr\Log\LoggerInterface;
 
 class MetaNameSchema extends NameSchemaService
 {
