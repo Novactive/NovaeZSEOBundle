@@ -124,19 +124,23 @@ class MetaNameSchema extends NameSchemaService
             );
         }
 
-        $resolveMultilingue = $this->resolve(
-            $meta->getContent(),
-            $contentType,
-            $content->fields,
-            $content->versionInfo->languageCodes
-        );
-        // we don't fallback on the other languages... it would be very bad for SEO to mix the languages
-        if ((\array_key_exists($this->languages[0], $resolveMultilingue)) &&
-            ('' !== $resolveMultilingue[$this->languages[0]])
-        ) {
-            $meta->setContent($resolveMultilingue[$this->languages[0]]);
+        try {
+            $resolveMultilingue = $this->resolve(
+                $meta->getContent(),
+                $contentType,
+                $content->fields,
+                $content->versionInfo->languageCodes
+            );
+            // we don't fallback on the other languages... it would be very bad for SEO to mix the languages
+            if ((\array_key_exists($this->languages[0], $resolveMultilingue)) &&
+                ('' !== $resolveMultilingue[$this->languages[0]])
+            ) {
+                $meta->setContent($resolveMultilingue[$this->languages[0]]);
 
-            return true;
+                return true;
+            }
+        } catch(\Exception $exception) {
+            // TODO log
         }
         $meta->setContent('');
 
