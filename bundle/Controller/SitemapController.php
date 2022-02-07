@@ -90,7 +90,7 @@ class SitemapController extends Controller
         $sitemap->formatOutput = true;
 
         // create an index if we are greater than th PACKET_MAX
-        if ($resultCount > static::PACKET_MAX) {
+        if ($resultCount > $this->getPacketMax()) {
             $root = $sitemap->createElement('sitemapindex');
             $root->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
             $sitemap->appendChild($root);
@@ -125,8 +125,8 @@ class SitemapController extends Controller
         $root->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         $sitemap->appendChild($root);
         $query         = $this->getQuery();
-        $query->limit  = static::PACKET_MAX;
-        $query->offset = static::PACKET_MAX * ($page - 1);
+        $query->limit  = $this->getPacketMax();
+        $query->offset = $this->getPacketMax() * ($page - 1);
 
         $searchService = $this->getRepository()->getSearchService();
 
@@ -174,7 +174,7 @@ class SitemapController extends Controller
      */
     protected function fillSitemapIndex(DOMDocument $sitemap, int $numberOfResults, DOMElement $root): void
     {
-        $numberOfPage = (int) ceil($numberOfResults / static::PACKET_MAX);
+        $numberOfPage = (int) ceil($numberOfResults / $this->getPacketMax());
         for ($sitemapNumber = 1; $sitemapNumber <= $numberOfPage; ++$sitemapNumber) {
             $sitemapElt = $sitemap->createElement('sitemap');
 
@@ -200,4 +200,14 @@ class SitemapController extends Controller
             $root->appendChild($sitemapElt);
         }
     }
+
+    /**
+     * @return int
+     */
+    public function getPacketMax()
+    {
+        return $this->getConfigResolver()->getParameter('packet_max', 'nova_ezseo');
+    }
+
+
 }

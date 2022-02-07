@@ -80,3 +80,4 @@ parameters:
             label: 'Twitter - Image'
             default_pattern: "<image|picture>"
             icon: 'twitter-square'
+    nova_ezseo.default.packet_max: 1000
