@@ -30,8 +30,8 @@ Presentation and documentation available here : [http://novactive.github.io/Nova
 
 [Installation](documentation/INSTALL.md)
 
-Change
-------
+Changelog
+---------
 
 [Changelog](documentation/CHANGELOG.md)
 
