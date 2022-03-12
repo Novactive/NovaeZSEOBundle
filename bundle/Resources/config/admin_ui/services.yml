@@ -2,43 +2,43 @@ services:
 
     # FIELD TYPE
     Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Type:
-        parent: ezpublish.fieldType
+        parent: Ibexa\Core\FieldType\FieldType
         tags:
-            - { name: ezpublish.fieldType, alias: novaseometas }
+            - { name: ibexa.field_type, alias: novaseometas }
 
     Novactive\Bundle\eZSEOBundle\Core\SeoMetas:
         arguments:
-            - "@ezpublish.config.resolver"
+            - "@ibexa.config.resolver"
         tags:
-            - { name: ezplatform.admin_ui.config_provider, key: 'seoMetas' }
+            - { name: ibexa.admin_ui.config.provider, key: 'seoMetas' }
 
-    ezplatform.adminui.novaseobundle.css:
-        parent: EzSystems\EzPlatformAdminUi\Component\LinkComponent
+    ibexa.adminui.novaseobundle.css:
+        parent: Ibexa\AdminUi\Component\LinkComponent
         arguments:
             $href: "/bundles/novaezseo/css/views/fields/edit/novaseometas.css"
         tags:
-            - { name: ezplatform.admin_ui.component, group: 'stylesheet-head' }
+            - { name: ibexa.admin_ui.component, group: 'stylesheet-head' }
 
-    ezplatform.adminui.novaseobundle.css_font:
-        parent: EzSystems\EzPlatformAdminUi\Component\LinkComponent
+    ibexa.adminui.novaseobundle.css_font:
+        parent: Ibexa\AdminUi\Component\LinkComponent
         arguments:
             $href: "/bundles/novaezseo/font/font-awesome.min.css"
         tags:
-            - { name: ezplatform.admin_ui.component, group: 'stylesheet-head' }
+            - { name: ibexa.admin_ui.component, group: 'stylesheet-head' }
 
-    ezplatform.adminui.novaseobundle.css_page:
-        parent: EzSystems\EzPlatformAdminUi\Component\LinkComponent
+    ibexa.adminui.novaseobundle.css_page:
+        parent: Ibexa\AdminUi\Component\LinkComponent
         arguments:
             $href: "/bundles/novaezseo/css/style.css"
         tags:
-            - { name: ezplatform.admin_ui.component, group: 'stylesheet-head' }
+            - { name: ibexa.admin_ui.component, group: 'stylesheet-head' }
 
-    ezplatform.adminui.novaseobundle.js:
-        parent: EzSystems\EzPlatformAdminUi\Component\ScriptComponent
+    ibexa.adminui.novaseobundle.js:
+        parent: Ibexa\AdminUi\Component\ScriptComponent
         autowire: true
         autoconfigure: false
         public: false
         arguments:
             $src: "/bundles/novaezseo/js/script.js"
         tags:
-            - { name: ezplatform.admin_ui.component, group: 'script-body' }
+            - { name: ibexa.admin_ui.component, group: 'script-body' }

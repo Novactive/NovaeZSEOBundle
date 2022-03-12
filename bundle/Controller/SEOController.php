@@ -13,7 +13,7 @@
 namespace Novactive\Bundle\eZSEOBundle\Controller;
 
 use DOMDocument;
-use eZ\Bundle\EzPublishCoreBundle\Controller;
+use Ibexa\Bundle\Core\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;

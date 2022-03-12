@@ -12,7 +12,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\DependencyInjection\Security\PolicyProvider;
 
-use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Security\PolicyProvider\YamlPolicyProvider;
+use Ibexa\Bundle\Core\DependencyInjection\Security\PolicyProvider\YamlPolicyProvider;
 
 class PolicyProvider extends YamlPolicyProvider
 {

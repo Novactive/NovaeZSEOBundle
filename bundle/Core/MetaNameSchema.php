@@ -12,28 +12,28 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core;
 
-use eZ\Publish\API\Repository\Repository as RepositoryInterface;
-use eZ\Publish\API\Repository\Values\Content\Content;
-use eZ\Publish\API\Repository\Values\Content\Field;
-use eZ\Publish\API\Repository\Values\ContentType\ContentType;
-use eZ\Publish\Core\Base\Exceptions\InvalidArgumentType;
-use eZ\Publish\Core\FieldType\FieldTypeRegistry;
-use eZ\Publish\Core\FieldType\Image\Value as ImageValue;
-use eZ\Publish\Core\FieldType\ImageAsset\Value as ImageAssetValue;
-use eZ\Publish\Core\FieldType\Relation\Value as RelationValue;
-use eZ\Publish\Core\FieldType\RelationList\Type as RelationListType;
-use eZ\Publish\Core\FieldType\RelationList\Value as RelationListValue;
-use eZ\Publish\Core\Helper\TranslationHelper;
-use eZ\Publish\Core\MVC\ConfigResolverInterface;
-use eZ\Publish\Core\Repository\Helper\NameSchemaService;
-use eZ\Publish\Core\Repository\Mapper\ContentTypeDomainMapper;
-use eZ\Publish\Core\Repository\Values\Content\VersionInfo;
-use eZ\Publish\SPI\Persistence\Content\Language\Handler as ContentLanguageHandler;
-use eZ\Publish\SPI\Persistence\Content\Type as SPIContentType;
-use eZ\Publish\SPI\Persistence\Content\Type\Handler as ContentTypeHandler;
-use eZ\Publish\SPI\Variation\VariationHandler;
-use EzSystems\EzPlatformRichText\eZ\FieldType\RichText\Value as RichTextValue;
-use EzSystems\EzPlatformRichText\eZ\RichText\Converter as RichTextConverterInterface;
+use Ibexa\Contracts\Core\Repository\Repository as RepositoryInterface;
+use Ibexa\Contracts\Core\Repository\Values\Content\Content;
+use Ibexa\Contracts\Core\Repository\Values\Content\Field;
+use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
+use Ibexa\Core\Base\Exceptions\InvalidArgumentType;
+use Ibexa\Core\FieldType\FieldTypeRegistry;
+use Ibexa\Core\FieldType\Image\Value as ImageValue;
+use Ibexa\Core\FieldType\ImageAsset\Value as ImageAssetValue;
+use Ibexa\Core\FieldType\Relation\Value as RelationValue;
+use Ibexa\Core\FieldType\RelationList\Type as RelationListType;
+use Ibexa\Core\FieldType\RelationList\Value as RelationListValue;
+use Ibexa\Core\Helper\TranslationHelper;
+use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
+use Ibexa\Core\Repository\Helper\NameSchemaService;
+use Ibexa\Core\Repository\Mapper\ContentTypeDomainMapper;
+use Ibexa\Core\Repository\Values\Content\VersionInfo;
+use Ibexa\Contracts\Core\Persistence\Content\Language\Handler as ContentLanguageHandler;
+use Ibexa\Contracts\Core\Persistence\Content\Type as SPIContentType;
+use Ibexa\Contracts\Core\Persistence\Content\Type\Handler as ContentTypeHandler;
+use Ibexa\Contracts\Core\Variation\VariationHandler;
+use Ibexa\FieldTypeRichText\FieldType\RichText as RichTextValue;
+use Ibexa\Contracts\FieldTypeRichText\RichText\Converter as RichTextConverterInterface;
 
 class MetaNameSchema extends NameSchemaService
 {

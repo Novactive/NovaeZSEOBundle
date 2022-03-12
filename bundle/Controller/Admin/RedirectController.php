@@ -14,9 +14,9 @@ namespace Novactive\Bundle\eZSEOBundle\Controller\Admin;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use eZ\Publish\API\Repository\PermissionResolver;
-use eZ\Publish\Core\Event\URLWildcardService;
-use EzSystems\EzPlatformAdminUiBundle\Controller\Controller;
+use Ibexa\Contracts\Core\Repository\PermissionResolver;
+use Ibexa\Core\Event\URLWildcardService;
+use Ibexa\Contracts\AdminUi\Controller\Controller;
 use Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper;
 use Novactive\Bundle\eZSEOBundle\Entity\RedirectImportHistory;
 use Novactive\Bundle\eZSEOBundle\Form\Type\DeleteUrlType;

@@ -2,7 +2,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core\Converter;
 
-use eZ\Publish\API\Repository\ContentTypeService;
+use Ibexa\Contracts\Core\Repository\ContentTypeService;
 
 class ContentTypesHelper
 {

@@ -12,10 +12,10 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Command;
 
-use eZ\Publish\API\Repository\Repository;
-use eZ\Publish\API\Repository\UserService;
-use eZ\Publish\API\Repository\Values\ContentType\ContentType;
-use eZ\Publish\Core\MVC\ConfigResolverInterface;
+use Ibexa\Contracts\Core\Repository\Repository;
+use Ibexa\Contracts\Core\Repository\UserService;
+use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
+use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Novactive\Bundle\eZSEOBundle\Core\Converter\ContentTypesHelper;
 use Novactive\Bundle\eZSEOBundle\Core\Installer\Field as FieldInstaller;
 use Symfony\Component\Console\Command\Command;
@@ -95,7 +95,7 @@ class AddNovaSEOMetasFieldTypeCommand extends Command
             )->setHelp(
                 <<<EOT
 The command <info>%command.name%</info> add the FieldType 'novaseometas'.
-You can select the Content Type via the <info>identifier</info>, <info>identifiers</info>, 
+You can select the Content Type via the <info>identifier</info>, <info>identifiers</info>,
 <info>group_identifier</info> option.
     - Identifier will be: <comment>%nova_ezseo.default.fieldtype_metas_identifier%</comment>
     - Name will be: <comment>Metas</comment>

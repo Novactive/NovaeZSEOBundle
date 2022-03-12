@@ -1,4 +1,4 @@
-{%  extends "@EzPublishCore/content_fields.html.twig"  %}
+{%  extends "@IbexaCore/content_fields.html.twig"  %}
 
 {% block novaseometas_field %}
     {{ field|compute_novaseometas(content) }}
@@ -32,9 +32,9 @@
         {% endif %}
     {% endfor %}
     {% if contentInfo.mainLocationId is defined and contentInfo.mainLocationId is not null and isCanonicalFind == false %}
-        <link rel="canonical" href="{{ url( 'ez_urlalias', {'locationId': contentInfo.mainLocationId} ) }}" />
+        <link rel="canonical" href="{{ url( 'ibexa.url.alias', {'locationId': contentInfo.mainLocationId} ) }}" />
     {% endif %}
     {% if isTtitleFind == false %}
-        <title>{{ ez_content_name( contentInfo ) }}</title>
+        <title>{{ ibexa_content_name( contentInfo ) }}</title>
     {% endif %}
 {% endblock %}

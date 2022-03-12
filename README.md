@@ -15,7 +15,7 @@ Documentation is available in this repository via `.md` files but also packaged 
 [![Latest version](https://img.shields.io/github/release/Novactive/NovaeZSEOBundle.svg?style=flat-square)](https://github.com/Novactive/NovaeZSEOBundle/releases)
 [![License](https://img.shields.io/packagist/l/novactive/ezseobundle.svg?style=flat-square)](LICENSE)
 
-Novactive eZ SEO Bundle is an eZPlatform bundle for SEO management simplifications.
+Novactive eZ SEO Bundle is an Ibexa Platform bundle for SEO management simplifications.
 
 Presentation and documentation available here : [http://novactive.github.io/NovaeZSEOBundle](http://novactive.github.io/NovaeZSEOBundle)
 
@@ -30,8 +30,8 @@ Presentation and documentation available here : [http://novactive.github.io/Nova
 
 [Installation](documentation/INSTALL.md)
 
-Changelog
----------
+Change
+------
 
 [Changelog](documentation/CHANGELOG.md)
 

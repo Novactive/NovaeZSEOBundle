@@ -12,7 +12,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core;
 
-use eZ\Publish\API\Repository\Exceptions\PropertyNotFoundException;
+use Ibexa\Contracts\Core\Repository\Exceptions\PropertyNotFoundException;
 
 class Meta
 {

@@ -6,12 +6,12 @@
 {% endfor %}
 
 {% if content is defined and content.fields[nova_ezseo.fieldtype_metas_identifier] is defined %}
-    {{ ez_render_field( content, nova_ezseo.fieldtype_metas_identifier ) }}
+    {{ ibexa_render_field( content, nova_ezseo.fieldtype_metas_identifier ) }}
 {% endif %}
 
 {% if content is defined and content.fields[nova_ezseo.fieldtype_metas_identifier] is not defined %}
     {% if content.contentInfo.mainLocationId is defined and content.contentInfo.mainLocationId is not null %}
-        <link rel="canonical" href="{{ url( 'ez_urlalias', {'locationId': content.contentInfo.mainLocationId} ) }}" />
+        <link rel="canonical" href="{{ url( 'ibexa.url.alias', {'locationId': content.contentInfo.mainLocationId} ) }}" />
     {% endif %}
 {% endif %}
 
@@ -19,7 +19,7 @@
     {% if attrs.href is not empty %}
         {% set href = attrs.href %}
         {% if href.location_id is defined %}
-            {% set href = path( 'ez_urlalias', {'locationId': href.location_id } ) %}
+            {% set href = path( 'ibexa.url.alias', {'locationId': href.location_id } ) %}
         {% elseif href.route is defined %}
             {% set href = path( href.route ) %}
         {% elseif href.asset is defined %}
@@ -33,13 +33,13 @@
     {% endif %}
 {% endfor %}
 
-{% if ezplatform.availableLanguages|length > 1 %}
-    {% for lang in ezplatform.availableLanguages %}
+{% if ibexa.availableLanguages|length > 1 %}
+    {% for lang in ibexa.availableLanguages %}
         {% if location is defined and not location.isDraft %}
-            <link rel="alternate" data-sa="{{ ezplatform.translationSiteAccess( lang ) }}" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ ez_url( location, {"siteaccess": ezplatform.translationSiteAccess( lang ) } ) }}" />
+            <link rel="alternate" data-sa="{{ ibexa.translationSiteAccess( lang ) }}" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ ibexa_url( location, {"siteaccess": ibexa.translationSiteAccess( lang ) } ) }}" />
         {% else %}
             {# FAILS WITH PAGE BUILDER ON NEW CREATION
-            {% set route = ez_route( params={"language": lang} ) %}
+            {% set route = ibexa_route( params={"language": lang} ) %}
             <link rel="alternate" hreflang="{{ lang|getposixlocale_novaseometas }}" href="{{ url( route ) }}" />
             #}
         {% endif %}
