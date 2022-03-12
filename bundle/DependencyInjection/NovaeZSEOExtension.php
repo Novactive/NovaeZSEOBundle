@@ -12,8 +12,8 @@
 
 namespace Novactive\Bundle\eZSEOBundle\DependencyInjection;
 
-use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\SiteAccessAware\ConfigurationProcessor;
-use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\SiteAccessAware\ContextualizerInterface;
+use Ibexa\Bundle\Core\DependencyInjection\Configuration\SiteAccessAware\ConfigurationProcessor;
+use Ibexa\Bundle\Core\DependencyInjection\Configuration\SiteAccessAware\ContextualizerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -34,10 +34,10 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
         $container->prependExtensionConfig('assetic', ['bundles' => ['NovaeZSEOBundle']]);
 
         $configs = [
-            'wildcard_routing.yml' => 'ezpublish',
-            'ez_field_templates.yml' => 'ezpublish',
-            'variations.yml' => 'ezpublish',
-            'admin_ui/ez_field_templates.yml' => 'ezpublish',
+            'wildcard_routing.yml' => 'ibexa',
+            'ez_field_templates.yml' => 'ibexa',
+            'variations.yml' => 'ibexa',
+            'admin_ui/ez_field_templates.yml' => 'ibexa',
         ];
 
         foreach ($configs as $fileName => $extensionName) {

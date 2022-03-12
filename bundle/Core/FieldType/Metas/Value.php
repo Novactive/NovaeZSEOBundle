@@ -12,7 +12,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas;
 
-use eZ\Publish\Core\FieldType\Value as BaseValue;
+use Ibexa\Core\FieldType\Value as BaseValue;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 
 class Value extends BaseValue

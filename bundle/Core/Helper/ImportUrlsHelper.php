@@ -14,8 +14,8 @@ namespace Novactive\Bundle\eZSEOBundle\Core\Helper;
 
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-use eZ\Publish\API\Repository\URLWildcardService;
-use eZ\Publish\Core\IO\IOService;
+use Ibexa\Contracts\Core\Repository\URLWildcardService;
+use Ibexa\Core\IO\IOService;
 use Novactive\Bundle\eZSEOBundle\Entity\RedirectImportHistory;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;

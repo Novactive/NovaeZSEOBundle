@@ -12,7 +12,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\DependencyInjection;
 
-use eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\SiteAccessAware\Configuration as SAConfiguration;
+use Ibexa\Bundle\Core\DependencyInjection\Configuration\SiteAccessAware\Configuration as SAConfiguration;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 class Configuration extends SAConfiguration

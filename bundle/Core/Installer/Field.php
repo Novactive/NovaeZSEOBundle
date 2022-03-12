@@ -4,9 +4,9 @@ namespace Novactive\Bundle\eZSEOBundle\Core\Installer;
 
 use DateTime;
 use Exception;
-use eZ\Publish\API\Repository\ContentTypeService;
-use eZ\Publish\API\Repository\Exceptions\NotFoundException;
-use eZ\Publish\API\Repository\Values\ContentType\ContentType;
+use Ibexa\Contracts\Core\Repository\ContentTypeService;
+use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
+use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
 
 class Field
 {

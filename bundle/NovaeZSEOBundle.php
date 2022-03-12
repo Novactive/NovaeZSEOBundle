@@ -26,11 +26,11 @@ class NovaeZSEOBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new CustomFallbackPass());
-        $eZExtension = $container->getExtension('ezpublish');
+        $eZExtension = $container->getExtension('ibexa');
         $eZExtension->addPolicyProvider(new PolicyProvider());
     }
 
-    public function getContainerExtension()
+    public function getContainerExtension(): ?ExtensionInterface
     {
         if (null === $this->extension) {
             $extension = $this->createContainerExtension();

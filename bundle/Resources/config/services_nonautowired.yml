@@ -1,6 +1,6 @@
 services:
 
-    ezseo_importurls.ezpublish.core.io_service:
-        parent: ezpublish.core.io.service
+    ezseo_importurls.ibexa.core.io_service:
+        parent: ibexa.core.io.service
         calls:
         - [ setPrefix, [ "novaezseo" ] ]

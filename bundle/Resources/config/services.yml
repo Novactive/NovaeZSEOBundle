@@ -12,41 +12,38 @@ services:
         bind:
             $entityManager: "@novaezeo.doctrine.entity_manager"
 
-    # Marking fieldtype as unindexable for ez platform solr bundle to stop errors
+    # Marking fieldtype as unindexable for ibexa platform solr bundle to stop errors
     novactive.novaseobundle.field_type.novaseometas.indexable.unindexed:
-        class: "%ezpublish.fieldType.indexable.unindexed.class%"
+        class: Ibexa\Core\FieldType\Unindexed
         tags:
-            - { name: ezpublish.fieldType.indexable, alias: novaseometas }
+            - { name: ibexa.field_type.indexable, alias: novaseometas }
 
     Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage:
         arguments:
             $gateway: '@Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\DoctrineStorage'
         public: true
         tags:
-            - { name: ezpublish.fieldType.externalStorageHandler, alias: novaseometas }
+            - { name: ibexa.field_type.storage.external.handler, alias: novaseometas }
 
     Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway\DoctrineStorage:
         arguments:
-            $connection: "@ezpublish.api.storage_engine.legacy.connection"
-        tags:
-          - { name: ezpublish.fieldType.externalStorageHandler.gateway, alias: novaseometas, identifier: LegacyStorage }
-
+            $connection: "@ibexa.api.storage_engine.legacy.connection"
 
     Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Converter:
         tags:
-            - { name: ezpublish.storageEngine.legacy.converter, alias: novaseometas, lazy: true, callback: '::create' }
+            - { name: ibexa.field_type.storage.legacy.converter, alias: novaseometas, lazy: true, callback: '::create' }
 
     Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\FormMapper:
         tags:
-            - { name: ez.fieldFormMapper.definition, fieldType: novaseometas }
-            - { name: ez.fieldFormMapper.value, fieldType: novaseometas }
+            - { name: ibexa.admin_ui.field_type.form.mapper.definition, fieldType: novaseometas }
+            - { name: ibexa.admin_ui.field_type.form.mapper.value, fieldType: novaseometas }
 
     # OTHER SERVICES
     Novactive\Bundle\eZSEOBundle\Controller\:
         resource: '../../Controller'
         tags: ['controller.service_arguments']
         bind:
-            $fieldHelper: '@ezpublish.field_helper'
+            $fieldHelper: '@Ibexa\Core\Helper\FieldHelper'
 
     Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension: ~
     Novactive\Bundle\eZSEOBundle\Core\DummyCustomFallback: ~
@@ -54,13 +51,13 @@ services:
     Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema:
         lazy: true
         arguments:
-            $contentTypeHandler: "@ezpublish.spi.persistence.content_type_handler"
-            $languageHandler: "@ezpublish.spi.persistence.cache.contentLanguageHandler"
-            $translationHelper: "@ezpublish.translation_helper"
+            $contentTypeHandler: "@Ibexa\\Contracts\\Core\\Persistence\\Content\\Type\\Handler"
+            $languageHandler: "@Ibexa\\Core\\Persistence\\Cache\\ContentLanguageHandler"
+            $translationHelper: "@Ibexa\\Core\\Helper\\TranslationHelper"
         calls:
-            - [setRichTextConverter, ["@ezrichtext.converter.output.xhtml5.core"]]
+            - [setRichTextConverter, ["@Ibexa\\FieldTypeRichText\\RichText\\Converter\\Html5"]]
             # Note: injecting lower layer Variation Handler (AliasGenerator) as a workaround for missing Public API objects context
-            - [setImageVariationService, ["@ezpublish.image_alias.imagine.alias_generator", "@ezpublish.fieldType.ezimage"]]
+            - [setImageVariationService, ["@ibexa.image_alias.imagine.alias_generator"]]
 
     Novactive\Bundle\eZSEOBundle\Core\Installer\Field:
         arguments:
@@ -79,12 +76,12 @@ services:
             - { name: kernel.event_listener, event: "ezplatform_admin_ui.menu_configure.main_menu", method: "onMenuConfigure",  priority: -100 }
 
     Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper:
-        $ioService: '@ezseo_importurls.ezpublish.core.io_service'
+        $ioService: '@ezseo_importurls.ibexa.core.io_service'
         $cacheDirectory: '%kernel.cache_dir%'
 
     Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory:
         arguments:
-            $repositoryConfigurationProvider: "@ezpublish.api.repository_configuration_provider"
+            $repositoryConfigurationProvider: "@Ibexa\\Bundle\\Core\\ApiLoader\\RepositoryConfigurationProvider"
             $resolver: "@doctrine.orm.default_entity_listener_resolver"
             $settings: { debug: "%kernel.debug%", cache_dir: "%kernel.cache_dir%" }
 
@@ -96,12 +93,12 @@ services:
 
     Novactive\Bundle\eZSEOBundle\Core\UrlWildcardRouter:
         arguments:
-            - '@ezpublish.api.service.url_wildcard'
-            - '@ezpublish.urlalias_generator'
+            - '@ibexa.api.service.url_wildcard'
+            - '@Ibexa\Core\MVC\Symfony\Routing\Generator\UrlAliasGenerator'
             - '@router.request_context'
         calls:
             - [setLogger, ['@?logger']]
-            - [setWildcardService, ['@ezpublish.api.service.url_wildcard']]
+            - [setWildcardService, ['@ibexa.api.service.url_wildcard']]
         tags:
             - { name: router, priority: 2000 }
 

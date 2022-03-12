@@ -12,15 +12,15 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Twig;
 
-use eZ\Publish\API\Repository\Exceptions\NotFoundException;
-use eZ\Publish\API\Repository\Exceptions\UnauthorizedException;
-use eZ\Publish\API\Repository\Repository;
-use eZ\Publish\API\Repository\Values\Content\Content;
-use eZ\Publish\API\Repository\Values\Content\ContentInfo;
-use eZ\Publish\API\Repository\Values\Content\Field;
-use eZ\Publish\Core\Base\Exceptions\InvalidArgumentType;
-use eZ\Publish\Core\MVC\ConfigResolverInterface;
-use eZ\Publish\Core\MVC\Symfony\Locale\LocaleConverterInterface as LocaleConverter;
+use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
+use Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException;
+use Ibexa\Contracts\Core\Repository\Repository;
+use Ibexa\Contracts\Core\Repository\Values\Content\Content;
+use Ibexa\Contracts\Core\Repository\Values\Content\ContentInfo;
+use Ibexa\Contracts\Core\Repository\Values\Content\Field;
+use Ibexa\Core\Base\Exceptions\InvalidArgumentType;
+use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
+use Ibexa\Core\MVC\Symfony\Locale\LocaleConverterInterface as LocaleConverter;
 use Novactive\Bundle\eZSEOBundle\Core\CustomFallbackInterface;
 use Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Value as MetasFieldValue;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
@@ -32,7 +32,7 @@ use Twig\TwigFilter;
 class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
 {
     /**
-     * The eZ Publish object name pattern service (extended).
+     * The Ibexa Platform object name pattern service (extended).
      *
      * @var MetaNameSchema
      */
@@ -46,11 +46,11 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
     protected $configResolver;
 
     /**
-     * The eZ Publish API.
+     * The Ibexa Platform API.
      *
      * @var Repository
      */
-    protected $eZRepository;
+    protected $ibexaRepository;
 
     /**
      * Locale Converter.
@@ -73,7 +73,7 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
         LocaleConverter $localeConverter
     ) {
         $this->metaNameSchema = $nameSchema;
-        $this->eZRepository = $repository;
+        $this->ibexaRepository = $repository;
         $this->configResolver = $configResolver;
         $this->localeConverter = $localeConverter;
     }
@@ -92,9 +92,9 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
         ];
     }
 
-    public function getPosixLocale(string $eZLocale): ?string
+    public function getPosixLocale(string $ibexaLocale): ?string
     {
-        return $this->localeConverter->convertToPOSIX($eZLocale);
+        return $this->localeConverter->convertToPOSIX($ibexaLocale);
     }
 
     public function getFallbackedMetaContent(ContentInfo $contentInfo, string $metaName): string
@@ -117,7 +117,7 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
 
         if ($content instanceof ContentInfo) {
             try {
-                $content = $this->eZRepository->getContentService()->loadContentByContentInfo($content, $languages);
+                $content = $this->ibexaRepository->getContentService()->loadContentByContentInfo($content, $languages);
             } catch (NotFoundException | UnauthorizedException $e) {
                 return '';
             }
@@ -128,7 +128,7 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
         $contentMetas = $this->innerComputeMetas($content, $field, $fallback);
 
         if ($fallback && !$this->customFallBackService) {
-            $rootContent = $this->eZRepository->getLocationService()->loadLocation(
+            $rootContent = $this->ibexaRepository->getLocationService()->loadLocation(
                 $this->configResolver->getParameter('content.tree_root.location_id')
             )->getContent();
 

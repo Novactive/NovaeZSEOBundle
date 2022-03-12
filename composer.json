@@ -1,16 +1,16 @@
 {
     "name": "novactive/ezseobundle",
-    "description": "Novactive eZ SEO Bundle is an eZ Platform bundle for SEO simplications. metas, sitemaps, robots.txt, etc.",
+    "description": "Novactive eZ SEO Bundle is an Ibexa Platform bundle for SEO simplications. metas, sitemaps, robots.txt, etc.",
     "keywords": [
         "seo",
-        "ezplatform",
+        "ibexa",
         "novactive",
         "metas",
         "robots.txt",
         "sitemap"
     ],
     "homepage": "https://github.com/Novactive/NovaeZSEOBundle",
-    "type": "ezplatform-bundle",
+    "type": "ibexa-bundle",
     "authors": [
         {
             "name": "Novactive",
@@ -27,7 +27,7 @@
         "MIT"
     ],
     "require": {
-        "php": "^7.3",
+        "php": "^7.3 || ^8.0",
         "ext-dom": "*",
         "ext-pdo": "*",
         "ext-json": "*"
@@ -39,8 +39,8 @@
     },
     "extra": {
         "thanks": {
-            "name": "ezsystems/ezplatform",
-            "url": "https://github.com/ezsystems/ezplatform"
+            "name": "ibexa/core",
+            "url": "https://github.com/ibexa/core"
         }
     }
 }

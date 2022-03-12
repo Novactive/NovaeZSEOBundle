@@ -4,9 +4,9 @@ nova_ezseo:
             google_verification: plop2test42
             fieldtype_metas_identifier: "metas"
             default_metas:
-                author: "eZ Community Bundle Nova eZ SEO Bundle"
+                author: "Ibexa Community Bundle Nova eZ SEO Bundle"
                 copyright: ~
-                generator: "eZ Platform"
+                generator: "Ibexa Platform"
                 MSSmartTagsPreventParsing: "TRUE"
             fieldtype_metas:
                 title:

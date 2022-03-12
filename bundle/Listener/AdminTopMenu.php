@@ -12,7 +12,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Listener;
 
-use EzSystems\EzPlatformAdminUi\Menu\Event\ConfigureMenuEvent;
+use Ibexa\AdminUi\Menu\Event\ConfigureMenuEvent;
 
 class AdminTopMenu
 {
@@ -23,7 +23,13 @@ class AdminTopMenu
             'nova_create_redirect'
         )
             ->setLabel('menu.main_menu.header')
-            ->setExtra('translation_domain', 'redirect');
+            ->setExtra('translation_domain', 'redirect')
+            ->setExtra('bottom_item', true)
+            ->setExtra('icon', 'move')
+            ->setExtra('orderNumber', 150)
+            ->setAttribute('data-tooltip-placement', 'right')
+            ->setAttribute('data-tooltip-extra-class', 'ibexa-tooltip--info-neon');
+
         $contentMenu = $menu['nova_create_redirect'];
 
         $contentMenu
