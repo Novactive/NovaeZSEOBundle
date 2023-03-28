@@ -30,6 +30,7 @@ use Ibexa\Core\FieldType\Relation\Value as RelationValue;
 use Ibexa\Core\FieldType\RelationList\Type as RelationListType;
 use Ibexa\Core\FieldType\RelationList\Value as RelationListValue;
 use Ibexa\Core\Helper\TranslationHelper;
+use Ibexa\Core\MVC\Exception\SourceImageNotFoundException;
 use Ibexa\Core\Repository\Helper\NameSchemaService;
 use Ibexa\Core\Repository\Mapper\ContentTypeDomainMapper;
 use Ibexa\Core\Repository\Values\Content\VersionInfo;
@@ -298,12 +299,16 @@ class MetaNameSchema extends NameSchemaService
             return '';
         }
 
-        return $this->getVariation(
-            $value,
-            $fieldDefinitionIdentifier,
-            $languageCode,
-            'social_network_image'
-        );
+        try {
+            return $this->getVariation(
+                $value,
+                $fieldDefinitionIdentifier,
+                $languageCode,
+                'social_network_image'
+            );
+        } catch (SourceImageNotFoundException $e) {
+            return '';
+        }
     }
 
     /**
