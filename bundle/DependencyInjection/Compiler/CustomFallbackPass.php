@@ -23,7 +23,7 @@ class CustomFallbackPass implements CompilerPassInterface
     {
         $configs = $container->getExtensionConfig('nova_ezseo');
 
-        //@todo: How to do that by SiteAccess
+        // @todo: How to do that by SiteAccess
         if (isset($configs[0]['system']['default']['custom_fallback_service'])) {
             $fallbackService = $configs[0]['system']['default']['custom_fallback_service'];
             if (null !== $fallbackService) {

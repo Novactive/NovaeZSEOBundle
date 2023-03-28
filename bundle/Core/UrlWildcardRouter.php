@@ -32,29 +32,36 @@ class UrlWildcardRouter extends BaseUrlWildcardRouter
     public function matchRequest(Request $request): array
     {
         try {
+            // Manage full url : http://host.com/uri
             $requestedPath = $request->attributes->get('semanticPathinfo', $request->getPathInfo());
-            $urlWildcard = $this->wildcardService->translate($requestedPath);
-
-            $params = [
-                '_route' => UrlAliasRouter::URL_ALIAS_ROUTE_NAME,
-            ];
-
-            if (0 === strpos($urlWildcard->uri, 'http://') || 'https://' === substr($urlWildcard->uri, 0, 8)) {
-                $params += ['semanticPathinfo' => trim($urlWildcard->uri, '/')];
-            } else {
-                $params += ['semanticPathinfo' => '/'.trim($urlWildcard->uri, '/')];
-            }
-
-            // In URLAlias terms, "forward" means "redirect".
-            if ($urlWildcard->forward) {
-                $params += ['needsRedirect' => true];
-            } else {
-                $params += ['needsForward' => true];
-            }
-
-            return $params;
+            $requestUriFull = $request->getSchemeAndHttpHost().$requestedPath;
+            $urlWildcard = $this->wildcardService->translate($requestUriFull);
         } catch (Exception $e) {
-            throw new ResourceNotFoundException($e->getMessage(), $e->getCode(), $e);
+            try {
+                // Manage full url : /uri
+                $urlWildcard = $this->wildcardService->translate($requestedPath);
+            } catch (Exception $e) {
+                throw new ResourceNotFoundException($e->getMessage(), $e->getCode(), $e);
+            }
         }
+
+        $params = [
+            '_route' => UrlAliasRouter::URL_ALIAS_ROUTE_NAME,
+        ];
+
+        if (0 === strpos($urlWildcard->uri, 'http://') || 'https://' === substr($urlWildcard->uri, 0, 8)) {
+            $params += ['semanticPathinfo' => trim($urlWildcard->uri, '/')];
+        } else {
+            $params += ['semanticPathinfo' => '/'.trim($urlWildcard->uri, '/')];
+        }
+
+        // In URLAlias terms, "forward" means "redirect".
+        if ($urlWildcard->forward) {
+            $params += ['needsRedirect' => true];
+        } else {
+            $params += ['needsForward' => true];
+        }
+
+        return $params;
     }
 }

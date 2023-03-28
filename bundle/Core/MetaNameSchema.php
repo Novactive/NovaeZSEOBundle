@@ -12,10 +12,16 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core;
 
+use Ibexa\Contracts\Core\Persistence\Content\Language\Handler as ContentLanguageHandler;
+use Ibexa\Contracts\Core\Persistence\Content\Type as SPIContentType;
+use Ibexa\Contracts\Core\Persistence\Content\Type\Handler as ContentTypeHandler;
 use Ibexa\Contracts\Core\Repository\Repository as RepositoryInterface;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\Content\Field;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
+use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
+use Ibexa\Contracts\Core\Variation\VariationHandler;
+use Ibexa\Contracts\FieldTypeRichText\RichText\Converter as RichTextConverterInterface;
 use Ibexa\Core\Base\Exceptions\InvalidArgumentType;
 use Ibexa\Core\FieldType\FieldTypeRegistry;
 use Ibexa\Core\FieldType\Image\Value as ImageValue;
@@ -24,16 +30,10 @@ use Ibexa\Core\FieldType\Relation\Value as RelationValue;
 use Ibexa\Core\FieldType\RelationList\Type as RelationListType;
 use Ibexa\Core\FieldType\RelationList\Value as RelationListValue;
 use Ibexa\Core\Helper\TranslationHelper;
-use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Ibexa\Core\Repository\Helper\NameSchemaService;
 use Ibexa\Core\Repository\Mapper\ContentTypeDomainMapper;
 use Ibexa\Core\Repository\Values\Content\VersionInfo;
-use Ibexa\Contracts\Core\Persistence\Content\Language\Handler as ContentLanguageHandler;
-use Ibexa\Contracts\Core\Persistence\Content\Type as SPIContentType;
-use Ibexa\Contracts\Core\Persistence\Content\Type\Handler as ContentTypeHandler;
-use Ibexa\Contracts\Core\Variation\VariationHandler;
 use Ibexa\FieldTypeRichText\FieldType\RichText as RichTextValue;
-use Ibexa\Contracts\FieldTypeRichText\RichText\Converter as RichTextConverterInterface;
 
 class MetaNameSchema extends NameSchemaService
 {
@@ -172,7 +172,7 @@ class MetaNameSchema extends NameSchemaService
                     throw new InvalidArgumentType('$contentType', 'API or SPI variant of ContentType');
                 }
 
-                //eZ XML Text
+                // eZ XML Text
                 if ($fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof RichTextValue) {
                     $fieldTitles[$fieldDefinitionIdentifier] = $this->handleRichTextValue(
                         $fieldMap[$fieldDefinitionIdentifier][$languageCode]
@@ -180,7 +180,7 @@ class MetaNameSchema extends NameSchemaService
                     continue;
                 }
 
-                //eZ Object Relation
+                // eZ Object Relation
                 if ($fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof RelationValue) {
                     $fieldTitles[$fieldDefinitionIdentifier] = $this->handleRelationValue(
                         $fieldMap[$fieldDefinitionIdentifier][$languageCode],
@@ -189,7 +189,7 @@ class MetaNameSchema extends NameSchemaService
                     continue;
                 }
 
-                //eZ Object Relation List
+                // eZ Object Relation List
                 if ($fieldMap[$fieldDefinitionIdentifier][$languageCode] instanceof RelationListValue) {
                     $fieldTitles[$fieldDefinitionIdentifier] = $this->handleRelationListValue(
                         $fieldMap[$fieldDefinitionIdentifier][$languageCode],

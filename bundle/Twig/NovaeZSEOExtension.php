@@ -18,8 +18,8 @@ use Ibexa\Contracts\Core\Repository\Repository;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\Content\ContentInfo;
 use Ibexa\Contracts\Core\Repository\Values\Content\Field;
-use Ibexa\Core\Base\Exceptions\InvalidArgumentType;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
+use Ibexa\Core\Base\Exceptions\InvalidArgumentType;
 use Ibexa\Core\MVC\Symfony\Locale\LocaleConverterInterface as LocaleConverter;
 use Novactive\Bundle\eZSEOBundle\Core\CustomFallbackInterface;
 use Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Value as MetasFieldValue;
@@ -118,7 +118,7 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
         if ($content instanceof ContentInfo) {
             try {
                 $content = $this->ibexaRepository->getContentService()->loadContentByContentInfo($content, $languages);
-            } catch (NotFoundException | UnauthorizedException $e) {
+            } catch (NotFoundException|UnauthorizedException $e) {
                 return '';
             }
         } elseif (!($content instanceof Content)) {

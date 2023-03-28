@@ -106,7 +106,7 @@ class ImportUrlsHelper
                     if (
                         ('' != $source || '' != $destination)
                         && ($source != $destination)
-                        && (null === $verifResult['urlExists'])
+                        && !$verifResult
                     ) {
                         // try to save data in table ezurlwildcard
                         $saveResult = $this->saveUrls($filePath, $source, $destination);
