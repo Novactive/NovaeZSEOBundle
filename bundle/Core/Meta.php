@@ -17,49 +17,16 @@ use Ibexa\Contracts\Core\Repository\Exceptions\PropertyNotFoundException;
 class Meta
 {
     /**
-     * Meta name.
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * Meta content.
-     *
-     * @var string
-     */
-    protected $content;
-
-    /**
-     * @var bool|null
-     */
-    protected $required;
-
-    /**
-     * @var string|null
-     */
-    protected $minLength;
-
-    /**
-     * @var string|null
-     */
-    protected $maxLength;
-
-    /**
      * Constructor.
      */
     public function __construct(
-        ?string $name = null,
-        ?string $content = null,
-        ?bool $required = null,
-        ?string $minLength = null,
-        ?string $maxLength = null
+        protected ?string $name = null,
+        protected mixed $content = null,
+        protected ?string $fieldType = null,
+        protected ?bool $required = null,
+        protected ?string $minLength = null,
+        protected ?string $maxLength = null
     ) {
-        $this->name = $name;
-        $this->content = $content;
-        $this->required = $required;
-        $this->minLength = $minLength;
-        $this->maxLength = $maxLength;
     }
 
     public function getName(): string
@@ -74,14 +41,26 @@ class Meta
         return $this;
     }
 
-    public function getContent(): string
+    public function getContent(): mixed
     {
-        return $this->content ?? '';
+        return $this->content;
     }
 
-    public function setContent(?string $content): self
+    public function setContent(mixed $content): self
     {
-        $this->content = $content ?? '';
+        $this->content = $content;
+
+        return $this;
+    }
+
+    public function getFieldType(): string
+    {
+        return $this->fieldType ?? '';
+    }
+
+    public function setFieldType(?string $fieldType): self
+    {
+        $this->fieldType = $fieldType ?? '';
 
         return $this;
     }
@@ -132,6 +111,7 @@ class Meta
         return [
             'name',
             'content',
+            'fieldType',
             'required',
             'minLength',
             'maxLength',
@@ -148,6 +128,8 @@ class Meta
                 return $this->getName();
             case 'content':
                 return $this->getContent();
+            case 'fieldType':
+                return $this->getFieldType();
             case 'required':
                 return $this->getRequired();
             case 'minLength':

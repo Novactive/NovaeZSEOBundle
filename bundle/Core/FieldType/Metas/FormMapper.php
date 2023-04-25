@@ -87,10 +87,14 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
 
         $metasConfig = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
 
-        if (empty($data->value->metas)) {
-            foreach (array_keys($metasConfig) as $key) {
-                $data->value->metas[$key] = new Meta($key, '');
+        $metasData   = $data->value->metas;
+        foreach ($metasConfig as $key => $meta) {
+            $content   = isset($metasData[$key]) ? $metasData[$key]->getContent() : null;
+            $fieldType = $meta['type'];
+            if (isset($metasData[$key]) && $metasData[$key]->getFieldType() != '') {
+                $fieldType = $metasData[$key]->getFieldType();
             }
+            $data->value->metas[$key] = new Meta($key, $content, $fieldType);
         }
 
         // able to add a meta which is not existant on your draft but on the configuration yml
@@ -116,7 +120,7 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
                                MetasFieldType::class,
                                [
                                    'required' => $fieldDefinition->isRequired,
-                                   'label' => $fieldDefinition->getName($formConfig->getOption('languageCode')),
+                                   'label'    => $fieldDefinition->getName($formConfig->getOption('languageCode'))
                                ]
                            )
                            ->setAutoInitialize(false)

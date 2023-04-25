@@ -28,7 +28,7 @@ _novaezseo_routes:
 
 ### Create the table
 
-See the file `bundle/Resources/sql/schema.sql`
+See the folder `bundle/Resources/sql`
 
 You also need to run:
 

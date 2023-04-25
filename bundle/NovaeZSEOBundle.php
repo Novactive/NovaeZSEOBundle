@@ -13,6 +13,7 @@
 namespace Novactive\Bundle\eZSEOBundle;
 
 use LogicException;
+use Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\SeoMetadataFieldTypeInterface;
 use Novactive\Bundle\eZSEOBundle\DependencyInjection\Compiler\CustomFallbackPass;
 use Novactive\Bundle\eZSEOBundle\DependencyInjection\Security\PolicyProvider\PolicyProvider;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -28,6 +29,8 @@ class NovaeZSEOBundle extends Bundle
         $container->addCompilerPass(new CustomFallbackPass());
         $eZExtension = $container->getExtension('ibexa');
         $eZExtension->addPolicyProvider(new PolicyProvider());
+        $container->registerForAutoconfiguration(SeoMetadataFieldTypeInterface::class)
+            ->addTag('seometa.fieldtype');
     }
 
     public function getContainerExtension(): ?ExtensionInterface
