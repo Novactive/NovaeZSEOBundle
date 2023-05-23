@@ -27,12 +27,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  */
 class MetaType extends AbstractType
 {
-
     public function __construct(
         protected ConfigResolverInterface $configResolver
     )
-    {
-    }
+    {}
 
     public function getName(): string
     {

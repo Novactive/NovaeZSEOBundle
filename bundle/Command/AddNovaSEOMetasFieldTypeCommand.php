@@ -178,7 +178,9 @@ EOT
         $io->comment('Switching to Admin');
 
         $this->repository->getPermissionResolver()->setCurrentUserReference(
-            $this->userService->loadUser($this->configResolver->getParameter('admin_user_id', 'novactive.novaseobundle'))
+            $this->userService->loadUser(
+                $this->configResolver->getParameter('admin_user_id', 'novactive.novaseobundle')
+            )
         );
     }
 }

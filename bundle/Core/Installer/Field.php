@@ -11,7 +11,6 @@ use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 
 class Field
 {
-
     /**
      * @var string
      */
@@ -21,8 +20,7 @@ class Field
         protected ContentTypeService $contentTypeService,
         protected ConfigResolverInterface $configResolver
     )
-    {
-    }
+    {}
 
     public function addToContentType(string $fieldName, ContentType $contentType): bool
     {
@@ -46,9 +44,18 @@ class Field
             'novaseometas'
         );
 
-        $fieldCreateStruct->names = array_fill_keys($knowLanguage, $this->configResolver->getParameter('meta_field_name', 'novactive.novaseobundle'));
-        $fieldCreateStruct->descriptions = array_fill_keys($knowLanguage, $this->configResolver->getParameter('meta_field_description', 'novactive.novaseobundle'));
-        $fieldCreateStruct->fieldGroup = $this->configResolver->getParameter('meta_field_group', 'novactive.novaseobundle');
+        $fieldCreateStruct->names =
+            array_fill_keys(
+                $knowLanguage,
+                $this->configResolver->getParameter('meta_field_name', 'novactive.novaseobundle')
+            );
+        $fieldCreateStruct->descriptions =
+            array_fill_keys(
+                $knowLanguage,
+                $this->configResolver->getParameter('meta_field_description', 'novactive.novaseobundle')
+            );
+        $fieldCreateStruct->fieldGroup =
+            $this->configResolver->getParameter('meta_field_group', 'novactive.novaseobundle');
         $fieldCreateStruct->position = 100;
         $fieldCreateStruct->isTranslatable = true;
         $fieldCreateStruct->isRequired = false;
