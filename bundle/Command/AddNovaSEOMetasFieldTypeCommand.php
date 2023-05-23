@@ -55,11 +55,6 @@ class AddNovaSEOMetasFieldTypeCommand extends Command
      */
     private $contentTypesHelper;
 
-    /**
-     * @var int
-     */
-    private $adminUserId;
-
     public function __construct(
         ConfigResolverInterface $configResolver,
         Repository $repository,
