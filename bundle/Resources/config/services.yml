@@ -1,8 +1,8 @@
 parameters:
-    novactive.novaseobundle.admin_user_id: 14
-    novactive.novaseobundle.meta_field_name: Metas
-    novactive.novaseobundle.meta_field_description: Metas for Search Engine Optimizations
-    novactive.novaseobundle.meta_field_group: novaseo
+    novactive.novaseobundle.default.admin_user_id: 14
+    novactive.novaseobundle.default.meta_field_name: Metas
+    novactive.novaseobundle.default.meta_field_description: Metas for Search Engine Optimizations
+    novactive.novaseobundle.default.meta_field_group: novaseo
 
 services:
     _defaults:
@@ -59,15 +59,9 @@ services:
             # Note: injecting lower layer Variation Handler (AliasGenerator) as a workaround for missing Public API objects context
             - [setImageVariationService, ["@ibexa.image_alias.imagine.alias_generator"]]
 
-    Novactive\Bundle\eZSEOBundle\Core\Installer\Field:
-        arguments:
-            $metaFieldName: "%novactive.novaseobundle.meta_field_name%"
-            $metaFieldDescription: "%novactive.novaseobundle.meta_field_description%"
-            $metaFieldGroup: "%novactive.novaseobundle.meta_field_group%"
+    Novactive\Bundle\eZSEOBundle\Core\Installer\Field: ~
 
-    Novactive\Bundle\eZSEOBundle\Command\AddNovaSEOMetasFieldTypeCommand:
-        arguments:
-            $adminUserId: "%novactive.novaseobundle.admin_user_id%"
+    Novactive\Bundle\eZSEOBundle\Command\AddNovaSEOMetasFieldTypeCommand: ~
 
     Novactive\Bundle\eZSEOBundle\Core\Converter\ContentTypesHelper: ~
 
@@ -104,7 +98,5 @@ services:
 
     novactive.novaseobundle.form.type.meta:
         class: Novactive\Bundle\eZSEOBundle\Form\Type\MetaType
-        arguments:
-            - "%nova_ezseo.default.fieldtype_metas%"
         tags:
             - { name: form.type, alias: seos }

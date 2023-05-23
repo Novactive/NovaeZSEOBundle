@@ -7,44 +7,21 @@ use Exception;
 use Ibexa\Contracts\Core\Repository\ContentTypeService;
 use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
+use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 
 class Field
 {
-    /**
-     * @var ContentTypeService
-     */
-    private $contentTypeService;
 
     /**
      * @var string
      */
     private $errorMessage;
 
-    /**
-     * @var string
-     */
-    private $metaFieldName;
-
-    /**
-     * @var string
-     */
-    private $metaFieldDescription;
-
-    /**
-     * @var string
-     */
-    private $metaFieldGroup;
-
     public function __construct(
-        ContentTypeService $contentTypeService,
-        string $metaFieldName,
-        string $metaFieldDescription,
-        string $metaFieldGroup
-    ) {
-        $this->contentTypeService = $contentTypeService;
-        $this->metaFieldName = $metaFieldName;
-        $this->metaFieldDescription = $metaFieldDescription;
-        $this->metaFieldGroup = $metaFieldGroup;
+        protected ContentTypeService $contentTypeService,
+        protected ConfigResolverInterface $configResolver
+    )
+    {
     }
 
     public function addToContentType(string $fieldName, ContentType $contentType): bool
@@ -69,9 +46,9 @@ class Field
             'novaseometas'
         );
 
-        $fieldCreateStruct->names = array_fill_keys($knowLanguage, $this->metaFieldName);
-        $fieldCreateStruct->descriptions = array_fill_keys($knowLanguage, $this->metaFieldDescription);
-        $fieldCreateStruct->fieldGroup = $this->metaFieldGroup;
+        $fieldCreateStruct->names = array_fill_keys($knowLanguage, $this->configResolver->getParameter('meta_field_name', 'novactive.novaseobundle'));
+        $fieldCreateStruct->descriptions = array_fill_keys($knowLanguage, $this->configResolver->getParameter('meta_field_description', 'novactive.novaseobundle'));
+        $fieldCreateStruct->fieldGroup = $this->configResolver->getParameter('meta_field_group', 'novactive.novaseobundle');
         $fieldCreateStruct->position = 100;
         $fieldCreateStruct->isTranslatable = true;
         $fieldCreateStruct->isRequired = false;

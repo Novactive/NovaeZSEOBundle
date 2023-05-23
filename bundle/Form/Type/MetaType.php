@@ -12,6 +12,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Form\Type;
 
+use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -26,11 +27,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  */
 class MetaType extends AbstractType
 {
-    private $novaEzseo;
 
-    public function __construct(array $novaEzseo)
+    public function __construct(
+        protected ConfigResolverInterface $configResolver
+    )
     {
-        $this->novaEzseo = $novaEzseo;
     }
 
     public function getName(): string
@@ -46,8 +47,9 @@ class MetaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $config = [];
-        if (isset($this->novaEzseo[$builder->getName()])) {
-            $config = $this->novaEzseo[$builder->getName()];
+        $novaEzseo = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
+        if (isset($novaEzseo[$builder->getName()])) {
+            $config = $novaEzseo[$builder->getName()];
         }
 
         $constraints = $this->getConstraints($config);
