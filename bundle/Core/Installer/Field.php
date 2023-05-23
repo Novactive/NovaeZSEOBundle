@@ -19,8 +19,8 @@ class Field
     public function __construct(
         protected ContentTypeService $contentTypeService,
         protected ConfigResolverInterface $configResolver
-    )
-    {}
+    ) {
+    }
 
     public function addToContentType(string $fieldName, ContentType $contentType): bool
     {
