@@ -12,14 +12,29 @@ use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 class Field
 {
     /**
+     * @var ContentTypeService
+     */
+    private ContentTypeService $contentTypeService;
+
+    /**
+     * @var ConfigResolverInterface
+     */
+    private ConfigResolverInterface $configResolver;
+
+    /**
      * @var string
      */
     private $errorMessage;
 
+    /**
+     * Constructor.
+     */
     public function __construct(
-        protected ContentTypeService $contentTypeService,
-        protected ConfigResolverInterface $configResolver
+        ContentTypeService $contentTypeService,
+        ConfigResolverInterface $configResolver
     ) {
+        $this->contentTypeService = $contentTypeService;
+        $this->configResolver = $configResolver;
     }
 
     public function addToContentType(string $fieldName, ContentType $contentType): bool
