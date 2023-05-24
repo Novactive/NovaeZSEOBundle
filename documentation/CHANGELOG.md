@@ -2,6 +2,34 @@
 
 # <i class="fa fa-file"></i>Changelog
 
+## 7.0.1
+
+* Fix siteaccess aware for multisite
+
+## 7.0.0
+
+* Compatibility with Ibexa 4
+
+## 6.0.0
+
+* New change that requires a major version
+
+## 5.5.0
+
+* Re-Established consistency between config and results
+
+## 5.4.0
+
+* Add constraints in the Admin UI to the different metas
+
+## 5.3.0
+
+* Fix release wrong naming
+
+## 5.2.0
+
+* Fix compliance eZ 3.1.1
+
 ## 5.1.0 (next tag soon)
 
 * Add new `display_images_in_sitemap` configuration to enable listing the `ezimage` original 
