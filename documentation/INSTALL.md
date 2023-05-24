@@ -26,6 +26,14 @@ _novaezseo_routes:
 
 ```
 
+### Override if needed admin config parameter by siteaccess
+
+It is used in command Add field SEO in Content Type
+
+```yml
+novactive.novaseobundle.default.admin_user_id: NEW_ADMIN_ID
+```
+
 ### Create the table
 
 See the file `bundle/Resources/sql/schema.sql`
