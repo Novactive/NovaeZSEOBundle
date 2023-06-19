@@ -11,14 +11,8 @@ use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 
 class Field
 {
-    /**
-     * @var ContentTypeService
-     */
     private ContentTypeService $contentTypeService;
 
-    /**
-     * @var ConfigResolverInterface
-     */
     private ConfigResolverInterface $configResolver;
 
     /**

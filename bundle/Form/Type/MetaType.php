@@ -27,9 +27,6 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  */
 class MetaType extends AbstractType
 {
-    /**
-     * @var ConfigResolverInterface
-     */
     private ConfigResolverInterface $configResolver;
 
     /**
