@@ -69,11 +69,10 @@ final class QueryFactory
         $config = $this->configResolver->getParameter('sitemap_includes', 'nova_ezseo');
         $criterions = array_merge(
             $criterions,
-            $this->getCriterionsForConfig(
+            $this->getCriterionsForIncludeConfig(
                 $config['contentTypeIdentifiers'],
                 $config['locations'],
                 $config['subtrees'],
-                false
             )
         );
 
@@ -138,6 +137,57 @@ final class QueryFactory
                 },
                 $criterions
             );
+        }
+
+        return $criterions;
+    }
+
+    private function getCriterionsForIncludeConfig(
+        array $contentTypeIdentifiers,
+        array $locationIds,
+        array $subtreeLocationsId,
+    )
+    {
+        $contentTypeService = $this->repository->getContentTypeService();
+        $criterions = [];
+
+        $validContentTypeIdentifiers = [];
+        foreach ($contentTypeIdentifiers as $contentTypeIdentifier) {
+            try {
+                $contentTypeService->loadContentTypeByIdentifier($contentTypeIdentifier);
+            } catch (NotFoundException $exception) {
+                dd($contentTypeIdentifier);
+                continue;
+            }
+            $validContentTypeIdentifiers[] = $contentTypeIdentifier;
+        }
+        if (count($validContentTypeIdentifiers) > 0) {
+            $criterions[] = new Criterion\ContentTypeIdentifier($validContentTypeIdentifiers);
+        }
+
+        $subtreePaths = [];
+        foreach ($subtreeLocationsId as $locationId) {
+            $includedLocation = $this->getLocation($locationId);
+            if (null === $includedLocation) {
+                continue;
+            }
+            $subtreePaths[] = $includedLocation->pathString;
+        }
+        if (count($subtreePaths) > 0) {
+            $criterions[] = new Criterion\Subtree($subtreePaths);
+        }
+
+        $validLocationIds = [];
+        foreach ($locationIds as $locationId) {
+            $includedLocation = $this->getLocation($locationId);
+            if (null === $includedLocation) {
+                continue;
+            }
+            $validLocationIds[] = $locationId;
+        }
+
+        if (count($validLocationIds) > 0) {
+            $criterions[] = new Criterion\LocationId($validLocationIds);
         }
 
         return $criterions;
