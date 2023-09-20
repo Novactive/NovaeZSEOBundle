@@ -23,6 +23,7 @@ use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Ibexa\Contracts\Core\Variation\VariationHandler;
 use Ibexa\Contracts\FieldTypeRichText\RichText\Converter as RichTextConverterInterface;
 use Ibexa\Core\Base\Exceptions\InvalidArgumentType;
+use Ibexa\Core\Base\Exceptions\NotFoundException;
 use Ibexa\Core\FieldType\FieldTypeRegistry;
 use Ibexa\Core\FieldType\Image\Value as ImageValue;
 use Ibexa\Core\FieldType\ImageAsset\Value as ImageAssetValue;
@@ -320,7 +321,11 @@ class MetaNameSchema extends NameSchemaService
             return '';
         }
 
-        $content = $this->repository->getContentService()->loadContent($value->destinationContentId);
+        try {
+            $content = $this->repository->getContentService()->loadContent($value->destinationContentId);
+        } catch (NotFoundException $e) {
+            return '';
+        }
 
         foreach ($content->getFields() as $field) {
             if ($field->value instanceof ImageValue) {
