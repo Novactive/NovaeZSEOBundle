@@ -35,7 +35,7 @@ use Ibexa\Core\MVC\Exception\SourceImageNotFoundException;
 use Ibexa\Core\Repository\Helper\NameSchemaService;
 use Ibexa\Core\Repository\Mapper\ContentTypeDomainMapper;
 use Ibexa\Core\Repository\Values\Content\VersionInfo;
-use Ibexa\FieldTypeRichText\FieldType\RichText as RichTextValue;
+use Ibexa\FieldTypeRichText\FieldType\RichText\Value as RichTextValue;
 
 class MetaNameSchema extends NameSchemaService
 {
@@ -65,11 +65,6 @@ class MetaNameSchema extends NameSchemaService
     protected $fieldContentMaxLength = 255;
 
     /**
-     * @var FieldTypeRegistry
-     */
-    protected $fieldTypeRegistry;
-
-    /**
      * @var RelationListType
      */
     private $relationListField;
@@ -88,7 +83,6 @@ class MetaNameSchema extends NameSchemaService
         ConfigResolverInterface $configurationResolver,
         array $settings = []
     ) {
-        $this->fieldTypeRegistry = $fieldTypeRegistry;
         $settings['limit'] = $this->fieldContentMaxLength;
         $handler = new ContentTypeDomainMapper(
             $contentTypeHandler,
