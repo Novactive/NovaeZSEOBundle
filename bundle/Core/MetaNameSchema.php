@@ -92,7 +92,7 @@ class MetaNameSchema extends NameSchemaService
             $fieldTypeRegistry
         );
 
-        parent::__construct($contentTypeHandler, $handler, $fieldTypeRegistry, eventDispatcher, $settings);
+        parent::__construct($contentTypeHandler, $handler, $fieldTypeRegistry, $eventDispatcher, $settings);
 
         $this->repository = $repository;
         $this->translationHelper = $translationHelper;
