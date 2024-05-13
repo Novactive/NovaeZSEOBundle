@@ -23,6 +23,7 @@ use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Ibexa\Contracts\Core\Variation\VariationHandler;
 use Ibexa\Contracts\FieldTypeRichText\RichText\Converter as RichTextConverterInterface;
 use Ibexa\Core\Base\Exceptions\InvalidArgumentType;
+use Ibexa\Core\Base\Exceptions\NotFoundException;
 use Ibexa\Core\FieldType\FieldTypeRegistry;
 use Ibexa\Core\FieldType\Image\Value as ImageValue;
 use Ibexa\Core\FieldType\ImageAsset\Value as ImageAssetValue;
@@ -34,7 +35,7 @@ use Ibexa\Core\MVC\Exception\SourceImageNotFoundException;
 use Ibexa\Core\Repository\Helper\NameSchemaService;
 use Ibexa\Core\Repository\Mapper\ContentTypeDomainMapper;
 use Ibexa\Core\Repository\Values\Content\VersionInfo;
-use Ibexa\FieldTypeRichText\FieldType\RichText as RichTextValue;
+use Ibexa\FieldTypeRichText\FieldType\RichText\Value as RichTextValue;
 
 class MetaNameSchema extends NameSchemaService
 {
@@ -64,11 +65,6 @@ class MetaNameSchema extends NameSchemaService
     protected $fieldContentMaxLength = 255;
 
     /**
-     * @var FieldTypeRegistry
-     */
-    protected $fieldTypeRegistry;
-
-    /**
      * @var RelationListType
      */
     private $relationListField;
@@ -87,7 +83,6 @@ class MetaNameSchema extends NameSchemaService
         ConfigResolverInterface $configurationResolver,
         array $settings = []
     ) {
-        $this->fieldTypeRegistry = $fieldTypeRegistry;
         $settings['limit'] = $this->fieldContentMaxLength;
         $handler = new ContentTypeDomainMapper(
             $contentTypeHandler,
@@ -320,7 +315,11 @@ class MetaNameSchema extends NameSchemaService
             return '';
         }
 
-        $content = $this->repository->getContentService()->loadContent($value->destinationContentId);
+        try {
+            $content = $this->repository->getContentService()->loadContent($value->destinationContentId);
+        } catch (NotFoundException $e) {
+            return '';
+        }
 
         foreach ($content->getFields() as $field) {
             if ($field->value instanceof ImageValue) {

@@ -141,6 +141,12 @@ nova_ezseo:
                 contentTypeIdentifiers: ['footer','something']
 ```
 
+You can customize label by siteaccess
+```yml
+novactive.novaseobundle.default.meta_field_name: Metas
+novactive.novaseobundle.default.meta_field_description: Metas for Search Engine Optimizations
+novactive.novaseobundle.default.meta_field_group: novaseo
+```
 
 
 

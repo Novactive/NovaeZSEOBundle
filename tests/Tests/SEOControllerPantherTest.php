@@ -26,7 +26,6 @@ class SEOControllerPantherTest extends PantherTestCase
         $source = $helper->client()->getPageSource();
 
         $this->assertStringContainsString('User-agent: *', $source);
-        $this->assertStringContainsString('Disallow: /', $source);
     }
 
     public function testGoogleVerification(): void

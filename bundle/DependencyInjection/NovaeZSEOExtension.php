@@ -76,5 +76,12 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
         $processor->mapConfigArray('sitemap_includes', $config, ContextualizerInterface::MERGE_FROM_SECOND_LEVEL);
         $processor->mapConfigArray('robots_disallow', $config);
         $processor->mapConfigArray('robots', $config, ContextualizerInterface::MERGE_FROM_SECOND_LEVEL);
+
+        if ($container->hasParameter('novactive.novaseobundle.admin_user_id')) {
+            $container->setParameter(
+                'novactive.novaseobundle.default.admin_user_id',
+                $container->getParameter('novactive.novaseobundle.admin_user_id')
+            );
+        }
     }
 }

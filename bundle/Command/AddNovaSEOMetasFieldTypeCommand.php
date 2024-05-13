@@ -55,25 +55,18 @@ class AddNovaSEOMetasFieldTypeCommand extends Command
      */
     private $contentTypesHelper;
 
-    /**
-     * @var int
-     */
-    private $adminUserId;
-
     public function __construct(
         ConfigResolverInterface $configResolver,
         Repository $repository,
         UserService $userService,
         FieldInstaller $fieldInstaller,
-        ContentTypesHelper $contentTypesHelper,
-        int $adminUserId
+        ContentTypesHelper $contentTypesHelper
     ) {
         $this->configResolver = $configResolver;
         $this->repository = $repository;
         $this->userService = $userService;
         $this->fieldInstaller = $fieldInstaller;
         $this->contentTypesHelper = $contentTypesHelper;
-        $this->adminUserId = $adminUserId;
 
         parent::__construct();
     }
@@ -178,8 +171,11 @@ EOT
     {
         $io = new SymfonyStyle($input, $output);
         $io->comment('Switching to Admin');
+
         $this->repository->getPermissionResolver()->setCurrentUserReference(
-            $this->userService->loadUser($this->adminUserId)
+            $this->userService->loadUser(
+                $this->configResolver->getParameter('admin_user_id', 'novactive.novaseobundle')
+            )
         );
     }
 }
