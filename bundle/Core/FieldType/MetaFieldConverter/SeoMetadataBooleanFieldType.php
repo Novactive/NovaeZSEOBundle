@@ -17,7 +17,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SeoMetadataBooleanFieldType extends SeoMetadataDefaultFieldType
 {
-    public const IDENTIFIER = 'boolean';
+    public const string IDENTIFIER = 'boolean';
     public function fromHash($hash): Meta
     {
         $meta = parent::fromHash($hash);

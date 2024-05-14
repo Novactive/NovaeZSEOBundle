@@ -23,7 +23,7 @@ use Novactive\Bundle\eZSEOBundle\Core\Meta;
 use Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\SeoMetadataFieldTypeRegistry;
 class Type extends FieldType
 {
-    public const IDENTIFIER = 'novaseometas';
+    public const string IDENTIFIER = 'novaseometas';
 
     /**
      * @var array

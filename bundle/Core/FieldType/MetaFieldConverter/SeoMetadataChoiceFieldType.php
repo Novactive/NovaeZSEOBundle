@@ -17,7 +17,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SeoMetadataChoiceFieldType extends SeoMetadataDefaultFieldType
 {
-    public const IDENTIFIER = 'select';
+    public const string IDENTIFIER = 'select';
 
     public function mapForm(FormBuilderInterface &$builder, array $params)
     {

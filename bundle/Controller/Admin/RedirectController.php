@@ -41,7 +41,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class RedirectController extends Controller
 {
-    public const URL_LIMIT = 10;
+    public const int URL_LIMIT = 10;
 
     /**
      * @Route("/list", name="novaseo_redirect_list")

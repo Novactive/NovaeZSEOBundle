@@ -41,7 +41,7 @@ class SitemapController extends Controller
      *
      * @var int
      */
-    public const PACKET_MAX = 1000;
+    public const int PACKET_MAX = 1000;
 
     public function __construct(FieldHelper $fieldHelper, VariationHandler $imageVariationService)
     {

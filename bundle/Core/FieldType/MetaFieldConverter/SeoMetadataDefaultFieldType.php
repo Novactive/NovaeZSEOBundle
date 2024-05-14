@@ -17,7 +17,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SeoMetadataDefaultFieldType implements SeoMetadataFieldTypeInterface
 {
-    public const IDENTIFIER = 'text';
+    public const string IDENTIFIER = 'text';
 
     public function support(string $fieldType): bool
     {

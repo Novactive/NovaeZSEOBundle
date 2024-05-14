@@ -11,7 +11,7 @@ use Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway;
 
 class DoctrineStorage extends Gateway
 {
-    public const TABLE = 'novaseo_meta';
+    public const string TABLE = 'novaseo_meta';
 
     /**
      * @var \Doctrine\DBAL\Connection
