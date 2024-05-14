@@ -28,7 +28,6 @@ use Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\SeoMetadataFi
 class MetaType extends AbstractType
 {
     public function __construct(
-        protected array $novaEzseo,
         protected ConfigResolverInterface $configResolver,
         protected SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry
     ) {
@@ -52,10 +51,14 @@ class MetaType extends AbstractType
             'label' => false,
             'label_attr' => ['style' => 'display:none']
         ];
-        if (isset($this->novaEzseo[$builder->getName()])) {
-            $config = $this->novaEzseo[$builder->getName()];
-            $type    = $config['type'];
-            $options = array_merge($options, $config['params']);
+        $novaEzseo = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
+
+        if (isset($novaEzseo[$builder->getName()])) {
+            $config = $novaEzseo[$builder->getName()];
+            $type    = $config['type'] ?? $type;
+            if ($type === 'select') {
+                $options = array_merge($options, $config['params']);
+            }
         }
 
         $constraints = $this->getConstraints($config);
@@ -63,7 +66,7 @@ class MetaType extends AbstractType
 
         $builder
             ->add('name', HiddenType::class);
-           $this->metadataFieldTypeRegistry->mapForm($builder, $options, $type);
+        $this->metadataFieldTypeRegistry->mapForm($builder, $options, $type);
 
     }
 

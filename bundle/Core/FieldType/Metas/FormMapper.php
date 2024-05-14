@@ -90,7 +90,7 @@ class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMa
         $metasData   = $data->value->metas;
         foreach ($metasConfig as $key => $meta) {
             $content   = isset($metasData[$key]) ? $metasData[$key]->getContent() : null;
-            $fieldType = $meta['type'];
+            $fieldType = $meta['type'] ?? 'text';
             if (isset($metasData[$key]) && $metasData[$key]->getFieldType() != '') {
                 $fieldType = $metasData[$key]->getFieldType();
             }
