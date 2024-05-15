@@ -22,7 +22,6 @@ use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchResult;
 use Ibexa\Contracts\Core\Variation\VariationHandler;
 use Ibexa\Core\Helper\FieldHelper;
 use Ibexa\Core\MVC\Symfony\Routing\UrlAliasRouter;
-use Ibexa\Core\Repository\Values\Content\VersionInfo;
 use Novactive\Bundle\eZSEOBundle\Core\Sitemap\QueryFactory;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -166,7 +165,11 @@ class SitemapController extends Controller
                     if ($this->fieldHelper->isFieldEmpty($content, $field->fieldDefIdentifier)) {
                         continue;
                     }
-                    $variation = $this->imageVariationService->getVariation($field, $content->getVersionInfo(), 'original');
+                    $variation = $this->imageVariationService->getVariation(
+                        $field,
+                        $content->getVersionInfo(),
+                        'original'
+                    );
                     $imageContainer = $sitemap->createElement('image:image');
                     $imageLoc = $sitemap->createElement('image:loc', $variation->uri);
                     $imageContainer->appendChild($imageLoc);
