@@ -3,12 +3,12 @@
 {% block novaseometas_field %}
     {{ field|compute_novaseometas(content) }}
     {% set isCanonicalFind = false %}
-    {% set isTtitleFind = false %}
+    {% set isTitleFind = false %}
     {% for meta in field.value.metas %}
         {% if meta.content is not empty %}
             {% if meta.name == "title" %}
                 <title>{{ meta.content }}</title>
-                {% set isTtitleFind = true %}
+                {% set isTitleFind = true %}
             {% elseif meta.name == "canonical" %}
                 <link rel="canonical" href="{{ meta.content }}" />
                 {% set isCanonicalFind = true %}
@@ -23,7 +23,7 @@
             {% set fallbackedContent = contentInfo|fallback_novaseometas( meta.name ) %}
             {% if fallbackedContent is not empty %}
                 {% if meta.name == "title" %}
-                    {% set isTtitleFind = true %}
+                    {% set isTitleFind = true %}
                     <title>{{ fallbackedContent }}</title>
                 {% else %}
                     <meta name="{{ meta.name }}" content="{{ fallbackedContent }}"/>
@@ -34,7 +34,7 @@
     {% if contentInfo.mainLocationId is defined and contentInfo.mainLocationId is not null and isCanonicalFind == false %}
         <link rel="canonical" href="{{ url( 'ibexa.url.alias', {'locationId': contentInfo.mainLocationId} ) }}" />
     {% endif %}
-    {% if isTtitleFind == false %}
+    {% if isTitleFind == false %}
         <title>{{ ibexa_content_name( contentInfo ) }}</title>
     {% endif %}
 {% endblock %}
