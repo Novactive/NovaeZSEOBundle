@@ -141,6 +141,16 @@ nova_ezseo:
                 contentTypeIdentifiers: ['footer','something']
 ```
 
+Set "display_images_in_sitemap" to true to inject the image tags.
+Notice: this doesn't work with `limit_to_rootlocation: true`.
+
+```yml
+nova_ezseo:
+    system:
+        default:
+            display_images_in_sitemap: true
+```
+
 You can customize label by siteaccess
 ```yml
 novactive.novaseobundle.default.meta_field_name: Metas

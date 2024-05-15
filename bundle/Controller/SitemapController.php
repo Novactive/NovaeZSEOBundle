@@ -166,7 +166,7 @@ class SitemapController extends Controller
                     if ($this->fieldHelper->isFieldEmpty($content, $field->fieldDefIdentifier)) {
                         continue;
                     }
-                    $variation = $this->imageVariationService->getVariation($field, new VersionInfo(), 'original');
+                    $variation = $this->imageVariationService->getVariation($field, $content->getVersionInfo(), 'original');
                     $imageContainer = $sitemap->createElement('image:image');
                     $imageLoc = $sitemap->createElement('image:loc', $variation->uri);
                     $imageContainer->appendChild($imageLoc);
