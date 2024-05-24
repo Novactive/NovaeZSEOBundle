@@ -51,9 +51,9 @@ services:
     Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema:
         lazy: true
         arguments:
-            $contentTypeHandler: "@Ibexa\\Contracts\\Core\\Persistence\\Content\\Type\\Handler"
-            $languageHandler: "@Ibexa\\Core\\Persistence\\Cache\\ContentLanguageHandler"
-            $translationHelper: "@Ibexa\\Core\\Helper\\TranslationHelper"
+            $contentTypeHandler: '@Ibexa\Contracts\Core\Persistence\Content\Type\Handler'
+            $languageHandler: '@Ibexa\Core\Persistence\Cache\ContentLanguageHandler'
+            $translationHelper: '@Ibexa\Core\Helper\TranslationHelper'
         calls:
             - [setRichTextConverter, ["@Ibexa\\FieldTypeRichText\\RichText\\Converter\\Html5"]]
             # Note: injecting lower layer Variation Handler (AliasGenerator) as a workaround for missing Public API objects context
@@ -72,6 +72,8 @@ services:
     Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper:
         $ioService: '@ezseo_importurls.ibexa.core.io_service'
         $cacheDirectory: '%kernel.cache_dir%'
+
+    Novactive\Bundle\eZSEOBundle\Core\Helper\SiteMapHelper:
 
     Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory:
         arguments:

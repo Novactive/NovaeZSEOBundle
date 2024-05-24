@@ -1,0 +1,15 @@
+#list from https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+locale_conversion:
+  bre-BT: br_BT
+  rum-RO: ro_RO
+  mlt-MT: mt_MT
+  gle-IE: ga_IE
+  est-EE: et_EE
+  slv-SI: sl_SI
+  sla-MK: sl_MK
+  lav-LV: lv_LV
+  lit-LT: lt_LT
+  geo-GE: ka_GE
+  per-IR: fa_IR
+  bul-BG: bg_BG
+  bel-BY: be_BY

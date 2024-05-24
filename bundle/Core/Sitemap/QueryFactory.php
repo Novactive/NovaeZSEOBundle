@@ -6,6 +6,7 @@ namespace Novactive\Bundle\eZSEOBundle\Core\Sitemap;
 
 use Ibexa\Bundle\Core\DependencyInjection\Configuration\ConfigResolver;
 use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
+use Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException;
 use Ibexa\Contracts\Core\Repository\Repository;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location;
 use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery as Query;
@@ -52,8 +53,11 @@ final class QueryFactory
         );
     }
 
-    public function __invoke(): Query
-    {
+    public function __invoke(
+        int $rootLocationId = null,
+        array $languages = [],
+        bool $matchAlwaysAvailable = true
+    ): Query {
         $query = new Query();
 
         // always here, we want visible Contents
@@ -61,7 +65,16 @@ final class QueryFactory
 
         // do we want to limit per Root Location, but default we don't
         $limitToRootLocation = $this->configResolver->getParameter('limit_to_rootlocation', 'nova_ezseo');
-        if (true === $limitToRootLocation) {
+        if ((int) $rootLocationId) {
+            try {
+                $rootLocation = $this->repository->getLocationService()->loadLocation($rootLocationId);
+            } catch (NotFoundException|UnauthorizedException $e) {
+                $rootLocation = null;
+            }
+            if ($rootLocation) {
+                $criterions[] = new Criterion\Subtree($rootLocation->pathString);
+            }
+        } elseif (true === $limitToRootLocation) {
             $criterions[] = new Criterion\Subtree($this->getRootLocation()->pathString);
         }
 
@@ -88,7 +101,8 @@ final class QueryFactory
             )
         );
 
-        $criterions[] = new Criterion\LanguageCode($this->configResolver->getParameter('languages'), true);
+        $languages = empty($languages) ? $this->configResolver->getParameter('languages') : $languages;
+        $criterions[] = new Criterion\LanguageCode($languages, $matchAlwaysAvailable);
 
         $query->query = new Criterion\LogicalAnd($criterions);
         $query->sortClauses = [new SortClause\DatePublished(Query::SORT_DESC)];

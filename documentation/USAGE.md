@@ -141,6 +141,48 @@ nova_ezseo:
                 contentTypeIdentifiers: ['footer','something']
 ```
 
+
+Set `multi_siteaccess_sitemap` to true to automatically generate the index page sitemap.xml per site access.
+
+```yml
+nova_ezseo:
+    system:
+        default:
+            multi_siteaccess_sitemap: true
+```
+
+```html
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <sitemap>
+        <loc>https://www.example.com/fr/sitemap-1.xml</loc>
+        <lastmod>2024-05-31T01:04:52+00:00</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://www.example.com/en/sitemap-1.xml</loc>
+        <lastmod>2024-05-31T01:04:52+00:00</lastmod>
+    </sitemap>
+</sitemapindex>
+```
+
+Set `multi_languages_sitemap` to inject the multilingual and multinational site annotations tag
+Notice: this doesn't work with `multi_siteaccess_sitemap: false`.
+```html
+<url xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <loc>https://www.example.com/pageFr</loc>
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="en-GB" href="https://www.example.com/en/pageEn" />
+    <xhtml:link xmlns:xhtml="http://www.w3.org/1999/xhtml" rel="alternate" hreflang="fr-FR" href="https://www.example.com/pageFr" />
+    <lastmod>2024-05-03T08:48:52+00:00</lastmod>
+</url>
+```
+
+```yml
+nova_ezseo:
+    system:
+        default:
+            multi_siteaccess_sitemap: true
+            multi_languages_sitemap: true
+```
+
 Set "display_images_in_sitemap" to true to inject the image tags.
 Notice: this doesn't work with `limit_to_rootlocation: true`.
 

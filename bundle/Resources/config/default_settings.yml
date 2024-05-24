@@ -11,8 +11,10 @@ parameters:
     nova_ezseo.default.google_anonymizeIp: ~
     nova_ezseo.default.bing_verification: ~
     nova_ezseo.default.custom_fallback_service: ~
-    nova_ezseo.default.limit_to_rootlocation: ~
-    nova_ezseo.default.display_images_in_sitemap: ~
+    nova_ezseo.default.limit_to_rootlocation: false
+    nova_ezseo.default.display_images_in_sitemap: false
+    nova_ezseo.default.multi_siteaccess_sitemap: false
+    nova_ezseo.default.multi_languages_sitemap: false
     nova_ezseo.default.sitemap_excludes:
         locations: []
         subtrees: []
