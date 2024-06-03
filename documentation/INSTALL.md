@@ -36,7 +36,7 @@ novactive.novaseobundle.default.admin_user_id: NEW_ADMIN_ID
 
 ### Create the table
 
-See the file `bundle/Resources/sql/schema.sql`
+See the folder `bundle/Resources/sql`
 
 You also need to run:
 

@@ -13,10 +13,10 @@
 namespace Novactive\Bundle\eZSEOBundle\Form\Type;
 
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
+use Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\SeoMetadataFieldTypeRegistry;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
@@ -27,14 +27,17 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  */
 class MetaType extends AbstractType
 {
+    protected SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry;
     private ConfigResolverInterface $configResolver;
 
     /**
      * Constructor.
      */
     public function __construct(
-        ConfigResolverInterface $configResolver
+        ConfigResolverInterface $configResolver,
+        SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry
     ) {
+        $this->metadataFieldTypeRegistry = $metadataFieldTypeRegistry;
         $this->configResolver = $configResolver;
     }
 
@@ -51,25 +54,25 @@ class MetaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $config = [];
+        $type = 'text';
+        $options = [
+            'label' => false,
+            'label_attr' => ['style' => 'display:none'],
+        ];
+
         $novaEzseo = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
         if (isset($novaEzseo[$builder->getName()])) {
             $config = $novaEzseo[$builder->getName()];
+            $type = $config['type'];
+            $options = array_merge($options, $config['params']);
         }
 
         $constraints = $this->getConstraints($config);
+        $options['constraints'] = $constraints;
 
         $builder
-            ->add('name', HiddenType::class)
-            ->add(
-                'content',
-                TextType::class,
-                [
-                    'empty_data' => false,
-                    'required' => true,
-                    'constraints' => $constraints,
-                    'label_attr' => ['style' => 'display:none'],
-                ]
-            );
+            ->add('name', HiddenType::class);
+        $this->metadataFieldTypeRegistry->mapForm($builder, $options, $type);
     }
 
     private function getConstraints(array $config)

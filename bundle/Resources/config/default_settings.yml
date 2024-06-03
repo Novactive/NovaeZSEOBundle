@@ -86,3 +86,13 @@ parameters:
             label: 'Twitter - Image'
             default_pattern: "<image|picture>"
             icon: 'twitter-square'
+        'robots':
+            label: 'Robots'
+            type: 'select'
+            params:
+                choices:
+                    all: 'all'
+                    nofollow: 'nofollow'
+                    noindex: 'noindex'
+            default_pattern: 'all'
+            icon: 'book'

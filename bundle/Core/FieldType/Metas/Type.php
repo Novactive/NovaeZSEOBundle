@@ -19,6 +19,7 @@ use Ibexa\Core\Base\Exceptions\InvalidArgumentType;
 use Ibexa\Core\FieldType\FieldType;
 use Ibexa\Core\FieldType\ValidationError;
 use Ibexa\Core\FieldType\Value as CoreValue;
+use Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\SeoMetadataFieldTypeRegistry;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 
 class Type extends FieldType
@@ -34,6 +35,14 @@ class Type extends FieldType
             'default' => [],
         ],
     ];
+
+    protected SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry;
+
+    public function __construct(
+        SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry
+    ) {
+        $this->metadataFieldTypeRegistry = $metadataFieldTypeRegistry;
+    }
 
     /**
      * Validates the fieldSettings of a FieldDefinitionCreateStruct or FieldDefinitionUpdateStruct.
@@ -148,18 +157,8 @@ class Type extends FieldType
         if (!\is_array($hash)) {
             return new Value([]);
         }
-        $metas = [];
-        foreach ($hash as $hashItem) {
-            if (!\is_array($hashItem)) {
-                continue;
-            }
-            $meta = new Meta();
-            $meta->setName($hashItem['meta_name']);
-            $meta->setContent($hashItem['meta_content']);
-            $metas[] = $meta;
-        }
 
-        return new Value($metas);
+        return new Value($this->metadataFieldTypeRegistry->fromHash($hash));
     }
 
     /**
