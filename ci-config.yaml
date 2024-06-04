@@ -1,2 +1,3 @@
 install: true
 test: true
+required_ibexa_version: ^4.6

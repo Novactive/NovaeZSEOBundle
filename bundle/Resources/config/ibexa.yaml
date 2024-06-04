@@ -1,0 +1,7 @@
+orm:
+  entity_mappings:
+    NovaeZSEOBundle:
+      is_bundle: true
+      type: annotation
+      dir: Entity
+      prefix: Novactive\Bundle\eZSEOBundle\Entity
