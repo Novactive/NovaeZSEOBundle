@@ -107,13 +107,6 @@ class SiteMapHelper
     }
     public function getSiteAccessesLocationIdLanguages(): array
     {
-
-        static $rootLocationLanguages = null;
-
-        if (is_array($rootLocationLanguages)) {
-            return $rootLocationLanguages;
-        }
-
         $rootLocationLanguages = [];
         $siteAccesses = $this->configResolver->getParameter('translation_siteaccesses');
         foreach ($siteAccesses as $siteAccess) {

@@ -345,7 +345,7 @@ class SitemapController extends Controller
                 }
                 foreach ($siteAccesses as $siteAccess) {
                     $siteAccessMainLanguage = $this->siteMapHelper->getSiteAccessMainLanguage($siteAccess);
-                    if (!in_array($this->siteMapHelper->getSiteAccessMainLanguage($siteAccess), $languagesCodes)) {
+                    if (!in_array($siteAccessMainLanguage, $languagesCodes)) {
                         continue;
                     }
 
