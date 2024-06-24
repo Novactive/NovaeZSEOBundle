@@ -331,4 +331,15 @@ class MetaNameSchema extends NameSchemaService
 
         return '';
     }
+
+    /**
+     * Override native function as this prevent usage of `()` inside metas in Ibexa 4.6
+     * {@inheritDoc}
+     */
+    protected function filterNameSchema($nameSchema)
+    {
+        $groupLookupTable = [];
+
+        return [$nameSchema, $groupLookupTable];
+    }
 }
