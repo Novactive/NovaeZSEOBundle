@@ -372,9 +372,13 @@ class SitemapController extends Controller
         $displayImage = $this->getConfigResolver()->getParameter('display_images_in_sitemap', 'nova_ezseo');
 
         if (true === $displayImage) {
-            $content = $this->getRepository()->getContentService()->loadContentByContentInfo(
-                $location->contentInfo
-            );
+            try {
+                $content = $this->getRepository()->getContentService()->loadContentByContentInfo(
+                    $location->contentInfo
+                );
+            } catch (Throwable $exception) {
+                return;
+            }
             foreach ($content->getFields() as $field) {
                 $fieldTypeIdentifier = $content->getContentType()->getFieldDefinition(
                     $field->fieldDefIdentifier
