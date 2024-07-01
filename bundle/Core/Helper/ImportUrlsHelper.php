@@ -161,15 +161,16 @@ class ImportUrlsHelper
 
     public function checkUrlDestinationExist(string $destination): bool
     {
-        $urlExists = false;
-
         try {
-            $urlExists = $this->urlWildCardService->translate($destination);
+            if($$this->urlWildCardService->translate($destination) instanceof URLWildcardTranslationResult) {
+                return true;
+            }
+
         } catch (\Exception $e) {
             $this->logger->log(LogLevel::ERROR, $e->getMessage());
         }
 
-        return $urlExists;
+        return false;
     }
 
     public function saveUrls(string $filePath, string $source, string $destination): array
