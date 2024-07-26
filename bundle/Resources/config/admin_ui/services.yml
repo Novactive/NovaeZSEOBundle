@@ -1,8 +1,13 @@
 services:
 
+    Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\SeoMetadataFieldTypeRegistry:
+        autowire: true
+        arguments: [!tagged seometa.fieldtype]
+
     # FIELD TYPE
     Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Type:
         parent: Ibexa\Core\FieldType\FieldType
+        autowire: true
         tags:
             - { name: ibexa.field_type, alias: novaseometas }
 
