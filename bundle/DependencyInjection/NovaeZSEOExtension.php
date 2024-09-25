@@ -37,6 +37,7 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
             'wildcard_routing.yml' => 'ibexa',
             'ez_field_templates.yml' => 'ibexa',
             'variations.yml' => 'ibexa',
+            'ibexa.yaml' => 'ibexa',
             'admin_ui/ez_field_templates.yml' => 'ibexa',
             'ibexa_locale_conversion.yml' => 'ibexa',
         ];

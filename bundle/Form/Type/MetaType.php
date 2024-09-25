@@ -28,7 +28,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class MetaType extends AbstractType
 {
     protected SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry;
-    private ConfigResolverInterface $configResolver;
+    protected ConfigResolverInterface $configResolver;
 
     /**
      * Constructor.
@@ -63,8 +63,10 @@ class MetaType extends AbstractType
         $novaEzseo = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');
         if (isset($novaEzseo[$builder->getName()])) {
             $config = $novaEzseo[$builder->getName()];
-            $type = $config['type'];
-            $options = array_merge($options, $config['params']);
+            $type = $config['type'] ?? $type;
+            if ('select' === $type) {
+                $options = array_merge($options, $config['params']);
+            }
         }
 
         $constraints = $this->getConstraints($config);
