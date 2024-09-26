@@ -144,7 +144,7 @@ class Type extends FieldType
     /**
      * Returns information for FieldValue->$sortKey relevant to the field type.
      */
-    protected function getSortInfo(CoreValue $value): bool
+    protected function getSortInfo(SPIValue $value): bool
     {
         return false;
     }

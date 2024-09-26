@@ -80,7 +80,7 @@ class RedirectController extends Controller
                 $urlExists = $urlWildcardService->translate($destination);
                 $errors[] = $translator->trans('nova.redirect.create.exists', ['url' => $destination], 'redirect');
             } catch (Exception $e) {
-                $e->getMessage();
+                $errors[] = $e->getMessage();
             }
 
             if (('' !== $source || '' !== $destination) && ($source !== $destination) && (null === $urlExists)) {
@@ -109,7 +109,7 @@ class RedirectController extends Controller
         }
 
         $page = $request->query->get('page') ?? 1;
-        $pagerfanta = new Pagerfanta(new ArrayAdapter($urlWildcardService->loadAll()));
+        $pagerfanta = new Pagerfanta(new ArrayAdapter((array) $urlWildcardService->loadAll()));
 
         $pagerfanta->setMaxPerPage(self::URL_LIMIT);
         $pagerfanta->setCurrentPage(min($page, $pagerfanta->getNbPages()));

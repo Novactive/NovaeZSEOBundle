@@ -10,7 +10,6 @@ use Ibexa\Core\MVC\Symfony\Locale\LocaleConverter;
 use Ibexa\Core\MVC\Symfony\Routing\Generator\RouteReferenceGenerator;
 use Ibexa\Core\MVC\Symfony\Routing\UrlAliasRouter;
 use Ibexa\Core\MVC\Symfony\SiteAccess\SiteAccessServiceInterface;
-use Ibexa\Migration\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -19,7 +18,6 @@ use Throwable;
 
 class SiteMapHelper
 {
-    use LoggerAwareTrait;
 
     /**
      * @var ConfigResolverInterface

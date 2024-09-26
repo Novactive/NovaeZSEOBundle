@@ -75,11 +75,6 @@ class MetaNameSchema extends NameSchemaService
      */
     private $configurationResolver;
 
-    /**
-     * @var FieldTypeRegistry
-     */
-    protected $fieldTypeRegistry;
-
     public function __construct(
         ContentTypeHandler $contentTypeHandler,
         FieldTypeRegistry $fieldTypeRegistry,
