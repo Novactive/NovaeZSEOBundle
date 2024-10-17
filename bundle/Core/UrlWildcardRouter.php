@@ -33,7 +33,7 @@ class UrlWildcardRouter extends BaseUrlWildcardRouter
     {
         try {
             // Manage full url : http://host.com/uri
-            $requestedPath = $request->attributes->get('semanticPathinfo', $request->getPathInfo());
+            $requestedPath = $request->getPathInfo();
             $requestUriFull = $request->getSchemeAndHttpHost().$requestedPath;
             $urlWildcard = $this->wildcardService->translate($requestUriFull);
         } catch (Exception $e) {
@@ -51,6 +51,7 @@ class UrlWildcardRouter extends BaseUrlWildcardRouter
 
         if (0 === strpos($urlWildcard->uri, 'http://') || 'https://' === substr($urlWildcard->uri, 0, 8)) {
             $params += ['semanticPathinfo' => trim($urlWildcard->uri, '/')];
+            $params += ['prependSiteaccessOnRedirect' => false];
         } else {
             $params += ['semanticPathinfo' => '/'.trim($urlWildcard->uri, '/')];
         }
