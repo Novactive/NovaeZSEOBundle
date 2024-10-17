@@ -141,7 +141,8 @@ class SitemapController extends Controller
                 continue;
             }
 
-            $modified = $location->contentInfo->modificationDate->format('c');
+            $modified = $location->contentInfo->modificationDate ?
+                $location->contentInfo->modificationDate->format('c') : null;
             $loc = $sitemap->createElement('loc', $url);
             $lastmod = $sitemap->createElement('lastmod', $modified);
             $urlElt = $sitemap->createElement('url');
