@@ -70,6 +70,13 @@ class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
         $processor->mapSetting('limit_to_rootlocation', $config);
         $processor->mapSetting('display_images_in_sitemap', $config);
         $processor->mapSetting('robots', $config);
+        $processor->mapSetting('robots_disallow', $config);
+        $processor->mapSetting('custom_fallback_service', $config);
+        $processor->mapSetting('sitemap_excludes', $config);
+        $processor->mapSetting('sitemap_includes', $config);
+        $processor->mapSetting('default_metas', $config);
+        $processor->mapSetting('default_links', $config);
+
         $processor->mapConfigArray('fieldtype_metas', $config, ContextualizerInterface::MERGE_FROM_SECOND_LEVEL);
         $processor->mapConfigArray('default_metas', $config);
         $processor->mapConfigArray('default_links', $config);
