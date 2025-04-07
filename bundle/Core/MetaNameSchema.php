@@ -269,7 +269,7 @@ class MetaNameSchema extends NameSchemaService
         $relatedContent = $this->repository->getContentService()->loadContent($value->destinationContentId);
         // @todo: we can probably be better here and handle more than just "image"
         $fieldImageValue = $relatedContent->getFieldValue('image');
-        if ($fieldImageValue) {
+        if ($fieldImageValue instanceof ImageValue) {
             if ($fieldImageValue->uri) {
                 return $this->getVariation(
                     $fieldImageValue,
