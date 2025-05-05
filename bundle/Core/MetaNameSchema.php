@@ -37,6 +37,8 @@ use Ibexa\Core\Repository\Mapper\ContentTypeDomainMapper;
 use Ibexa\Core\Repository\Values\Content\VersionInfo;
 use Ibexa\FieldTypeRichText\FieldType\RichText\Value as RichTextValue;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class MetaNameSchema extends NameSchemaService
 {
@@ -83,6 +85,7 @@ class MetaNameSchema extends NameSchemaService
         RepositoryInterface $repository,
         TranslationHelper $translationHelper,
         ConfigResolverInterface $configurationResolver,
+        ?LoggerInterface $logger = null,
         array $settings = []
     ) {
         $this->fieldTypeRegistry = $fieldTypeRegistry;
@@ -99,6 +102,7 @@ class MetaNameSchema extends NameSchemaService
         $this->translationHelper = $translationHelper;
         $this->relationListField = $this->fieldTypeRegistry->getFieldType('ezobjectrelationlist');
         $this->configurationResolver = $configurationResolver;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function setRichTextConverter(RichTextConverterInterface $richTextConverter): void
@@ -266,8 +270,16 @@ class MetaNameSchema extends NameSchemaService
         if (!$value->destinationContentId) {
             return '';
         }
-        $relatedContent = $this->repository->getContentService()->loadContent($value->destinationContentId);
-        // @todo: we can probably be better here and handle more than just "image"
+        //if the content is not translated
+        try {
+            $relatedContent = $this->repository->getContentService()->loadContent($value->destinationContentId);
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage(), [
+                'exception' => $e,
+            ]);
+            return '';
+        }
+         // @todo: we can probably be better here and handle more than just "image"
         $fieldImageValue = $relatedContent->getFieldValue('image');
         if ($fieldImageValue instanceof ImageValue) {
             if ($fieldImageValue->uri) {
