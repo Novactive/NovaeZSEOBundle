@@ -105,3 +105,12 @@ services:
         class: Novactive\Bundle\eZSEOBundle\Form\Type\MetaType
         tags:
             - { name: form.type, alias: seos }
+
+    Novactive\Bundle\eZSEOBundle\EventListener\RequestEventListener:
+        arguments:
+            - '@ibexa.config.resolver'
+            - "@router"
+            - '%ibexa.site_access.default%'
+            - "@?logger"
+        tags:
+            - { name: kernel.event_subscriber }

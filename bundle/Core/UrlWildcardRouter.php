@@ -58,7 +58,7 @@ class UrlWildcardRouter extends BaseUrlWildcardRouter
 
         // In URLAlias terms, "forward" means "redirect".
         if ($urlWildcard->forward) {
-            $params += ['needsRedirect' => true];
+            $params += ['needsSeoRedirect' => true];
         } else {
             $params += ['needsForward' => true];
         }
