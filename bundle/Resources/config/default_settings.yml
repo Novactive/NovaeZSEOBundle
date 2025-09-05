@@ -17,11 +17,13 @@ parameters:
         locations: []
         subtrees: []
         contentTypeIdentifiers: ['image']
+        object_states: []
     # Includes take precedence on excludes.
     nova_ezseo.default.sitemap_includes:
         locations: []
         subtrees: []
         contentTypeIdentifiers: []
+        object_states: []
     nova_ezseo.default.default_metas:
         author: "Ibexa Community Bundle Nova eZ SEO Bundle"
         copyright: ~

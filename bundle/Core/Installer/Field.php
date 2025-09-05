@@ -3,7 +3,6 @@
 namespace Novactive\Bundle\eZSEOBundle\Core\Installer;
 
 use DateTime;
-use Exception;
 use Ibexa\Contracts\Core\Repository\ContentTypeService;
 use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
@@ -81,7 +80,7 @@ class Field
             $this->contentTypeService->publishContentTypeDraft($contentTypeDraft);
 
             return true;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->errorMessage = $e->getMessage();
 
             return false;

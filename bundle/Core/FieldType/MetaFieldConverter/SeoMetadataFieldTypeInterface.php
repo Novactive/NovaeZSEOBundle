@@ -17,9 +17,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 interface SeoMetadataFieldTypeInterface
 {
-    /**
-     * @param $hash
-     */
     public function fromHash($hash): Meta;
 
     public function support(string $fieldType): bool;

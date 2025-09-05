@@ -14,10 +14,8 @@ namespace Novactive\Bundle\eZSEOBundle\Controller;
 
 use DateTime;
 use DOMDocument;
-use DOMElement;
 use Ibexa\Bundle\Core\Controller;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location;
-use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchHit;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchResult;
 use Ibexa\Contracts\Core\Variation\VariationHandler;
 use Ibexa\Core\Helper\FieldHelper;
@@ -29,12 +27,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SitemapController extends Controller
 {
-    /** @var FieldHelper */
-    private $fieldHelper;
-
-    /** @var VariationHandler */
-    protected $imageVariationService;
-
     /**
      * How many in a Sitemap.
      *
@@ -42,10 +34,10 @@ class SitemapController extends Controller
      */
     public const PACKET_MAX = 1000;
 
-    public function __construct(FieldHelper $fieldHelper, VariationHandler $imageVariationService)
-    {
-        $this->fieldHelper = $fieldHelper;
-        $this->imageVariationService = $imageVariationService;
+    public function __construct(
+        protected readonly FieldHelper $fieldHelper,
+        protected readonly VariationHandler $imageVariationService,
+    ) {
     }
 
     /**
@@ -116,14 +108,12 @@ class SitemapController extends Controller
     /**
      * Fill a sitemap.
      */
-    protected function fillSitemap(DOMDocument $sitemap, DOMElement $root, SearchResult $results): void
+    protected function fillSitemap(DOMDocument $sitemap, \DOMElement $root, SearchResult $results): void
     {
         foreach ($results->searchHits as $searchHit) {
-            /**
-             * @var SearchHit
-             * @var Location  $location
-             */
+            /** @var Location $location */
             $location = $searchHit->valueObject;
+
             try {
                 $url = $this->generateUrl(
                     UrlAliasRouter::URL_ALIAS_ROUTE_NAME,
@@ -187,7 +177,7 @@ class SitemapController extends Controller
     /**
      * Fill the sitemap index.
      */
-    protected function fillSitemapIndex(DOMDocument $sitemap, int $numberOfResults, DOMElement $root): void
+    protected function fillSitemapIndex(DOMDocument $sitemap, int $numberOfResults, \DOMElement $root): void
     {
         $numberOfPage = (int) ceil($numberOfResults / static::PACKET_MAX);
         for ($sitemapNumber = 1; $sitemapNumber <= $numberOfPage; ++$sitemapNumber) {

@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="novaseo_redirect_import_history")
+ *
  * @ORM\Entity()
  */
 class RedirectImportHistory
@@ -25,7 +26,9 @@ class RedirectImportHistory
      * @var int
      *
      * @ORM\Column(type="integer")
+     *
      * @ORM\Id
+     *
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
@@ -71,12 +74,12 @@ class RedirectImportHistory
         $this->nameFile = $nameFile;
     }
 
-    public function getDate(): DateTime
+    public function getDate(): \DateTime
     {
         return $this->date;
     }
 
-    public function setDate(DateTime $date): void
+    public function setDate(\DateTime $date): void
     {
         $this->date = $date;
     }

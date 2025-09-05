@@ -19,7 +19,7 @@ use Ibexa\Contracts\Core\Persistence\Content\VersionInfo;
 class MetasStorage extends GatewayBasedStorage
 {
     /**
-     * @var \Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\MetasStorage\Gateway
+     * @var MetasStorage\Gateway
      */
     protected $gateway;
 

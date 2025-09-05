@@ -54,7 +54,7 @@ class AdminTopMenu
             ->addChild(
                 'nova_import_redirect_url',
                 [
-                  'route' => 'novactive_platform_admin_ui.import-redirect-url',
+                    'route' => 'novactive_platform_admin_ui.import-redirect-url',
                 ]
             )
             ->setLabel('menu.main_menu.import')

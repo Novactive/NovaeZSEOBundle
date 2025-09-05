@@ -4,34 +4,24 @@ declare(strict_types=1);
 
 namespace Novactive\Bundle\eZSEOBundle\Core\Sitemap;
 
-use Ibexa\Bundle\Core\DependencyInjection\Configuration\ConfigResolver;
 use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
 use Ibexa\Contracts\Core\Repository\Repository;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location;
 use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery as Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause;
+use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 
-final class QueryFactory
+class QueryFactory
 {
-    /**
-     * @var ConfigResolver
-     */
-    private $configResolver;
-
-    /**
-     * @var Repository
-     */
-    private $repository;
-
-    public function __construct(ConfigResolverInterface $configResolver, Repository $repository)
-    {
-        $this->configResolver = $configResolver;
-        $this->repository = $repository;
+    public function __construct(
+        protected ConfigResolverInterface $configResolver,
+        protected Repository $repository
+    ) {
     }
 
-    private function getLocation(int $locationId): ?Location
+    protected function getLocation(int $locationId): ?Location
     {
         return $this->repository->sudo(
             function (Repository $repository) use ($locationId) {
@@ -45,7 +35,7 @@ final class QueryFactory
         );
     }
 
-    private function getRootLocation(): Location
+    protected function getRootLocation(): Location
     {
         return $this->repository->getLocationService()->loadLocation(
             $this->configResolver->getParameter('content.tree_root.location_id')
@@ -55,55 +45,67 @@ final class QueryFactory
     public function __invoke(): Query
     {
         $query = new Query();
-
-        // always here, we want visible Contents
-        $criterions = [new Criterion\Visibility(Criterion\Visibility::VISIBLE)];
-
-        // do we want to limit per Root Location, but default we don't
-        $limitToRootLocation = $this->configResolver->getParameter('limit_to_rootlocation', 'nova_ezseo');
-        if (true === $limitToRootLocation) {
-            $criterions[] = new Criterion\Subtree($this->getRootLocation()->pathString);
-        }
-
-        // Inclusions
-        $config = $this->configResolver->getParameter('sitemap_includes', 'nova_ezseo');
-        $criterions = array_merge(
-            $criterions,
-            $this->getCriterionsForIncludeConfig(
-                $config['contentTypeIdentifiers'],
-                $config['locations'],
-                $config['subtrees'],
-            )
-        );
-
-        // Exclusions
-        $config = $this->configResolver->getParameter('sitemap_excludes', 'nova_ezseo');
-        $criterions = array_merge(
-            $criterions,
-            $this->getCriterionsForConfig(
-                $config['contentTypeIdentifiers'],
-                $config['locations'],
-                $config['subtrees'],
-                true
-            )
-        );
-
-        $criterions[] = new Criterion\LanguageCode($this->configResolver->getParameter('languages'), true);
-
-        $query->query = new Criterion\LogicalAnd($criterions);
+        $criteria = $this->getCriteria();
+        $query->query = new Criterion\LogicalAnd($criteria);
         $query->sortClauses = [new SortClause\DatePublished(Query::SORT_DESC)];
 
         return $query;
     }
 
-    private function getCriterionsForConfig(
+    /**
+     * @return Criterion[]
+     */
+    public function getCriteria(): array
+    {
+        // always here, we want visible Contents
+        $criteria = [new Criterion\Visibility(Criterion\Visibility::VISIBLE)];
+
+        // do we want to limit per Root Location, but default we don't
+        $limitToRootLocation = $this->configResolver->getParameter('limit_to_rootlocation', 'nova_ezseo');
+        if (true === $limitToRootLocation) {
+            $criteria[] = new Criterion\Subtree($this->getRootLocation()->pathString);
+        }
+
+        // Inclusions
+        $config = $this->configResolver->getParameter('sitemap_includes', 'nova_ezseo');
+        $criteria = array_merge(
+            $criteria,
+            $this->getCriteriaForIncludeConfig(
+                $config['contentTypeIdentifiers'],
+                $config['locations'],
+                $config['subtrees'],
+                $config['object_states'],
+            )
+        );
+
+        // Exclusions
+        $config = $this->configResolver->getParameter('sitemap_excludes', 'nova_ezseo');
+        $criteria = array_merge(
+            $criteria,
+            $this->getCriteriaForExcludeConfig(
+                $config['contentTypeIdentifiers'],
+                $config['locations'],
+                $config['subtrees'],
+                $config['object_states'],
+            )
+        );
+
+        $criteria[] = new Criterion\LanguageCode($this->configResolver->getParameter('languages'), true);
+
+        return $criteria;
+    }
+
+    /**
+     * @return Criterion[]
+     */
+    protected function getCriteriaForExcludeConfig(
         array $contentTypeIdentifiers,
         array $locationIds,
         array $subtreeLocationsId,
-        bool $isLogicalNot = false
-    ) {
+        array $objectStates,
+    ): array {
         $contentTypeService = $this->repository->getContentTypeService();
-        $criterions = [];
+        $criteria = [];
 
         foreach ($contentTypeIdentifiers as $contentTypeIdentifier) {
             try {
@@ -111,7 +113,7 @@ final class QueryFactory
             } catch (NotFoundException $exception) {
                 continue;
             }
-            $criterions[] = new Criterion\ContentTypeIdentifier($contentTypeIdentifier);
+            $criteria[] = new Criterion\ContentTypeIdentifier($contentTypeIdentifier);
         }
 
         foreach ($subtreeLocationsId as $locationId) {
@@ -119,7 +121,7 @@ final class QueryFactory
             if (null === $excludedLocation) {
                 continue;
             }
-            $criterions[] = new Criterion\Subtree($excludedLocation->pathString);
+            $criteria[] = new Criterion\Subtree($excludedLocation->pathString);
         }
 
         foreach ($locationIds as $locationId) {
@@ -127,52 +129,51 @@ final class QueryFactory
             if (null === $excludedLocation) {
                 continue;
             }
-            $criterions[] = new Criterion\LocationId($locationId);
+            $criteria[] = new Criterion\LocationId($locationId);
         }
 
-        if ($isLogicalNot) {
-            return array_map(
-                function ($criterion) {
-                    return new Criterion\LogicalNot($criterion);
-                },
-                $criterions
-            );
+        foreach ($objectStates as $objectStateData) {
+            foreach ($objectStateData as $objectStateGroupIdentifier => $objectStateIdentifiers) {
+                try {
+                    $service = $this->repository->getObjectStateService();
+                    $group = $service->loadObjectStateGroupByIdentifier($objectStateGroupIdentifier);
+                    foreach ($objectStateIdentifiers as $objectStateIdentifier) {
+                        $state = $service->loadObjectStateByIdentifier($group, $objectStateIdentifier);
+                        $criteria[] = new Criterion\ObjectStateIdentifier($state->identifier, $group->identifier);
+                    }
+                } catch (NotFoundException $notFoundException) {
+                    continue;
+                }
+            }
         }
 
-        return $criterions;
+        return array_map(
+            function ($criterion) {
+                return new Criterion\LogicalNot($criterion);
+            },
+            $criteria
+        );
     }
 
-    private function getCriterionsForIncludeConfig(
+    /**
+     * @return Criterion[]
+     */
+    protected function getCriteriaForIncludeConfig(
         array $contentTypeIdentifiers,
         array $locationIds,
-        array $subtreeLocationsId
-    ) {
-        $contentTypeService = $this->repository->getContentTypeService();
-        $criterions = [];
+        array $subtreeLocationsId,
+        array $objectStates,
+    ): array {
+        $criteria = [];
 
-        $validContentTypeIdentifiers = [];
-        foreach ($contentTypeIdentifiers as $contentTypeIdentifier) {
-            try {
-                $contentTypeService->loadContentTypeByIdentifier($contentTypeIdentifier);
-            } catch (NotFoundException $exception) {
-                continue;
-            }
-            $validContentTypeIdentifiers[] = $contentTypeIdentifier;
-        }
-        if (count($validContentTypeIdentifiers) > 0) {
-            $criterions[] = new Criterion\ContentTypeIdentifier($validContentTypeIdentifiers);
+        $validContentTypeIdentifiers = $this->getValidContentTypeIdentifiers($contentTypeIdentifiers);
+        if (count($validContentTypeIdentifiers)) {
+            $criteria[] = new Criterion\ContentTypeIdentifier($validContentTypeIdentifiers);
         }
 
-        $subtreePaths = [];
-        foreach ($subtreeLocationsId as $locationId) {
-            $includedLocation = $this->getLocation($locationId);
-            if (null === $includedLocation) {
-                continue;
-            }
-            $subtreePaths[] = $includedLocation->pathString;
-        }
-        if (count($subtreePaths) > 0) {
-            $criterions[] = new Criterion\Subtree($subtreePaths);
+        $subtreePaths = $this->getSubtreePathList($subtreeLocationsId);
+        if (count($subtreePaths)) {
+            $criteria[] = new Criterion\Subtree($subtreePaths);
         }
 
         $validLocationIds = [];
@@ -185,9 +186,67 @@ final class QueryFactory
         }
 
         if (count($validLocationIds) > 0) {
-            $criterions[] = new Criterion\LocationId($validLocationIds);
+            $criteria[] = new Criterion\LocationId($validLocationIds);
         }
 
-        return $criterions;
+        foreach ($objectStates as $objectStateData) {
+            foreach ($objectStateData as $objectStateGroupIdentifier => $objectStateIdentifiers) {
+                $validStateIdentifiers = [];
+                try {
+                    $service = $this->repository->getObjectStateService();
+                    $group = $service->loadObjectStateGroupByIdentifier($objectStateGroupIdentifier);
+                    foreach ($objectStateIdentifiers as $objectStateIdentifier) {
+                        $state = $service->loadObjectStateByIdentifier($group, $objectStateIdentifier);
+                        $validStateIdentifiers[] = $state->identifier;
+                    }
+                } catch (NotFoundException $notFoundException) {
+                    continue;
+                }
+                if (count($validStateIdentifiers) > 0) {
+                    $criteria[] = new Criterion\ObjectStateIdentifier(
+                        $validStateIdentifiers,
+                        $objectStateGroupIdentifier
+                    );
+                }
+            }
+        }
+
+        return $criteria;
+    }
+
+    protected function getValidContentTypeIdentifiers(array $contentTypeIdentifiers): array
+    {
+        $validContentTypeIdentifiers = [];
+        foreach ($contentTypeIdentifiers as $contentTypeIdentifier) {
+            $contentType = $this->getContentType($contentTypeIdentifier);
+            if ($contentType) {
+                $validContentTypeIdentifiers[] = $contentType->identifier;
+            }
+        }
+
+        return $validContentTypeIdentifiers;
+    }
+
+    protected function getContentType(string $contentTypeIdentifier): ?ContentType
+    {
+        try {
+            return $this->repository->getContentTypeService()->loadContentTypeByIdentifier($contentTypeIdentifier);
+        } catch (NotFoundException $exception) {
+            return null;
+        }
+    }
+
+    protected function getSubtreePathList(array $subtreeLocationsId): array
+    {
+        $subtreePaths = [];
+        foreach ($subtreeLocationsId as $locationId) {
+            $includedLocation = $this->getLocation($locationId);
+            if (!$includedLocation) {
+                continue;
+            }
+            $subtreePaths[] = $includedLocation->pathString;
+        }
+
+        return $subtreePaths;
     }
 }

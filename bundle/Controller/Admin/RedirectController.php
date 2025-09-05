@@ -13,7 +13,6 @@
 namespace Novactive\Bundle\eZSEOBundle\Controller\Admin;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
 use Ibexa\Contracts\AdminUi\Controller\Controller;
 use Ibexa\Contracts\Core\Repository\PermissionResolver;
 use Ibexa\Core\Event\URLWildcardService;
@@ -37,6 +36,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/novaseo/redirect")
+ *
  * @SuppressWarnings(PHPMD.NPathComplexity)
  */
 class RedirectController extends Controller
@@ -79,7 +79,7 @@ class RedirectController extends Controller
             try {
                 $urlExists = $urlWildcardService->translate($destination);
                 $errors[] = $translator->trans('nova.redirect.create.exists', ['url' => $destination], 'redirect');
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $e->getMessage();
             }
 
@@ -90,7 +90,7 @@ class RedirectController extends Controller
                     if ($result) {
                         $messages[] = $source.' '.$translator->trans('nova.redirect.create.info', [], 'redirect');
                     }
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     $message = explode(':', $e->getMessage());
                     $errors[] = isset($message[1]) ? $source.' '.$message[1] : $e->getMessage();
                     $logger->log(LogLevel::ERROR, $e->getMessage());
@@ -146,7 +146,7 @@ class RedirectController extends Controller
 
                 return new Response(null, 201);
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $logger->log(LogLevel::ERROR, $e->getMessage());
         }
 
@@ -155,6 +155,7 @@ class RedirectController extends Controller
 
     /**
      * @Route("/url-redirect-import", name="novactive_platform_admin_ui.import-redirect-url")
+     *
      * @Template("@NovaeZSEO/platform_admin/import_urls.html.twig")
      */
     public function importAction(
@@ -190,7 +191,7 @@ class RedirectController extends Controller
                             );
                             $session->set('IMPORT_URL', $resultUrlsImported);
                         }
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         $logger->log(LogLevel::ERROR, $e->getMessage());
                     }
                 } else {
@@ -225,6 +226,7 @@ class RedirectController extends Controller
 
     /**
      * @Route("/history-import-redirect-url", name="novactive_platform_admin_ui.history-import-redirect-url")
+     *
      * @Template("@NovaeZSEO/platform_admin/history_urls_imported.html.twig")
      */
     public function historyUrlsImported(

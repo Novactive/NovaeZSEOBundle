@@ -111,7 +111,7 @@ class MetaNameSchema extends NameSchemaService
     }
 
     // @param ContentType|null $contentType: @deprecated argument.
-    public function resolveMeta(Meta $meta, Content $content, ContentType $contentType = null): bool
+    public function resolveMeta(Meta $meta, Content $content, ?ContentType $contentType = null): bool
     {
         $languages = $this->configurationResolver->getParameter('languages');
 
@@ -123,8 +123,8 @@ class MetaNameSchema extends NameSchemaService
         );
         // we don't fallback on the other languages... it would be very bad for SEO to mix the languages
         if (
-            (\array_key_exists($languages[0], $resolveMultilingue)) &&
-            ('' !== $resolveMultilingue[$languages[0]])
+            \array_key_exists($languages[0], $resolveMultilingue)
+            && ('' !== $resolveMultilingue[$languages[0]])
         ) {
             $meta->setContent($resolveMultilingue[$languages[0]]);
 

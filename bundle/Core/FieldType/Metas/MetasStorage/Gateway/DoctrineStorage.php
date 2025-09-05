@@ -14,7 +14,7 @@ class DoctrineStorage extends Gateway
     public const TABLE = 'novaseo_meta';
 
     /**
-     * @var \Doctrine\DBAL\Connection
+     * @var Connection
      */
     private $connection;
 
