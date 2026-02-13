@@ -12,6 +12,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Form\Type;
 
+use Override;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -26,6 +27,7 @@ class MetasCollectionType extends AbstractType
         return $this->getBlockPrefix();
     }
 
+    #[Override]
     public function getBlockPrefix(): string
     {
         return 'novaseo_fieldtype_metas_metas';
@@ -46,6 +48,7 @@ class MetasCollectionType extends AbstractType
         );
     }
 
+    #[Override]
     public function getParent(): string
     {
         return CollectionType::class;

@@ -6,20 +6,14 @@ use Ibexa\Contracts\Core\Repository\ContentTypeService;
 
 class ContentTypesHelper
 {
-    /**
-     * @var ContentTypeService
-     */
-    private $contentTypeService;
-
-    public function __construct(ContentTypeService $contentTypeService)
+    public function __construct(private readonly ContentTypeService $contentTypeService)
     {
-        $this->contentTypeService = $contentTypeService;
     }
 
     public function getContentTypesByIdentifier($identifier): array
     {
-        if (false !== strpos($identifier, ',')) {
-            $contentTypeArray = explode(',', $identifier);
+        if (str_contains((string) $identifier, ',')) {
+            $contentTypeArray = explode(',', (string) $identifier);
         } else {
             $contentTypeArray[] = $identifier;
         }

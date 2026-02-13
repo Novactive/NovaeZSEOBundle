@@ -10,8 +10,6 @@
  * @license   https://github.com/Novactive/NovaeZSEOBundle/blob/master/LICENSE MIT Licence
  */
 
-declare(strict_types=1);
-
 namespace Novactive\Bundle\eZSEOBundle\Tests;
 
 use Novactive\eZPlatform\Bundles\Tests\BrowserHelper;

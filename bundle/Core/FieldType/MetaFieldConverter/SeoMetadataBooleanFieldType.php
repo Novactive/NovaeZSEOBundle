@@ -13,6 +13,7 @@
 namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter;
 
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
+use Override;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -20,6 +21,7 @@ class SeoMetadataBooleanFieldType extends SeoMetadataDefaultFieldType
 {
     public const IDENTIFIER = 'boolean';
 
+    #[Override]
     public function fromHash($hash): Meta
     {
         $meta = parent::fromHash($hash);
@@ -29,6 +31,7 @@ class SeoMetadataBooleanFieldType extends SeoMetadataDefaultFieldType
         return $meta;
     }
 
+    #[Override]
     public function mapForm(FormBuilderInterface &$builder, array $params)
     {
         $option = [

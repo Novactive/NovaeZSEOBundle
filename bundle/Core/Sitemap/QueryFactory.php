@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Novactive\Bundle\eZSEOBundle\Core\Sitemap;
 
 use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
@@ -28,7 +26,7 @@ class QueryFactory
                 $locationService = $repository->getLocationService();
                 try {
                     return $locationService->loadLocation($locationId);
-                } catch (NotFoundException $e) {
+                } catch (NotFoundException) {
                     return null;
                 }
             }
@@ -110,7 +108,7 @@ class QueryFactory
         foreach ($contentTypeIdentifiers as $contentTypeIdentifier) {
             try {
                 $contentTypeService->loadContentTypeByIdentifier($contentTypeIdentifier);
-            } catch (NotFoundException $exception) {
+            } catch (NotFoundException) {
                 continue;
             }
             $criteria[] = new Criterion\ContentTypeIdentifier($contentTypeIdentifier);
@@ -141,16 +139,14 @@ class QueryFactory
                         $state = $service->loadObjectStateByIdentifier($group, $objectStateIdentifier);
                         $criteria[] = new Criterion\ObjectStateIdentifier($state->identifier, $group->identifier);
                     }
-                } catch (NotFoundException $notFoundException) {
+                } catch (NotFoundException) {
                     continue;
                 }
             }
         }
 
         return array_map(
-            function ($criterion) {
-                return new Criterion\LogicalNot($criterion);
-            },
+            fn ($criterion) => new Criterion\LogicalNot($criterion),
             $criteria
         );
     }
@@ -199,7 +195,7 @@ class QueryFactory
                         $state = $service->loadObjectStateByIdentifier($group, $objectStateIdentifier);
                         $validStateIdentifiers[] = $state->identifier;
                     }
-                } catch (NotFoundException $notFoundException) {
+                } catch (NotFoundException) {
                     continue;
                 }
                 if (count($validStateIdentifiers) > 0) {
@@ -231,7 +227,7 @@ class QueryFactory
     {
         try {
             return $this->repository->getContentTypeService()->loadContentTypeByIdentifier($contentTypeIdentifier);
-        } catch (NotFoundException $exception) {
+        } catch (NotFoundException) {
             return null;
         }
     }

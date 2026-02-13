@@ -16,6 +16,7 @@ use LogicException;
 use Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\SeoMetadataFieldTypeInterface;
 use Novactive\Bundle\eZSEOBundle\DependencyInjection\Compiler\CustomFallbackPass;
 use Novactive\Bundle\eZSEOBundle\DependencyInjection\Security\PolicyProvider\PolicyProvider;
+use Override;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -33,6 +34,7 @@ class NovaeZSEOBundle extends Bundle
             ->addTag('seometa.fieldtype');
     }
 
+    #[Override]
     public function getContainerExtension(): ?ExtensionInterface
     {
         if (null === $this->extension) {
@@ -40,7 +42,7 @@ class NovaeZSEOBundle extends Bundle
 
             if (null !== $extension) {
                 if (!$extension instanceof ExtensionInterface) {
-                    $fqdn = \get_class($extension);
+                    $fqdn = $extension::class;
                     $message = 'Extension %s must implement %s.';
                     throw new LogicException(sprintf($message, $fqdn, ExtensionInterface::class));
                 }

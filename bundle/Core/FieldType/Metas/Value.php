@@ -14,8 +14,9 @@ namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas;
 
 use Ibexa\Core\FieldType\Value as BaseValue;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
+use Stringable;
 
-class Value extends BaseValue
+class Value extends BaseValue implements Stringable
 {
     /**
      * Array of Meta.

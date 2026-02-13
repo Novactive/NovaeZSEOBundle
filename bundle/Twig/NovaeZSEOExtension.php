@@ -25,11 +25,9 @@ use Novactive\Bundle\eZSEOBundle\Core\CustomFallbackInterface;
 use Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Value as MetasFieldValue;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 use Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema;
-use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
-use Twig\TwigFilter;
 
-class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
+class NovaeZSEOExtension implements GlobalsInterface
 {
     /**
      * The Ibexa Platform object name pattern service (extended).
@@ -83,20 +81,13 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
         $this->customFallBackService = $service;
     }
 
-    public function getFilters()
-    {
-        return [
-            new TwigFilter('compute_novaseometas', [$this, 'computeMetas']),
-            new TwigFilter('getposixlocale_novaseometas', [$this, 'getPosixLocale']),
-            new TwigFilter('fallback_novaseometas', [$this, 'getFallbackedMetaContent']),
-        ];
-    }
-
+    #[\Twig\Attribute\AsTwigFilter(name: 'getposixlocale_novaseometas')]
     public function getPosixLocale(string $ibexaLocale): ?string
     {
         return $this->localeConverter->convertToPOSIX($ibexaLocale);
     }
 
+    #[\Twig\Attribute\AsTwigFilter(name: 'fallback_novaseometas')]
     public function getFallbackedMetaContent(ContentInfo $contentInfo, string $metaName): string
     {
         if ($this->customFallBackService instanceof CustomFallbackInterface) {
@@ -110,6 +101,7 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
      * Compute Metas of the Field thanks to its Content and the Fallback.
      */
     // @param $content: use type Content rather than ContentInfo, the last one is @deprecated
+    #[\Twig\Attribute\AsTwigFilter(name: 'compute_novaseometas')]
     public function computeMetas(Field $field, $content): string
     {
         $fallback = false;
@@ -118,10 +110,10 @@ class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
         if ($content instanceof ContentInfo) {
             try {
                 $content = $this->ibexaRepository->getContentService()->loadContentByContentInfo($content, $languages);
-            } catch (NotFoundException|UnauthorizedException $e) {
+            } catch (NotFoundException|UnauthorizedException) {
                 return '';
             }
-        } elseif (!($content instanceof Content)) {
+        } elseif (!$content instanceof Content) {
             throw new InvalidArgumentType('$content', 'Content of ContentType');
         }
 

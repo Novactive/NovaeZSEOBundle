@@ -14,6 +14,8 @@ namespace Novactive\Bundle\eZSEOBundle\Controller;
 
 use DateTime;
 use DOMDocument;
+use DOMElement;
+use Exception;
 use Ibexa\Bundle\Core\Controller;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchResult;
@@ -22,7 +24,6 @@ use Ibexa\Core\Helper\FieldHelper;
 use Ibexa\Core\MVC\Symfony\Routing\UrlAliasRouter;
 use Novactive\Bundle\eZSEOBundle\Core\Sitemap\QueryFactory;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SitemapController extends Controller
@@ -40,9 +41,11 @@ class SitemapController extends Controller
     ) {
     }
 
-    /**
-     * @Route("/sitemap.xml", name="_novaseo_sitemap_index", methods={"GET"})
-     */
+    #[\Symfony\Component\Routing\Attribute\Route(
+        path: '/sitemap.xml',
+        name: '_novaseo_sitemap_index',
+        methods: ['GET']
+    )]
     public function indexAction(QueryFactory $queryFactory): Response
     {
         $searchService = $this->getRepository()->getSearchService();
@@ -78,11 +81,13 @@ class SitemapController extends Controller
         return $response;
     }
 
-    /**
-     * @Route("/sitemap-{page}.xml", name="_novaseo_sitemap_page", requirements={"page" = "\d+"},
-     *                                                             defaults={"page" = 1},
-     *                                                             methods={"GET"})
-     */
+    #[\Symfony\Component\Routing\Attribute\Route(
+        path: '/sitemap-{page}.xml',
+        name: '_novaseo_sitemap_page',
+        requirements: ['page' => '\d+'],
+        defaults: ['page' => 1],
+        methods: ['GET']
+    )]
     public function pageAction(QueryFactory $queryFactory, int $page = 1): Response
     {
         $sitemap = new DOMDocument('1.0', 'UTF-8');
@@ -108,7 +113,7 @@ class SitemapController extends Controller
     /**
      * Fill a sitemap.
      */
-    protected function fillSitemap(DOMDocument $sitemap, \DOMElement $root, SearchResult $results): void
+    protected function fillSitemap(DOMDocument $sitemap, DOMElement $root, SearchResult $results): void
     {
         foreach ($results->searchHits as $searchHit) {
             /** @var Location $location */
@@ -120,14 +125,14 @@ class SitemapController extends Controller
                     ['locationId' => $location->id],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 if ($this->has('logger')) {
                     $this->get('logger')->error('NovaeZSEO: '.$exception->getMessage());
                 }
                 continue;
             }
 
-            if (0 != strpos($url, 'view/content/')) {
+            if (!str_starts_with($url, 'view/content/')) {
                 continue;
             }
 
@@ -177,7 +182,7 @@ class SitemapController extends Controller
     /**
      * Fill the sitemap index.
      */
-    protected function fillSitemapIndex(DOMDocument $sitemap, int $numberOfResults, \DOMElement $root): void
+    protected function fillSitemapIndex(DOMDocument $sitemap, int $numberOfResults, DOMElement $root): void
     {
         $numberOfPage = (int) ceil($numberOfResults / static::PACKET_MAX);
         for ($sitemapNumber = 1; $sitemapNumber <= $numberOfPage; ++$sitemapNumber) {
@@ -189,7 +194,7 @@ class SitemapController extends Controller
                     ['page' => $sitemapNumber],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 if ($this->has('logger')) {
                     $this->get('logger')->error('NovaeZSEO: '.$exception->getMessage());
                 }

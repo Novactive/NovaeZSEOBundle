@@ -14,6 +14,7 @@ namespace Novactive\Bundle\eZSEOBundle\DependencyInjection;
 
 use Ibexa\Bundle\Core\DependencyInjection\Configuration\SiteAccessAware\ConfigurationProcessor;
 use Ibexa\Bundle\Core\DependencyInjection\Configuration\SiteAccessAware\ContextualizerInterface;
+use Override;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -24,6 +25,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class NovaeZSEOExtension extends Extension implements PrependExtensionInterface
 {
+    #[Override]
     public function getAlias(): string
     {
         return 'nova_ezseo';

@@ -12,7 +12,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core;
 
-use EzSystems\EzPlatformAdminUi\UI\Config\ProviderInterface;
+use Ibexa\Contracts\AdminUi\UI\Config\ProviderInterface;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 
 class SeoMetas implements ProviderInterface
@@ -30,7 +30,7 @@ class SeoMetas implements ProviderInterface
     /**
      * @return mixed Anything that is serializable via json_encode()
      */
-    public function getConfig()
+    public function getConfig(): mixed
     {
         $list = [];
         $metas = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');

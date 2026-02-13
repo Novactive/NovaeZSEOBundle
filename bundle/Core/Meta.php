@@ -16,30 +16,17 @@ use Ibexa\Contracts\Core\Repository\Exceptions\PropertyNotFoundException;
 
 class Meta
 {
-    protected ?string $name = null;
-    protected ?string $content = null;
-    protected ?string $fieldType = null;
-    protected ?bool $required = null;
-    protected ?string $minLength = null;
-    protected ?string $maxLength = null;
-
     /**
      * Constructor.
      */
     public function __construct(
-        ?string $name = null,
-        ?string $content = null,
-        ?string $fieldType = null,
-        ?bool $required = null,
-        ?string $minLength = null,
-        ?string $maxLength = null
+        protected ?string $name = null,
+        protected ?string $content = null,
+        protected ?string $fieldType = null,
+        protected ?bool $required = null,
+        protected ?string $minLength = null,
+        protected ?string $maxLength = null
     ) {
-        $this->maxLength = $maxLength;
-        $this->minLength = $minLength;
-        $this->required = $required;
-        $this->fieldType = $fieldType;
-        $this->content = $content;
-        $this->name = $name;
     }
 
     public function getName(): string
@@ -136,23 +123,15 @@ class Meta
      */
     public function attribute(string $name): ?string
     {
-        switch ($name) {
-            case 'name':
-                return $this->getName();
-            case 'content':
-                return $this->getContent();
-            case 'fieldType':
-                return $this->getFieldType();
-            case 'required':
-                return $this->getRequired();
-            case 'minLength':
-                return $this->getMinLength();
-            case 'maxLength':
-                return $this->getMaxLength();
-            default:
-                throw new PropertyNotFoundException($name, \get_class($this));
-                break;
-        }
+        return match ($name) {
+            'name' => $this->getName(),
+            'content' => $this->getContent(),
+            'fieldType' => $this->getFieldType(),
+            'required' => $this->getRequired(),
+            'minLength' => $this->getMinLength(),
+            'maxLength' => $this->getMaxLength(),
+            default => throw new PropertyNotFoundException($name, static::class),
+        };
     }
 
     public function isEmpty(): bool

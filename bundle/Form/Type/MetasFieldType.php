@@ -13,6 +13,7 @@
 namespace Novactive\Bundle\eZSEOBundle\Form\Type;
 
 use Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Value;
+use Override;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,6 +28,7 @@ class MetasFieldType extends AbstractType
         return $this->getBlockPrefix();
     }
 
+    #[Override]
     public function getBlockPrefix(): string
     {
         return 'novaseo_fieldtype_metas';

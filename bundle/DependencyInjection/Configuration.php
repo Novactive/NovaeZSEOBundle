@@ -95,9 +95,7 @@ class Configuration extends SAConfiguration
             ->beforeNormalization()
             ->ifString()
             ->then(
-                function ($value) {
-                    return ['path' => $value];
-                }
+                fn ($value) => ['path' => $value]
             )
             ->end()
             ->children()

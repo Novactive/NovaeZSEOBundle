@@ -21,6 +21,7 @@ use Ibexa\Core\FieldType\ValidationError;
 use Ibexa\Core\FieldType\Value as CoreValue;
 use Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\SeoMetadataFieldTypeRegistry;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
+use Override;
 
 class Type extends FieldType
 {
@@ -36,17 +37,14 @@ class Type extends FieldType
         ],
     ];
 
-    protected SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry;
-
-    public function __construct(
-        SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry
-    ) {
-        $this->metadataFieldTypeRegistry = $metadataFieldTypeRegistry;
+    public function __construct(protected SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry)
+    {
     }
 
     /**
      * Validates the fieldSettings of a FieldDefinitionCreateStruct or FieldDefinitionUpdateStruct.
      */
+    #[Override]
     public function validateFieldSettings($fieldSettings): array
     {
         $validationErrors = [];
@@ -182,6 +180,7 @@ class Type extends FieldType
     /**
      * Converts a $value to a persistence value.
      */
+    #[Override]
     public function toPersistenceValue(SPIValue $value): FieldValue
     {
         return new FieldValue(
@@ -196,6 +195,7 @@ class Type extends FieldType
     /**
      * Converts a persistence $fieldValue to a Value.
      */
+    #[Override]
     public function fromPersistenceValue(FieldValue $fieldValue): Value
     {
         return $this->fromHash($fieldValue->externalData);
@@ -204,6 +204,7 @@ class Type extends FieldType
     /**
      * Returns if the given $value is considered empty by the field type.
      */
+    #[Override]
     public function isEmptyValue(SPIValue $value): bool
     {
         return null === $value || $value->metas == $this->getEmptyValue()->metas;

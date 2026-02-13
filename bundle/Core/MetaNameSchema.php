@@ -12,6 +12,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core;
 
+use Ibexa\Contracts\Core\FieldType\FieldType;
 use Ibexa\Contracts\Core\Persistence\Content\Language\Handler as ContentLanguageHandler;
 use Ibexa\Contracts\Core\Persistence\Content\Type as SPIContentType;
 use Ibexa\Contracts\Core\Persistence\Content\Type\Handler as ContentTypeHandler;
@@ -32,72 +33,55 @@ use Ibexa\Core\FieldType\RelationList\Type as RelationListType;
 use Ibexa\Core\FieldType\RelationList\Value as RelationListValue;
 use Ibexa\Core\Helper\TranslationHelper;
 use Ibexa\Core\MVC\Exception\SourceImageNotFoundException;
-use Ibexa\Core\Repository\Helper\NameSchemaService;
 use Ibexa\Core\Repository\Mapper\ContentTypeDomainMapper;
+use Ibexa\Core\Repository\NameSchema\NameSchemaService;
+use Ibexa\Core\Repository\NameSchema\SchemaIdentifierExtractor;
 use Ibexa\Core\Repository\Values\Content\VersionInfo;
 use Ibexa\FieldTypeRichText\FieldType\RichText\Value as RichTextValue;
+use Override;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MetaNameSchema extends NameSchemaService
 {
-    /**
-     * @var RichTextConverterInterface
-     */
-    protected $richTextConverter;
+    protected RichTextConverterInterface $richTextConverter;
 
-    /**
-     * @var VariationHandler
-     */
-    protected $imageVariationService;
+    protected VariationHandler $imageVariationService;
 
-    /**
-     * @var RepositoryInterface
-     */
-    protected $repository;
+    protected int $fieldContentMaxLength = 255;
 
-    /**
-     * @var TranslationHelper
-     */
-    protected $translationHelper;
+    private readonly FieldType|RelationListType $relationListField;
 
-    /**
-     * @var int
-     */
-    protected $fieldContentMaxLength = 255;
+    protected ContentTypeHandler $contentTypeHandler;
 
-    /**
-     * @var RelationListType
-     */
-    private $relationListField;
-
-    /**
-     * @var ConfigResolverInterface
-     */
-    private $configurationResolver;
+    protected ContentTypeDomainMapper $contentTypeDomainMapper;
 
     public function __construct(
         ContentTypeHandler $contentTypeHandler,
         FieldTypeRegistry $fieldTypeRegistry,
         EventDispatcherInterface $eventDispatcher,
         ContentLanguageHandler $languageHandler,
-        RepositoryInterface $repository,
-        TranslationHelper $translationHelper,
-        ConfigResolverInterface $configurationResolver,
+        protected RepositoryInterface $repository,
+        protected TranslationHelper $translationHelper,
+        private readonly ConfigResolverInterface $configurationResolver,
         array $settings = []
     ) {
         $settings['limit'] = $this->fieldContentMaxLength;
-        $handler = new ContentTypeDomainMapper(
+
+        parent::__construct(
+            $fieldTypeRegistry,
+            new SchemaIdentifierExtractor(),
+            $eventDispatcher,
+            $settings
+        );
+
+        $contentTypeDomainMapper = new ContentTypeDomainMapper(
             $contentTypeHandler,
             $languageHandler,
             $fieldTypeRegistry
         );
-
-        parent::__construct($contentTypeHandler, $handler, $fieldTypeRegistry, $eventDispatcher, $settings);
-
-        $this->repository = $repository;
-        $this->translationHelper = $translationHelper;
+        $this->contentTypeHandler = $contentTypeHandler;
+        $this->contentTypeDomainMapper = $contentTypeDomainMapper;
         $this->relationListField = $this->fieldTypeRegistry->getFieldType('ezobjectrelationlist');
-        $this->configurationResolver = $configurationResolver;
     }
 
     public function setRichTextConverter(RichTextConverterInterface $richTextConverter): void
@@ -123,8 +107,8 @@ class MetaNameSchema extends NameSchemaService
         );
         // we don't fallback on the other languages... it would be very bad for SEO to mix the languages
         if (
-            \array_key_exists($languages[0], $resolveMultilingue)
-            && ('' !== $resolveMultilingue[$languages[0]])
+            \array_key_exists($languages[0], $resolveMultilingue) &&
+            ('' !== $resolveMultilingue[$languages[0]])
         ) {
             $meta->setContent($resolveMultilingue[$languages[0]]);
 
@@ -254,7 +238,7 @@ class MetaNameSchema extends NameSchemaService
      */
     protected function handleRichTextValue(RichTextValue $value): string
     {
-        return trim(strip_tags($this->richTextConverter->convert($value->xml)->saveHTML()));
+        return trim(strip_tags((string) $this->richTextConverter->convert($value->xml)->saveHTML()));
     }
 
     /**
@@ -303,7 +287,7 @@ class MetaNameSchema extends NameSchemaService
                 $languageCode,
                 'social_network_image'
             );
-        } catch (SourceImageNotFoundException $e) {
+        } catch (SourceImageNotFoundException) {
             return '';
         }
     }
@@ -319,7 +303,7 @@ class MetaNameSchema extends NameSchemaService
 
         try {
             $content = $this->repository->getContentService()->loadContent($value->destinationContentId);
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException) {
             return '';
         }
 
@@ -336,6 +320,7 @@ class MetaNameSchema extends NameSchemaService
      * Override native function as this prevent usage of `()` inside metas in Ibexa 4.6
      * {@inheritDoc}
      */
+    #[Override]
     protected function filterNameSchema(string $nameSchema): array
     {
         $groupLookupTable = [];

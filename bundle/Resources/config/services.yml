@@ -10,7 +10,7 @@ services:
         autoconfigure: true
         public: false
         bind:
-            $entityManager: "@novaezeo.doctrine.entity_manager"
+            $entityManager: '@ibexa.doctrine.orm.entity_manager'
 
     Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\:
         resource: '../../Core/FieldType/MetaFieldConverter/*'
@@ -54,11 +54,11 @@ services:
     Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema:
         lazy: true
         arguments:
-            $contentTypeHandler: "@Ibexa\\Contracts\\Core\\Persistence\\Content\\Type\\Handler"
-            $languageHandler: "@Ibexa\\Core\\Persistence\\Cache\\ContentLanguageHandler"
-            $translationHelper: "@Ibexa\\Core\\Helper\\TranslationHelper"
+            $contentTypeHandler: '@Ibexa\Contracts\Core\Persistence\Content\Type\Handler'
+            $languageHandler: '@Ibexa\Contracts\Core\Persistence\Content\Language\Handler'
+            $translationHelper: '@Ibexa\Core\Helper\TranslationHelper'
         calls:
-            - [setRichTextConverter, ["@Ibexa\\FieldTypeRichText\\RichText\\Converter\\Html5"]]
+            - [setRichTextConverter, ['@Ibexa\FieldTypeRichText\RichText\Converter\Html5']]
             # Note: injecting lower layer Variation Handler (AliasGenerator) as a workaround for missing Public API objects context
             - [setImageVariationService, ["@ibexa.image_alias.imagine.alias_generator"]]
 
@@ -75,18 +75,9 @@ services:
             - { name: kernel.event_listener, event: "ezplatform_admin_ui.menu_configure.main_menu", method: "onMenuConfigure",  priority: -100 }
 
     Novactive\Bundle\eZSEOBundle\Core\Helper\ImportUrlsHelper:
-        $ioService: '@ezseo_importurls.ibexa.core.io_service'
-        $cacheDirectory: '%kernel.cache_dir%'
-
-    Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory:
         arguments:
-            $repositoryConfigurationProvider: "@Ibexa\\Bundle\\Core\\ApiLoader\\RepositoryConfigurationProvider"
-            $resolver: "@doctrine.orm.default_entity_listener_resolver"
-            $settings: { debug: "%kernel.debug%", cache_dir: "%kernel.cache_dir%" }
-
-    novaezeo.doctrine.entity_manager:
-        class: Doctrine\ORM\EntityManagerInterface
-        factory: ['@Novactive\Bundle\eZSEOBundle\Core\SiteAccessAwareEntityManagerFactory', 'get']
+            $ioService: '@ezseo_importurls.ibexa.core.io_service'
+            $cacheDirectory: '%kernel.cache_dir%'
 
     Novactive\Bundle\eZSEOBundle\Core\Sitemap\QueryFactory: ~
 

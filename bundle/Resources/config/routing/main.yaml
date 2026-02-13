@@ -1,8 +1,8 @@
 _novaezseoRoutes:
     resource: "@NovaeZSEOBundle/Controller/"
-    type:     annotation
+    type:     attribute
     prefix:   /
 
 _novaezseo_admin_ui:
     resource: "@NovaeZSEOBundle/Controller/Admin"
-    type:     annotation
+    type:     attribute

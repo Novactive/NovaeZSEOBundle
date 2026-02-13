@@ -3,6 +3,7 @@
 namespace Novactive\Bundle\eZSEOBundle\Core\Installer;
 
 use DateTime;
+use Exception;
 use Ibexa\Contracts\Core\Repository\ContentTypeService;
 use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
@@ -10,10 +11,6 @@ use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 
 class Field
 {
-    private ContentTypeService $contentTypeService;
-
-    private ConfigResolverInterface $configResolver;
-
     /**
      * @var string
      */
@@ -23,11 +20,9 @@ class Field
      * Constructor.
      */
     public function __construct(
-        ContentTypeService $contentTypeService,
-        ConfigResolverInterface $configResolver
+        private readonly ContentTypeService $contentTypeService,
+        private readonly ConfigResolverInterface $configResolver
     ) {
-        $this->contentTypeService = $contentTypeService;
-        $this->configResolver = $configResolver;
     }
 
     public function addToContentType(string $fieldName, ContentType $contentType): bool
@@ -80,7 +75,7 @@ class Field
             $this->contentTypeService->publishContentTypeDraft($contentTypeDraft);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->errorMessage = $e->getMessage();
 
             return false;

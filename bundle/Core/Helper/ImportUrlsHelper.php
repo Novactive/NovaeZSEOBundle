@@ -14,6 +14,7 @@ namespace Novactive\Bundle\eZSEOBundle\Core\Helper;
 
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Ibexa\Contracts\Core\Repository\URLWildcardService;
 use Ibexa\Core\IO\IOService;
 use Novactive\Bundle\eZSEOBundle\Entity\RedirectImportHistory;
@@ -24,57 +25,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ImportUrlsHelper
 {
-    /**
-     * @var URLWildcardService
-     */
-    private $urlWildCardService;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
-     * @var Filesystem
-     */
-    private $fs;
-
-    /**
-     * @var IOService
-     */
-    private $ioService;
-
-    /**
-     * @var string
-     */
-    private $cacheDirectory;
-
     public function __construct(
-        IOService $ioService,
-        URLWildcardService $urlWildcardService,
-        EntityManagerInterface $entityManager,
-        TranslatorInterface $translator,
-        LoggerInterface $logger,
-        Filesystem $fileSystem,
-        string $cacheDirectory
+        private readonly IOService $ioService,
+        private readonly URLWildcardService $urlWildCardService,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly LoggerInterface $logger,
+        private readonly Filesystem $fs,
+        private readonly string $cacheDirectory
     ) {
-        $this->urlWildCardService = $urlWildcardService;
-        $this->entityManager = $entityManager;
-        $this->cacheDirectory = $cacheDirectory;
-        $this->translator = $translator;
-        $this->logger = $logger;
-        $this->fs = $fileSystem;
-        $this->ioService = $ioService;
     }
 
     public function importUrlRedirection(string $filePath): array
@@ -104,9 +63,9 @@ class ImportUrlsHelper
                     $verifResult = $this->checkUrlDestinationExist($destination);
 
                     if (
-                        ('' != $source || '' != $destination)
-                        && ($source != $destination)
-                        && !$verifResult
+                        ('' != $source || '' != $destination) &&
+                        ($source != $destination) &&
+                        !$verifResult
                     ) {
                         // try to save data in table ezurlwildcard
                         $saveResult = $this->saveUrls($filePath, $source, $destination);
@@ -143,7 +102,7 @@ class ImportUrlsHelper
                     $uploadedFileStruct->id = $filename;
                     $this->ioService->createBinaryFile($uploadedFileStruct);
                     $this->fs->remove($filePath);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->logger->log(LogLevel::ERROR, $e->getMessage());
                 }
             }
@@ -165,7 +124,7 @@ class ImportUrlsHelper
 
         try {
             $urlExists = $this->urlWildCardService->translate($destination);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->log(LogLevel::ERROR, $e->getMessage());
         }
 
@@ -192,7 +151,7 @@ class ImportUrlsHelper
                     "$source;$destination;$msg;$status\n"
                 );
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $return = [
                 'source' => $source,
                 'destination' => $destination,
@@ -220,7 +179,7 @@ class ImportUrlsHelper
             $redirectImportHistory->setPath($fileLog);
             $this->entityManager->persist($redirectImportHistory);
             $this->entityManager->flush();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->log(LogLevel::ERROR, $e->getMessage());
         }
     }
@@ -231,7 +190,7 @@ class ImportUrlsHelper
             $file = $this->ioService->loadBinaryFile($log->getPath());
 
             return $this->ioService->getFileContents($file);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->log(LogLevel::ERROR, $e->getMessage());
         }
 

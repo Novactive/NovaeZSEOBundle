@@ -13,6 +13,7 @@
 namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas;
 
 use Ibexa\Contracts\Core\FieldType\GatewayBasedStorage;
+use Ibexa\Contracts\Core\FieldType\StorageGatewayInterface;
 use Ibexa\Contracts\Core\Persistence\Content\Field;
 use Ibexa\Contracts\Core\Persistence\Content\VersionInfo;
 
@@ -21,12 +22,12 @@ class MetasStorage extends GatewayBasedStorage
     /**
      * @var MetasStorage\Gateway
      */
-    protected $gateway;
+    protected StorageGatewayInterface $gateway;
 
     /**
      * Stores value for $field in an external data source.
      */
-    public function storeFieldData(VersionInfo $versionInfo, Field $field, array $context): void
+    public function storeFieldData(VersionInfo $versionInfo, Field $field, ?array $context = null): void
     {
         if (empty($field->value->externalData)) {
             return;
@@ -43,7 +44,7 @@ class MetasStorage extends GatewayBasedStorage
     /**
      * Populates $field value property based on the external data.
      */
-    public function getFieldData(VersionInfo $versionInfo, Field $field, array $context): void
+    public function getFieldData(VersionInfo $versionInfo, Field $field, ?array $context = null): void
     {
         $this->gateway->getFieldData($versionInfo, $field);
     }
@@ -52,7 +53,7 @@ class MetasStorage extends GatewayBasedStorage
      * Deletes field data for all $fieldIds in the version identified by
      * $versionInfo.
      */
-    public function deleteFieldData(VersionInfo $versionInfo, array $fieldIds, array $context): void
+    public function deleteFieldData(VersionInfo $versionInfo, array $fieldIds, ?array $context = null): void
     {
         $this->gateway->deleteFieldData($versionInfo, $fieldIds);
     }

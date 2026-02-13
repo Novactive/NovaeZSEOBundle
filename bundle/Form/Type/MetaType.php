@@ -15,6 +15,7 @@ namespace Novactive\Bundle\eZSEOBundle\Form\Type;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter\SeoMetadataFieldTypeRegistry;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
+use Override;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,18 +28,13 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  */
 class MetaType extends AbstractType
 {
-    protected SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry;
-    protected ConfigResolverInterface $configResolver;
-
     /**
      * Constructor.
      */
     public function __construct(
-        ConfigResolverInterface $configResolver,
-        SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry
+        protected ConfigResolverInterface $configResolver,
+        protected SeoMetadataFieldTypeRegistry $metadataFieldTypeRegistry
     ) {
-        $this->metadataFieldTypeRegistry = $metadataFieldTypeRegistry;
-        $this->configResolver = $configResolver;
     }
 
     public function getName(): string
@@ -46,6 +42,7 @@ class MetaType extends AbstractType
         return $this->getBlockPrefix();
     }
 
+    #[Override]
     public function getBlockPrefix(): string
     {
         return 'novaseo_fieldtype_metas_meta';
@@ -82,10 +79,7 @@ class MetaType extends AbstractType
         $constraints = [];
 
         if (isset($config['minLength']) || isset($config['maxLength'])) {
-            $constraints[] = new Length([
-                'min' => $config['minLength'] ?? null,
-                'max' => $config['maxLength'] ?? null,
-            ]);
+            $constraints[] = new Length(min: $config['minLength'] ?? null, max: $config['maxLength'] ?? null);
         }
 
         if (isset($config['required'])) {

@@ -13,14 +13,8 @@ class DoctrineStorage extends Gateway
 {
     public const TABLE = 'novaseo_meta';
 
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    public function __construct(Connection $connection)
+    public function __construct(private readonly Connection $connection)
     {
-        $this->connection = $connection;
     }
 
     public function storeFieldData(VersionInfo $versionInfo, Field $field): void
@@ -37,10 +31,10 @@ class DoctrineStorage extends Gateway
                         $this->connection->quoteIdentifier('objectattribute_version') => ':objectattribute_version',
                     ]
                 )
-                ->setParameter(':meta_name', $meta['meta_name'], ParameterType::STRING)
-                ->setParameter(':meta_content', $meta['meta_content'], ParameterType::STRING)
-                ->setParameter(':objectattribute_id', $field->id, ParameterType::INTEGER)
-                ->setParameter(':objectattribute_version', $versionInfo->versionNo, ParameterType::INTEGER);
+                ->setParameter('meta_name', $meta['meta_name'], ParameterType::STRING)
+                ->setParameter('meta_content', $meta['meta_content'], ParameterType::STRING)
+                ->setParameter('objectattribute_id', $field->id, ParameterType::INTEGER)
+                ->setParameter('objectattribute_version', $versionInfo->versionNo, ParameterType::INTEGER);
 
             $insertQuery->execute();
         }
@@ -68,7 +62,7 @@ class DoctrineStorage extends Gateway
                     )
                 )
             )
-            ->setParameter(':version', $versionInfo->versionNo, ParameterType::INTEGER);
+            ->setParameter('version', $versionInfo->versionNo, ParameterType::INTEGER);
 
         $deleteQuery->execute();
     }
@@ -81,7 +75,7 @@ class DoctrineStorage extends Gateway
             ->distinct()
             ->from($this->connection->quoteIdentifier(self::TABLE))
             ->where(
-                $selectQuery->expr()->andX(
+                $selectQuery->expr()->and(
                     $selectQuery->expr()->eq(
                         $this->connection->quoteIdentifier('objectattribute_id'),
                         ':objectattribute_id'
@@ -92,8 +86,8 @@ class DoctrineStorage extends Gateway
                     )
                 )
             )
-            ->setParameter(':objectattribute_id', $field->id, ParameterType::INTEGER)
-            ->setParameter(':objectattribute_version', $versionInfo->versionNo, ParameterType::INTEGER);
+            ->setParameter('objectattribute_id', $field->id, ParameterType::INTEGER)
+            ->setParameter('objectattribute_version', $versionInfo->versionNo, ParameterType::INTEGER);
 
         $statement = $selectQuery->execute();
 

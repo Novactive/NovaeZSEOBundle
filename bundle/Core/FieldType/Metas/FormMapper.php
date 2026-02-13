@@ -26,14 +26,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FormMapper implements FieldDefinitionFormMapperInterface, FieldValueFormMapperInterface
 {
-    protected ConfigResolverInterface $configResolver;
-
     /**
      * FormMapper constructor.
      */
-    public function __construct(ConfigResolverInterface $configResolver)
+    public function __construct(protected ConfigResolverInterface $configResolver)
     {
-        $this->configResolver = $configResolver;
     }
 
     /**

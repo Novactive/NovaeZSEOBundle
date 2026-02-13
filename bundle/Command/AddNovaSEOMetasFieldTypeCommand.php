@@ -30,44 +30,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class AddNovaSEOMetasFieldTypeCommand extends Command
 {
-    /**
-     * @var ConfigResolverInterface
-     */
-    private $configResolver;
-
-    /**
-     * @var Repository
-     */
-    private $repository;
-
-    /**
-     * @var UserService
-     */
-    private $userService;
-
-    /**
-     * @var FieldInstaller
-     */
-    private $fieldInstaller;
-
-    /**
-     * @var ContentTypesHelper
-     */
-    private $contentTypesHelper;
-
     public function __construct(
-        ConfigResolverInterface $configResolver,
-        Repository $repository,
-        UserService $userService,
-        FieldInstaller $fieldInstaller,
-        ContentTypesHelper $contentTypesHelper
+        private readonly ConfigResolverInterface $configResolver,
+        private readonly Repository $repository,
+        private readonly UserService $userService,
+        private readonly FieldInstaller $fieldInstaller,
+        private readonly ContentTypesHelper $contentTypesHelper
     ) {
-        $this->configResolver = $configResolver;
-        $this->repository = $repository;
-        $this->userService = $userService;
-        $this->fieldInstaller = $fieldInstaller;
-        $this->contentTypesHelper = $contentTypesHelper;
-
         parent::__construct();
     }
 

@@ -12,9 +12,11 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core;
 
+use Exception;
 use Ibexa\Contracts\Core\Repository\URLWildcardService;
 use Ibexa\Core\MVC\Symfony\Routing\UrlAliasRouter;
 use Ibexa\Core\MVC\Symfony\Routing\UrlWildcardRouter as BaseUrlWildcardRouter;
+use Override;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
@@ -28,6 +30,7 @@ class UrlWildcardRouter extends BaseUrlWildcardRouter
         $this->wildcardService = $wildcardService;
     }
 
+    #[Override]
     public function matchRequest(Request $request): array
     {
         try {
@@ -35,11 +38,11 @@ class UrlWildcardRouter extends BaseUrlWildcardRouter
             $requestedPath = $request->getPathInfo();
             $requestUriFull = $request->getSchemeAndHttpHost().$requestedPath;
             $urlWildcard = $this->wildcardService->translate($requestUriFull);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             try {
                 // Manage full url : /uri
                 $urlWildcard = $this->wildcardService->translate($requestedPath);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw new ResourceNotFoundException($e->getMessage(), $e->getCode(), $e);
             }
         }
@@ -48,11 +51,14 @@ class UrlWildcardRouter extends BaseUrlWildcardRouter
             '_route' => UrlAliasRouter::URL_ALIAS_ROUTE_NAME,
         ];
 
-        if (0 === strpos($urlWildcard->uri, 'http://') || 'https://' === substr($urlWildcard->uri, 0, 8)) {
-            $params += ['semanticPathinfo' => trim($urlWildcard->uri, '/')];
+        if (
+            str_starts_with((string) $urlWildcard->uri, 'http://') ||
+            str_starts_with((string) $urlWildcard->uri, 'https://')
+        ) {
+            $params += ['semanticPathinfo' => trim((string) $urlWildcard->uri, '/')];
             $params += ['prependSiteaccessOnRedirect' => false];
         } else {
-            $params += ['semanticPathinfo' => '/'.trim($urlWildcard->uri, '/')];
+            $params += ['semanticPathinfo' => '/'.trim((string) $urlWildcard->uri, '/')];
         }
 
         // In URLAlias terms, "forward" means "redirect".

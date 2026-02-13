@@ -12,6 +12,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Core\FieldType\MetaFieldConverter;
 
+use Override;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -19,6 +20,7 @@ class SeoMetadataChoiceFieldType extends SeoMetadataDefaultFieldType
 {
     public const IDENTIFIER = 'select';
 
+    #[Override]
     public function mapForm(FormBuilderInterface &$builder, array $params)
     {
         $builder->add(

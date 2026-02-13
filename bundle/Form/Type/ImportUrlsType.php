@@ -12,6 +12,7 @@
 
 namespace Novactive\Bundle\eZSEOBundle\Form\Type;
 
+use Override;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -34,6 +35,7 @@ class ImportUrlsType extends AbstractType
             );
     }
 
+    #[Override]
     public function getBlockPrefix(): string
     {
         return 'novaseo_import_urls';
