@@ -39,7 +39,7 @@ class SEOControllerPantherTest extends PantherTestCase
     public function testBingSiteAuth(): void
     {
         $helper = new BrowserHelper($this->getPantherClient());
-        $crawler = $helper->get('/BingSiteAuth.xml');
+        $crawler = $helper->getXML('/BingSiteAuth.xml');
         $this->assertEquals(1, $crawler->filter('users')->count());
     }
 }
