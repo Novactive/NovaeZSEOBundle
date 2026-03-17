@@ -56,8 +56,8 @@ class MetaType extends AbstractType
         $config = [];
         $type = 'text';
         $options = [
-            'label' => false,
-            'label_attr' => ['style' => 'display:none'],
+            'label' => ucfirst($builder->getName()),
+            'label_attr' => ['style' => 'font-weight:700'],
         ];
 
         $novaEzseo = $this->configResolver->getParameter('fieldtype_metas', 'nova_ezseo');

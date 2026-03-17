@@ -40,7 +40,7 @@ class MetasCollectionType extends AbstractType
                 'entry_type' => MetaType::class,
                 'entry_options' => ['required' => false],
                 'required' => false,
-                'label' => 'field_definition',
+                'label' => false,
                 'translation_domain' => 'fieldtypes',
             ]
         );
