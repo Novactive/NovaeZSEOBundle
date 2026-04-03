@@ -25,44 +25,36 @@ use Novactive\Bundle\eZSEOBundle\Core\CustomFallbackInterface;
 use Novactive\Bundle\eZSEOBundle\Core\FieldType\Metas\Value as MetasFieldValue;
 use Novactive\Bundle\eZSEOBundle\Core\Meta;
 use Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema;
+use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
+use Twig\TwigFilter;
 
-class NovaeZSEOExtension implements GlobalsInterface
+class NovaeZSEOExtension extends AbstractExtension implements GlobalsInterface
 {
     /**
      * The Ibexa Platform object name pattern service (extended).
-     *
-     * @var MetaNameSchema
      */
-    protected $metaNameSchema;
+    protected MetaNameSchema $metaNameSchema;
 
     /**
      * ConfigResolver useful to get the config aware of siteaccess.
-     *
-     * @var ConfigResolverInterface
      */
-    protected $configResolver;
+    protected ConfigResolverInterface $configResolver;
 
     /**
      * The Ibexa Platform API.
-     *
-     * @var Repository
      */
-    protected $ibexaRepository;
+    protected Repository $ibexaRepository;
 
     /**
      * Locale Converter.
-     *
-     * @var LocaleConverter
      */
-    protected $localeConverter;
+    protected LocaleConverter $localeConverter;
 
     /**
      * CustomFallBack Service.
-     *
-     * @var CustomFallbackInterface
      */
-    protected $customFallBackService;
+    protected CustomFallbackInterface $customFallBackService;
 
     public function __construct(
         Repository $repository,
@@ -76,18 +68,25 @@ class NovaeZSEOExtension implements GlobalsInterface
         $this->localeConverter = $localeConverter;
     }
 
-    public function setCustomFallbackService(CustomFallbackInterface $service)
+    public function setCustomFallbackService(CustomFallbackInterface $service): void
     {
         $this->customFallBackService = $service;
     }
 
-    #[\Twig\Attribute\AsTwigFilter(name: 'getposixlocale_novaseometas')]
+    public function getFilters(): array
+    {
+        return [
+            new TwigFilter('compute_novaseometas', [$this, 'computeMetas']),
+            new TwigFilter('getposixlocale_novaseometas', [$this, 'getPosixLocale']),
+            new TwigFilter('fallback_novaseometas', [$this, 'getFallbackedMetaContent']),
+        ];
+    }
+
     public function getPosixLocale(string $ibexaLocale): ?string
     {
         return $this->localeConverter->convertToPOSIX($ibexaLocale);
     }
 
-    #[\Twig\Attribute\AsTwigFilter(name: 'fallback_novaseometas')]
     public function getFallbackedMetaContent(ContentInfo $contentInfo, string $metaName): string
     {
         if ($this->customFallBackService instanceof CustomFallbackInterface) {
@@ -101,7 +100,6 @@ class NovaeZSEOExtension implements GlobalsInterface
      * Compute Metas of the Field thanks to its Content and the Fallback.
      */
     // @param $content: use type Content rather than ContentInfo, the last one is @deprecated
-    #[\Twig\Attribute\AsTwigFilter(name: 'compute_novaseometas')]
     public function computeMetas(Field $field, $content): string
     {
         $fallback = false;
