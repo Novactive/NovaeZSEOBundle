@@ -81,7 +81,7 @@ class MetaNameSchema extends NameSchemaService
         );
         $this->contentTypeHandler = $contentTypeHandler;
         $this->contentTypeDomainMapper = $contentTypeDomainMapper;
-        $this->relationListField = $this->fieldTypeRegistry->getFieldType('ezobjectrelationlist');
+        $this->relationListField = $this->fieldTypeRegistry->getFieldType('ibexa_object_relation_list');
     }
 
     public function setRichTextConverter(RichTextConverterInterface $richTextConverter): void
