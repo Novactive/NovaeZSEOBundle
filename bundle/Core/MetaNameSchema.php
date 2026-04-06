@@ -25,6 +25,7 @@ use Ibexa\Contracts\Core\Variation\VariationHandler;
 use Ibexa\Contracts\FieldTypeRichText\RichText\Converter as RichTextConverterInterface;
 use Ibexa\Core\Base\Exceptions\InvalidArgumentType;
 use Ibexa\Core\Base\Exceptions\NotFoundException;
+use Ibexa\Core\Repository\NameSchema\UnresolvedTokenNamesException;
 use Ibexa\Core\FieldType\FieldTypeRegistry;
 use Ibexa\Core\FieldType\Image\Value as ImageValue;
 use Ibexa\Core\FieldType\ImageAsset\Value as ImageAssetValue;
@@ -99,12 +100,18 @@ class MetaNameSchema extends NameSchemaService
     {
         $languages = $this->configurationResolver->getParameter('languages');
 
-        $resolveMultilingue = $this->resolveNameSchema(
-            $meta->getContent(),
-            $content->getContentType(),
-            $content->fields,
-            $content->versionInfo->languageCodes
-        );
+        try {
+            $resolveMultilingue = $this->resolveNameSchema(
+                $meta->getContent(),
+                $content->getContentType(),
+                $content->fields,
+                $content->versionInfo->languageCodes
+            );
+        } catch (UnresolvedTokenNamesException) {
+            // Meta content has no field tokens (plain text with no <identifier> patterns), keep as-is
+            return '' !== $meta->getContent();
+        }
+
         // we don't fallback on the other languages... it would be very bad for SEO to mix the languages
         if (
             \array_key_exists($languages[0], $resolveMultilingue) &&

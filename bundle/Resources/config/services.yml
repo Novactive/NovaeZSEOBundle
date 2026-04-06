@@ -48,7 +48,9 @@ services:
         bind:
             $fieldHelper: '@Ibexa\Core\Helper\FieldHelper'
 
-    Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension: ~
+    Novactive\Bundle\eZSEOBundle\Twig\NovaeZSEOExtension:
+        calls:
+            - setCustomFallbackService: [ '@Novactive\Bundle\eZSEOBundle\Core\DummyCustomFallback' ]
     Novactive\Bundle\eZSEOBundle\Core\DummyCustomFallback: ~
 
     Novactive\Bundle\eZSEOBundle\Core\MetaNameSchema:
