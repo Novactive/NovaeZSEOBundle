@@ -204,10 +204,15 @@ You can manage the Robots.txt file
 nova_ezseo:
     system:
         default:
-            google_verification: 1234567890
-            robots_disallow:
-                - "/admin"
-                - "/specials"
+            sitemap:
+                - { route : '_novaseo_sitemap_index' }
+                - { url : 'https://www.google.fr/sitemap.xml' }
+            allow: []
+            disallow: []
+            rules:
+                -
+                    user_agents: ['meta-externalagent']
+                    disallow: ['/']
 ```
 
 > Nothing to put on your server, no need to add a new RewriteRules, and there is also a security, the Disallow / is automatically set when you're not in "prod" mode.

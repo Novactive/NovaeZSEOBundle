@@ -28,49 +28,81 @@ class SEOController extends Controller
     {
         $response = new Response();
         $response->setSharedMaxAge(86400);
-        $robots = ['User-agent: *'];
 
-        $robotsRules = $this->getConfigResolver()->getParameter('robots', 'nova_ezseo');
+        $robotsParameters = $this->getConfigResolver()->getParameter('robots', 'nova_ezseo');
         $backwardCompatibleRules = $this->getConfigResolver()->getParameter(
             'robots_disallow',
             'nova_ezseo'
         );
 
-        if (\is_array($robotsRules['sitemap'])) {
-            foreach ($robotsRules['sitemap'] as $sitemapRules) {
+        $robotRules = [ '*' => []];
+        $addRule = function (array|string $paths, bool $allow = true, string $userAgent = '*') use (&$robotRules) {
+            if (is_string($paths)) {
+                $paths = [$paths];
+            }
+            foreach ($paths as $path) {
+                $robotRules[$userAgent][] = sprintf(
+                    '%s: %s',
+                    $allow ? 'Allow' : 'Disallow',
+                    $path
+                );
+            }
+        };
+
+        if ('prod' !== $this->getParameter('kernel.environment')) {
+            $addRule('/', false);
+        } else {
+            if (\is_array($robotsParameters['allow'])) {
+                $addRule($robotsParameters['allow']);
+            }
+
+            if (\is_array($robotsParameters['disallow'])) {
+                $addRule($robotsParameters['disallow'], false);
+            }
+
+            $rules = $robotsParameters['rules'] ?? [];
+            foreach ($rules as $rule) {
+                foreach ($rule['user_agents'] as $userAgent) {
+                    $addRule($rule['allow'], true, $userAgent);
+                    $addRule($rule['disallow'], false, $userAgent);
+                }
+            }
+
+            if (\is_array($backwardCompatibleRules)) {
+                foreach ($backwardCompatibleRules as $rule) {
+                    $addRule($rule, false);
+                }
+            }
+        }
+
+        $robotsTxt = '';
+        foreach ($robotRules as $userAgent => $userAgentRules) {
+            if (empty($userAgentRules)) {
+                continue;
+            }
+
+            $robotsTxt .= "User-agent: $userAgent".PHP_EOL;
+            foreach ($userAgentRules as $userAgentRule) {
+                $robotsTxt .= $userAgentRule.PHP_EOL;
+            }
+            $robotsTxt .= PHP_EOL;
+        }
+
+        if (\is_array($robotsParameters['sitemap'])) {
+            foreach ($robotsParameters['sitemap'] as $sitemapRules) {
                 foreach ($sitemapRules as $key => $value) {
                     if ('route' === $key) {
                         $url = $this->generateUrl($value, [], UrlGeneratorInterface::ABSOLUTE_URL);
-                        $robots[] = "Sitemap: {$url}";
+                        $robotsTxt .= "Sitemap: {$url}".PHP_EOL;
                     }
                     if ('url' === $key) {
-                        $robots[] = "Sitemap: {$value}";
+                        $robotsTxt .= "Sitemap: {$value}".PHP_EOL;
                     }
                 }
             }
         }
-        if (\is_array($robotsRules['allow'])) {
-            foreach ($robotsRules['allow'] as $rule) {
-                $robots[] = "Allow: {$rule}";
-            }
-        }
-        if ('prod' !== $this->getParameter('kernel.environment')) {
-            $robots[] = 'Disallow: /';
-        }
 
-        if (\is_array($robotsRules['disallow'])) {
-            foreach ($robotsRules['disallow'] as $rule) {
-                $robots[] = "Disallow: {$rule}";
-            }
-        }
-
-        if (\is_array($backwardCompatibleRules)) {
-            foreach ($backwardCompatibleRules as $rule) {
-                $robots[] = "Disallow: {$rule}";
-            }
-        }
-
-        $response->setContent(implode("\n", $robots));
+        $response->setContent($robotsTxt);
         $response->headers->set('Content-Type', 'text/plain');
 
         return $response;

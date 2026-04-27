@@ -18,3 +18,12 @@ nova_ezseo:
                 keywords:
                     label: 'Keywords'
                     default_pattern: ~
+            robots:
+                sitemap:
+                    - { route : '_novaseo_sitemap_index' }
+                disallow:
+                    - /*?
+                rules:
+                    -
+                        user_agents: ['meta-externalagent']
+                        disallow: ['/']

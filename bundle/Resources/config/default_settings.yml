@@ -6,6 +6,10 @@ parameters:
 #            - { url : 'https://www.google.fr/sitemap.xml' }
         allow: []
         disallow: []
+        rules:
+#            -
+#                user_agents: ['meta-externalagent']
+#                disallow: ['/']
     nova_ezseo.default.google_gatracker: ~
     nova_ezseo.default.google_verification: 1234567890
     nova_ezseo.default.google_anonymizeIp: ~
