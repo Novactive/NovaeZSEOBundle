@@ -49,7 +49,7 @@ class SEOController extends Controller
             }
         };
 
-        if ('dev' !== $this->getParameter('kernel.environment')) {
+        if ('prod' !== $this->getParameter('kernel.environment')) {
             $addRule('/', false);
         } else {
             if (\is_array($robotsParameters['allow'])) {
