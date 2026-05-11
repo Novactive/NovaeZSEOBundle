@@ -30,7 +30,7 @@ class RedirectImportHistory
     /**
      * @var string
      */
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(name: 'name_file', type: 'string')]
     protected $nameFile;
 
     /**
