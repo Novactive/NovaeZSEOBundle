@@ -31,11 +31,10 @@ class SEOController extends Controller
         $response = new Response();
         $response->setSharedMaxAge(86400);
 
-
         $robotsParameters = $this->getConfigResolver()->getParameter('robots', 'nova_ezseo');
         $backwardCompatibleRules = $this->getConfigResolver()->getParameter('robots_disallow', 'nova_ezseo');
 
-        $robotRules = [ '*' => []];
+        $robotRules = ['*' => []];
         $addRule = function (array|string $paths, bool $allow = true, string $userAgent = '*') use (&$robotRules) {
             if (is_string($paths)) {
                 $paths = [$paths];

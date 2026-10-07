@@ -90,16 +90,15 @@ services:
 
     Novactive\Bundle\eZSEOBundle\Core\Sitemap\QueryFactory: ~
 
-    Novactive\Bundle\eZSEOBundle\Core\UrlWildcardRouter:
+    Novactive\Bundle\eZSEOBundle\Listener\RequestEventListener:
         arguments:
             - '@ibexa.api.service.url_wildcard'
-            - '@Ibexa\Core\MVC\Symfony\Routing\Generator\UrlAliasGenerator'
-            - '@router.request_context'
-        calls:
-            - [setLogger, ['@?logger']]
-            - [setWildcardService, ['@ibexa.api.service.url_wildcard']]
+            - '@ibexa.config.resolver'
+            - "@router"
+            - '%ibexa.site_access.default%'
+            - "@?logger"
         tags:
-            - { name: router, priority: 2000 }
+            - { name: kernel.event_subscriber }
 
     novactive.novaseobundle.form.type.meta:
         class: Novactive\Bundle\eZSEOBundle\Form\Type\MetaType
