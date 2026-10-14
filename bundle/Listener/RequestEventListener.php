@@ -12,6 +12,7 @@ use Ibexa\Contracts\Core\Repository\Values\Content\URLWildcard\URLWildcardQuery;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Ibexa\Core\MVC\Symfony\SiteAccess;
 use Ibexa\Core\MVC\Symfony\SiteAccess\URILexer;
+use Novactive\Bundle\eZSEOBundle\Core\Repository\Values\Content\URLWildcard\Query\Criterion\ExactSourceUrl;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -23,6 +24,8 @@ use Symfony\Component\Routing\RouterInterface;
 
 class RequestEventListener implements EventSubscriberInterface
 {
+    private const PLACEHOLDERS_REGEXP = '(\{(\d+)\})';
+
     public function __construct(
         protected URLWildcardService $wildcardService,
         protected ConfigResolverInterface $configResolver,
@@ -40,7 +43,7 @@ class RequestEventListener implements EventSubscriberInterface
     {
         return [
             KernelEvents::REQUEST => [
-                ['onKernelRequest', 0],
+                ['onKernelRequest', 1000],
             ],
         ];
     }
@@ -62,11 +65,24 @@ class RequestEventListener implements EventSubscriberInterface
         $query = new URLWildcardQuery();
         $query->filter = new LogicalOr(
             [
-                new SourceUrl($requestedPath),
+                new ExactSourceUrl($requestUriFull),
+                new ExactSourceUrl($requestUri),
+                new ExactSourceUrl(trim($requestUri, '/ ')),
+                new ExactSourceUrl($requestedPathFull),
+                new ExactSourceUrl($requestedPath),
+                new ExactSourceUrl(trim($requestedPath, '/ ')),
+                new SourceUrl('*'),
             ]
         );
+        $query->limit = 100;
 
-        $urlWildcards = $this->wildcardService->findUrlWildcards($query);
+        $urlWildcards = $this->wildcardService->findUrlWildcards($query)->items;
+
+        // sort to check exact matches first
+        usort($urlWildcards, function (URLWildcard $urlA, URLWildcard $urlB) {
+            return strpos($urlA->sourceUrl, '*') <=> strpos($urlB->sourceUrl, '*');
+        });
+
         $urlWildcard = $this->getFirstMatchedUrl(
             [
                 $requestUriFull,
@@ -74,7 +90,7 @@ class RequestEventListener implements EventSubscriberInterface
                 $requestedPathFull,
                 $requestedPath,
             ],
-            $urlWildcards->items
+            $urlWildcards
         );
 
         if (!$urlWildcard) {
@@ -198,12 +214,60 @@ class RequestEventListener implements EventSubscriberInterface
     {
         foreach ($needles as $needle) {
             foreach ($urlWildcards as $urlWildcard) {
-                if ($urlWildcard->sourceUrl === $needle) {
-                    return $urlWildcard;
+                $uri = $this->match($needle, $urlWildcard);
+                if ($uri) {
+                    return new UrlWildcard(
+                        [
+                                               'id' => $urlWildcard->id,
+                                               'destinationUrl' => $uri,
+                                               'sourceUrl' => $urlWildcard->sourceUrl,
+                                               'forward' => $urlWildcard->forward,
+                                           ]
+                    );
                 }
             }
         }
 
         return null;
+    }
+
+    /**
+     * Tests if the given url matches against the given url wildcard.
+     *
+     * if the wildcard matches on the given url this method will return a ready
+     * to use destination url, otherwise this method will return <b>NULL</b>.
+     *
+     * @param array $wildcard
+     */
+    private function match(string $url, URLWildcard $wildcard): ?string
+    {
+        if (preg_match($this->compile($wildcard->sourceUrl), $url, $match)) {
+            return $this->substitute($wildcard->destinationUrl, $match);
+        }
+
+        return null;
+    }
+
+    /**
+     * Compiles the given url pattern into a regular expression.
+     */
+    private function compile(string $sourceUrl): string
+    {
+        return '(^'.str_replace('\\*', '(.*)', preg_quote($sourceUrl)).'$)U';
+    }
+
+    /**
+     * Substitutes all placeholders ({\d}) in the given <b>$destinationUrl</b> with
+     * the values from the given <b>$values</b> array.
+     */
+    private function substitute(string $destinationUrl, array $values): string
+    {
+        preg_match_all(self::PLACEHOLDERS_REGEXP, $destinationUrl, $matches);
+
+        foreach ($matches[1] as $match) {
+            $destinationUrl = str_replace("{{$match}}", $values[$match], $destinationUrl);
+        }
+
+        return $destinationUrl;
     }
 }
