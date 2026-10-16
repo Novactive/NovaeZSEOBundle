@@ -57,7 +57,7 @@ class SitemapController extends Controller
         // create an index if we are greater than th PACKET_MAX
         if ($resultCount > static::PACKET_MAX) {
             $root = $sitemap->createElement('sitemapindex');
-            $root->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
+            $root->setAttribute('xmlns', 'https://www.sitemaps.org/schemas/sitemap/0.9');
             $sitemap->appendChild($root);
 
             $this->fillSitemapIndex($sitemap, $resultCount, $root);
@@ -66,8 +66,8 @@ class SitemapController extends Controller
             $query->limit = $resultCount;
             $results = $searchService->findLocations($query);
             $root = $sitemap->createElement('urlset');
-            $root->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
-            $root->setAttribute('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
+            $root->setAttribute('xmlns', 'https://www.sitemaps.org/schemas/sitemap/0.9');
+            $root->setAttribute('xmlns:image', 'https://www.google.com/schemas/sitemap-image/1.1');
             $this->fillSitemap($sitemap, $root, $results);
             $sitemap->appendChild($root);
         }
@@ -88,8 +88,8 @@ class SitemapController extends Controller
         $sitemap = new DOMDocument('1.0', 'UTF-8');
         $root = $sitemap->createElement('urlset');
         $sitemap->formatOutput = true;
-        $root->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
-        $root->setAttribute('xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
+        $root->setAttribute('xmlns', 'https://www.sitemaps.org/schemas/sitemap/0.9');
+        $root->setAttribute('xmlns:image', 'https://www.google.com/schemas/sitemap-image/1.1');
         $sitemap->appendChild($root);
         $query = $queryFactory();
         $query->limit = static::PACKET_MAX;
