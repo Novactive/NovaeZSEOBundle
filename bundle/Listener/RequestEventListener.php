@@ -63,16 +63,22 @@ class RequestEventListener implements EventSubscriberInterface
         $requestUriFull = $request->getSchemeAndHttpHost().$requestUri;
 
         $query = new URLWildcardQuery();
+        $criteria = [
+            new SourceUrl('*'),
+            new ExactSourceUrl($requestUriFull),
+            new ExactSourceUrl($requestUri),
+            new ExactSourceUrl($requestedPathFull),
+            new ExactSourceUrl($requestedPath),
+        ];
+        if (!empty(trim($requestUri, '/ '))) {
+            $criteria[] = new ExactSourceUrl(trim($requestUri, '/ '));
+        }
+        if (!empty(trim($requestedPath, '/ '))) {
+            $criteria[] = new ExactSourceUrl(trim($requestedPath, '/ '));
+        }
+
         $query->filter = new LogicalOr(
-            [
-                new ExactSourceUrl($requestUriFull),
-                new ExactSourceUrl($requestUri),
-                new ExactSourceUrl(trim($requestUri, '/ ')),
-                new ExactSourceUrl($requestedPathFull),
-                new ExactSourceUrl($requestedPath),
-                new ExactSourceUrl(trim($requestedPath, '/ ')),
-                new SourceUrl('*'),
-            ]
+            $criteria
         );
         $query->limit = 100;
 
